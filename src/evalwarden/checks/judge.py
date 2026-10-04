@@ -9,6 +9,9 @@ probabilistic calibration slice: it measures whether the judge's stated
 confidence tracks its empirical accuracy on labeled items. JUDGE-008 is the
 ensemble slice: in a multi-judge panel, it measures whether each judge
 contributes independent signal or just burns budget agreeing with the rest.
+JUDGE-009 is the coverage slice: the judge x sample mirror of JUDGE-008 --
+whether the panel, between its members, catches each failure mode the eval
+claims to test, or whether whole modes pass unseen by every judge.
 
 Precision-first throughout: bias heuristics carry minimum-sample guards and
 Medium severity/confidence labels, and a clean, well-run judge produces no
@@ -20,6 +23,7 @@ from __future__ import annotations
 from collections import defaultdict
 
 from ..calibration import bin_pairs, expected_calibration_error, mean_signed_gap
+from ..coverage import blind_spots, mode_catch_table
 from ..ensemble import (
     ablation_value,
     max_agreement_partner,
@@ -41,6 +45,11 @@ MIN_PANEL_JUDGES = 2     # fewer judges than this: no panel to judge redundant
 MIN_COMMON_ITEMS = 30    # common items below this: stay silent
 MIN_FLAG_ITEMS = 50      # common items below this: measure, but never flag
 REDUNDANCY_RATE = 0.05   # unique contribution below this is a finding
+CATCH_BAR = 0.70         # judge x mode agreement at or above this is a catch
+MIN_MODE_ITEMS = 20      # labeled items of a mode needed before naming a blind spot
+MIN_MODE_JUDGE_ITEMS = 10  # labeled verdicts per judge on a mode for a measurable rate
+MIN_MEASURING_JUDGES = 2  # judges with measurable rates needed to call a panel blind
+MAX_BLIND_SPOTS = 5      # blind-spot modes shown per finding
 
 
 def _is_judge(model: IntegrityModel) -> bool:
@@ -607,6 +616,101 @@ class EnsembleRedundancyCheck(Check):
         ]
 
 
+class PanelBlindSpotCheck(Check):
+    meta = CheckMeta(
+        id="JUDGE-009",
+        title="Panel blind spots: failure modes no judge catches",
+        threat=(
+            "A judge panel can look healthy in aggregate while every member "
+            "fails on the same failure mode. Reported scores then carry no "
+            "signal about that mode at all: items designed to expose it pass "
+            "through the panel unseen, and the eval certifies robustness it "
+            "never actually measured."
+        ),
+        remediation=(
+            "Add or retrain a judge that catches the blind modes (validate "
+            "per-mode catch rates against the reference labels, not just "
+            "aggregate agreement), or narrow the eval's claims to the "
+            "failure modes the panel demonstrably catches."
+        ),
+    )
+
+    def run(self, model: IntegrityModel) -> list[Finding]:
+        if not _is_judge(model):
+            return []
+        labels = model.grader.reference_labels
+        if not labels:
+            # No ground truth: catch rates are unmeasurable, stay silent.
+            return []
+        mode_of = {
+            t.id: t.failure_mode for t in model.tasks if t.failure_mode is not None
+        }
+        if not mode_of:
+            # No failure-mode tags: nothing to slice coverage by.
+            return []
+        # First pairwise verdict per (judge, task). Narrow to pairwise like
+        # JUDGE-007: a pointwise top-score is not comparable to a reference
+        # winner, and treating it as one would manufacture blind spots.
+        verdicts: dict[str, dict[str, str]] = {}
+        for j in model.judgments:
+            if j.judge_id is None or j.winner is None:
+                continue
+            verdicts.setdefault(j.judge_id, {}).setdefault(j.task_id, j.winner)
+        if len(verdicts) < MIN_MEASURING_JUDGES:
+            # A single attributable judge is not a panel; per-mode weakness
+            # of one judge is JUDGE-004 territory, not a blind spot claim.
+            return []
+        table = mode_catch_table(verdicts, labels, mode_of)
+        spots = blind_spots(
+            table,
+            catch_bar=CATCH_BAR,
+            min_mode_items=MIN_MODE_ITEMS,
+            min_judge_items=MIN_MODE_JUDGE_ITEMS,
+            min_judges=MIN_MEASURING_JUDGES,
+        )
+        if not spots:
+            return []
+        evidence: list[str] = []
+        for mc in spots[:MAX_BLIND_SPOTS]:
+            measurable = mc.measurable(MIN_MODE_JUDGE_ITEMS)
+            per_judge = ", ".join(
+                f"{jc.judge_id} {jc.rate:.0%} ({jc.n_caught}/{jc.n_labeled})"
+                for jc in measurable
+            )
+            evidence.append(
+                f"mode '{mc.mode}': no judge catches it -- best rate "
+                f"{mc.best_rate:.0%} below the {CATCH_BAR:.0%} bar over "
+                f"{mc.n_labeled_items} labeled items; per-judge: {per_judge}."
+            )
+        if len(spots) > MAX_BLIND_SPOTS:
+            evidence.append(
+                f"... and {len(spots) - MAX_BLIND_SPOTS} more blind-spot mode(s)."
+            )
+        evidence.append(
+            "Statistical signal: corroborate on a held-out labeled set "
+            "before treating it as proof."
+        )
+        modes = ", ".join(f"'{mc.mode}'" for mc in spots)
+        return [
+            Finding(
+                id=self.meta.id,
+                title=f"Panel blind spots: no judge catches {modes}",
+                severity=Severity.MEDIUM,
+                confidence=Confidence.MEDIUM,
+                description=self.meta.threat,
+                evidence=evidence,
+                locations=[
+                    _judge_loc(
+                        model,
+                        "judgments[].judge_id vs reference_labels "
+                        "by tasks[].failure_mode",
+                    )
+                ],
+                remediation=self.meta.remediation,
+            )
+        ]
+
+
 CHECKS = [
     UnvalidatedJudgeCheck(),  # JUDGE-001
     PairOrderCheck(),  # JUDGE-002
@@ -616,4 +720,5 @@ CHECKS = [
     VerbosityBiasCheck(),  # JUDGE-006
     JudgeCalibrationCheck(),  # JUDGE-007
     EnsembleRedundancyCheck(),  # JUDGE-008
+    PanelBlindSpotCheck(),  # JUDGE-009
 ]

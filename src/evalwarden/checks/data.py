@@ -4,16 +4,22 @@ DATA-001 measures saturation: when every model gets the same items right, the
 dataset no longer discriminates and reported scores are theater.
 DATA-002 measures redundancy: near-duplicate items waste eval budget and
 inflate confidence in coverage.
+DATA-003 measures elicitation coverage: whether each declared failure mode
+has enough tagged items to actually surface the behavior -- the count-side
+mirror of JUDGE-009's panel blind spots.
 
-Precision-first throughout: both checks stay silent when the data cannot
+Precision-first throughout: the checks stay silent when the data cannot
 support the claim. Saturation needs per-item results from at least two
 models (Attempt.model_id); redundancy needs enough task prompts to make a
-fraction meaningful. A clean, discriminating dataset produces no findings.
+fraction meaningful; coverage needs failure-mode tags on enough items to
+make a per-mode count meaningful. A clean, discriminating dataset produces
+no findings.
 """
 from __future__ import annotations
 
 from collections import defaultdict
 
+from ..coverage import mode_item_counts, thin_modes
 from ..dataset import redundancy_stats, saturation_stats
 from ..model import Attempt, Confidence, Finding, IntegrityModel, Severity, SourceLocation
 from .base import Check, CheckMeta
@@ -24,6 +30,9 @@ SATURATED_AT = 0.5  # dead fraction at or above this is saturation
 MIN_TASKS = 20  # prompts needed before calling a dataset redundant
 DUPLICATE_AT = 0.10  # item duplicate fraction at or above this is redundancy
 SIMILARITY = 0.8  # shingle-Jaccard at or above this is a near-duplicate
+ELICIT_MIN = 30  # items carrying a failure mode below this cannot elicit it reliably
+MIN_TAGGED_ITEMS = 30  # tagged items needed before per-mode counts mean anything
+MAX_COVERAGE_MODES = 5  # thin/absent modes shown per finding
 
 
 def _data_loc(model: IntegrityModel, excerpt: str) -> SourceLocation:
@@ -150,7 +159,93 @@ class RedundancyCheck(Check):
         ]
 
 
+class ElicitationCoverageCheck(Check):
+    meta = CheckMeta(
+        id="DATA-003",
+        title="Failure modes under-elicited",
+        threat=(
+            "A failure mode with only a handful of eliciting items cannot "
+            "surface the behavior it names: the eval claims coverage it "
+            "never exercises, and a declared mode with no items at all is a "
+            "promise the dataset does not even attempt to keep."
+        ),
+        remediation=(
+            "Author more items for the thin modes until each declared "
+            "failure mode has enough eliciting samples to measure, or drop "
+            "the mode from the eval's declared coverage."
+        ),
+    )
+
+    def run(self, model: IntegrityModel) -> list[Finding]:
+        mode_of = {
+            t.id: t.failure_mode for t in model.tasks if t.failure_mode is not None
+        }
+        if len(mode_of) < MIN_TAGGED_ITEMS:
+            # Too few tagged items to distinguish "modes are thin" from
+            # "the adapter recorded no tags": stay silent.
+            return []
+        counts = mode_item_counts(mode_of)
+        thin, absent = thin_modes(counts, model.failure_mode_taxonomy, ELICIT_MIN)
+        if not thin and not absent:
+            return []
+        evidence: list[str] = []
+        shown = 0
+        for mode in absent:
+            if shown >= MAX_COVERAGE_MODES:
+                break
+            evidence.append(
+                f"declared mode '{mode}' has no items: the eval claims "
+                "coverage it never elicits."
+            )
+            shown += 1
+        for mode, count in thin:
+            if shown >= MAX_COVERAGE_MODES:
+                break
+            evidence.append(
+                f"mode '{mode}' has {count} item(s), below {ELICIT_MIN}: "
+                "too few samples to elicit the failure mode reliably."
+            )
+            shown += 1
+        total = len(absent) + len(thin)
+        if total > shown:
+            evidence.append(
+                f"... and {total - shown} more under-elicited mode(s) "
+                f"({len(counts)} modes over {len(mode_of)} tagged items)."
+            )
+        parts: list[str] = []
+        if absent:
+            parts.append(f"absent: {', '.join(absent)}")
+        if thin:
+            parts.append(
+                "thin: "
+                + ", ".join(f"{mode} ({count})" for mode, count in thin)
+            )
+        return [
+            Finding(
+                id=self.meta.id,
+                title=(
+                    f"Failure modes under-elicited ({'; '.join(parts)})"
+                ),
+                severity=Severity.MEDIUM,
+                confidence=Confidence.MEDIUM,
+                description=self.meta.threat,
+                evidence=evidence,
+                locations=[
+                    SourceLocation(
+                        file=model.artifact_file("tasks.json"),
+                        excerpt=(
+                            f"tasks[].failure_mode over {len(mode_of)} "
+                            "tagged items"
+                        ),
+                    )
+                ],
+                remediation=self.meta.remediation,
+            )
+        ]
+
+
 CHECKS = [
     SaturationCheck(),  # DATA-001
     RedundancyCheck(),  # DATA-002
+    ElicitationCoverageCheck(),  # DATA-003
 ]

@@ -202,7 +202,7 @@
 <section>
   <div class="wrap">
     <div class="eyebrow">The check catalog</div>
-    <h2>Twenty-two checks across six lanes.</h2>
+    <h2>Twenty-one checks across six lanes.</h2>
     <div class="lanes">
       <div class="lane">
         <div class="k">ENV</div>
@@ -233,6 +233,7 @@
         <ul>
           <li><code>DATA-001</code>Dataset looks saturated — most items solved by every model</li>
           <li><code>DATA-002</code>Dataset contains near-duplicate items</li>
+          <li><code>DATA-003</code>Failure modes under-elicited — too few eliciting items, or a declared mode with none</li>
         </ul>
       </div>
       <div class="lane full">
@@ -247,6 +248,7 @@
           <li><code>JUDGE-006</code>Verbosity bias — longer answers win disproportionately</li>
           <li><code>JUDGE-007</code>Judge confidence miscalibrated — stated confidence does not track accuracy</li>
           <li><code>JUDGE-008</code>Redundant judges in panel — a judge never differs from the rest</li>
+          <li><code>JUDGE-009</code>Panel blind spots — failure modes no judge in the panel catches</li>
         </ul>
       </div>
       <div class="lane">

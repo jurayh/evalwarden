@@ -70,6 +70,7 @@ Deterministic, high-precision checks. A linter that cries contamination on a cle
 | JUDGE-006 | Verbosity bias: longer answers win disproportionately | Medium |
 | JUDGE-007 | Judge confidence miscalibrated (stated confidence does not track accuracy) | Medium |
 | JUDGE-008 | Redundant judges in panel (a judge never differs from the rest) | Medium |
+| JUDGE-009 | Panel blind spots: failure modes no judge in the panel catches | Medium |
 
 **DATA — the dataset itself**
 
@@ -77,6 +78,7 @@ Deterministic, high-precision checks. A linter that cries contamination on a cle
 |----|-------|----------|
 | DATA-001 | Dataset looks saturated (most items answered correctly by every model) | Medium |
 | DATA-002 | Dataset contains near-duplicate items | Low |
+| DATA-003 | Failure modes under-elicited (too few eliciting items, or a declared mode with none) | Medium |
 
 **TRAJ — the agent's trajectory**
 

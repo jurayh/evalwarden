@@ -89,6 +89,10 @@ class Environment:
 class TaskSample:
     id: str
     prompt: str
+    # Failure mode this item elicits, e.g. "verbosity-gaming". Adapters set
+    # it when the eval tags items by failure mode; the JUDGE-009 / DATA-003
+    # coverage checks read it and stay silent without tags.
+    failure_mode: str | None = None
     metadata: dict = field(default_factory=dict)
 
 
@@ -211,6 +215,11 @@ class IntegrityModel:
     adapter_name: str
     adapter_version: str
     tasks: list[TaskSample] = field(default_factory=list)
+    # Failure modes the eval declares it covers (its elicitation taxonomy).
+    # Adapters populate it from the eval definition when one exists; DATA-003
+    # flags declared modes that no item elicits. Empty when the eval declares
+    # no taxonomy: undeclared modes cannot be missed.
+    failure_mode_taxonomy: list[str] = field(default_factory=list)
     environment: Environment = field(default_factory=Environment)
     grader: Grader = field(default_factory=Grader)
     attempts: list[Attempt] = field(default_factory=list)
