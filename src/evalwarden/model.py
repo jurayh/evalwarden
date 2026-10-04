@@ -210,6 +210,28 @@ class CostSummary:
 
 
 @dataclass
+class RunItemScore:
+    """Per-item score from one repeated run of the eval.
+
+    Repeated runs are how an eval's noise becomes measurable: each score
+    records which run conditions were re-rolled to produce it.
+    generation_index varies over fresh generations (model sampling);
+    grade_index varies over re-grades of a frozen output (judge noise);
+    environment_index varies over repeated tool/environment executions
+    (flakiness). Scores sharing an index tuple are the same condition;
+    adapters leave all indices at 0 when the harness records no repeats,
+    and the NOISE-lane checks then report total variance only -- or stay
+    silent when there is nothing to estimate from.
+    """
+
+    task_id: str
+    score: float
+    generation_index: int = 0  # fresh-generation replicate (sampling noise)
+    grade_index: int = 0  # re-grade of a frozen output (judge noise)
+    environment_index: int = 0  # repeated environment execution (flakiness)
+
+
+@dataclass
 class IntegrityModel:
     eval_id: str
     adapter_name: str
@@ -224,6 +246,15 @@ class IntegrityModel:
     grader: Grader = field(default_factory=Grader)
     attempts: list[Attempt] = field(default_factory=list)
     judgments: list[Judgment] = field(default_factory=list)
+    # Per-item scores from repeated runs, when the harness re-runs the eval
+    # under recorded conditions. Empty when the eval ran once: the NOISE
+    # lane then has nothing to decompose and stays silent.
+    run_scores: list[RunItemScore] = field(default_factory=list)
+    # Mean score change the eval claims over a prior run or baseline
+    # (new minus old, in score points), when it claims one. Adapters set it
+    # from the eval's own reporting; NOISE-002 judges it against the noise
+    # floor measured from run_scores. None when no improvement is claimed.
+    claimed_delta: float | None = None
     # Harness fields the adapter saw but could not translate. Shown in the
     # report as coverage gaps, never silently dropped.
     unsupported: list[str] = field(default_factory=list)

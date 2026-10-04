@@ -12,6 +12,7 @@ from .data import CHECKS as DATA_CHECKS
 from .env_leakage import EnvLeakageCheck
 from .grader import EmptyPathCheck, VerifierWritableCheck
 from .judge import CHECKS as JUDGE_CHECKS
+from .noise import CHECKS as NOISE_CHECKS
 from .traj import CHECKS as TRAJ_CHECKS
 
 REGISTRY: list[Check] = [
@@ -22,6 +23,7 @@ REGISTRY: list[Check] = [
     *JUDGE_CHECKS,  # JUDGE-001 .. JUDGE-009
     *DATA_CHECKS,  # DATA-001 .. DATA-003
     *TRAJ_CHECKS,  # TRAJ-001 .. TRAJ-002
+    *NOISE_CHECKS,  # NOISE-001 .. NOISE-002
 ]
 
 BY_ID: dict[str, Check] = {check.meta.id: check for check in REGISTRY}

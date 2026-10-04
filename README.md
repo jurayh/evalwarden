@@ -87,6 +87,13 @@ Deterministic, high-precision checks. A linter that cries contamination on a cle
 | TRAJ-001 | Trajectory repeats identical tool calls (exact loops) | High |
 | TRAJ-002 | Tool outputs consumed by nothing downstream | High |
 
+**NOISE — the noise budget**
+
+| ID | Check | Severity |
+|----|-------|----------|
+| NOISE-001 | One noise source dominates the eval budget (sampling, judge, or environment) | Medium |
+| NOISE-002 | Claimed score change inside the noise floor, or unjudgeable at this protocol | Medium |
+
 `evalwarden explain COST-004` prints any check's threat model, evidence, and fix.
 
 ## How evalwarden differs
