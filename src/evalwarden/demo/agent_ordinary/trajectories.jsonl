@@ -1,0 +1,13 @@
+{"task_id": "o1", "step_id": "s0", "tool": "fetch_ticket", "args": {"ticket": "T-101"}, "output": "customer cannot log in", "consumes": []}
+{"task_id": "o1", "step_id": "s1", "tool": "search_kb", "args": {"query": "password reset"}, "output": "article kb-7: reset flow", "consumes": []}
+{"task_id": "o1", "step_id": "s2", "tool": "draft_reply", "args": {"template": "reset-link"}, "output": "draft ready", "consumes": ["s0", "s1"]}
+{"task_id": "o1", "step_id": "s3", "tool": "check_policy", "args": {"draft": "reset-link"}, "output": "policy ok", "consumes": ["s2"]}
+{"task_id": "o1", "step_id": "s4", "tool": "send_reply", "args": {"ticket": "T-101"}, "output": "sent", "consumes": ["s3"]}
+{"task_id": "o2", "step_id": "s0", "tool": "fetch_ticket", "args": {"ticket": "T-102"}, "output": "package late", "consumes": []}
+{"task_id": "o2", "step_id": "s1", "tool": "bash", "args": {"cmd": "git status"}, "output": "clean tree", "consumes": ["s0"]}
+{"task_id": "o2", "step_id": "s2", "tool": "bash", "args": {"cmd": "git status"}, "output": "clean tree", "consumes": []}
+{"task_id": "o2", "step_id": "s3", "tool": "track_package", "args": {"carrier": "ups"}, "output": "arrives thursday", "consumes": ["s2"]}
+{"task_id": "o2", "step_id": "s4", "tool": "send_reply", "args": {"ticket": "T-102"}, "output": "sent", "consumes": ["s3"]}
+{"task_id": "o3", "step_id": "s0", "tool": "fetch_ticket", "args": {"ticket": "T-103"}, "output": "charged twice", "consumes": []}
+{"task_id": "o3", "step_id": "s1", "tool": "lookup_invoice", "args": {"invoice": "inv-9"}, "output": "duplicate confirmed", "consumes": ["s0"]}
+{"task_id": "o3", "step_id": "s2", "tool": "send_reply", "args": {"ticket": "T-103"}, "output": "sent", "consumes": ["s1"]}

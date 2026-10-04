@@ -1,0 +1,1253 @@
+{
+ "solver": "panel-runner",
+ "attempts": [
+  {
+   "task_id": "p001",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p002",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p003",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p004",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p005",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p006",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p007",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p008",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p009",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p010",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p011",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p012",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p013",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p014",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p015",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p016",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p017",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p018",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p019",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p020",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p021",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p022",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p023",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p024",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p025",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p026",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p027",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p028",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p029",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p030",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p031",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p032",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p033",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p034",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p035",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p036",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p037",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p038",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p039",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p040",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p041",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p042",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p043",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p044",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p045",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p046",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p047",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p048",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p049",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p050",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p051",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p052",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p053",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p054",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p055",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p056",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p057",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p058",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p059",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p060",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p061",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p062",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p063",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p064",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p065",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p066",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p067",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p068",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p069",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p070",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p071",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p072",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p073",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p074",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p075",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p076",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p077",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p078",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p079",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p080",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p081",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p082",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p083",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p084",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p085",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p086",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p087",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p088",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p089",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p090",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p091",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p092",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p093",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p094",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p095",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "p096",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "judge pair"
+   ],
+   "tokens_in": 400,
+   "tokens_out": 60,
+   "tries": 1,
+   "empty_submission": false
+  }
+ ]
+}

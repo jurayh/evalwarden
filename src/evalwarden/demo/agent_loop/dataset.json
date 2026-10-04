@@ -1,0 +1,34 @@
+{
+ "schema_version": "evalwarden-artifact-v1",
+ "eval_id": "agent-loop-demo",
+ "tasks": [
+  {
+   "id": "t1",
+   "prompt": "Fix the failing parser test in app.py.",
+   "metadata": {
+    "kind": "agent-task"
+   }
+  },
+  {
+   "id": "t2",
+   "prompt": "Find where the config loader reads timeouts.",
+   "metadata": {
+    "kind": "agent-task"
+   }
+  },
+  {
+   "id": "t3",
+   "prompt": "Add a --verbose flag to the CLI entrypoint.",
+   "metadata": {
+    "kind": "agent-task"
+   }
+  },
+  {
+   "id": "t4",
+   "prompt": "Write the release notes summary for v2.",
+   "metadata": {
+    "kind": "agent-task"
+   }
+  }
+ ]
+}

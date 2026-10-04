@@ -1,0 +1,11 @@
+{
+ "kind": "script",
+ "verifier": {
+  "path": "/grader/verify.py",
+  "writable_by_agent": false
+ },
+ "accepts_empty_output": false,
+ "tests": [
+  "tests/test_parser.py"
+ ]
+}

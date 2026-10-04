@@ -1,0 +1,13 @@
+{
+ "env": {
+  "HOME": "/home/agent",
+  "LANG": "en_US.UTF-8"
+ },
+ "mounts": [
+  {
+   "path": "/workspace",
+   "mode": "ro",
+   "agent_access": "read"
+  }
+ ]
+}

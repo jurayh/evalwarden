@@ -1,6 +1,6 @@
-"""Inspect AI adapter (v0.1).
+"""Inspect AI adapter (v0.2).
 
-Reads an Inspect-style eval artifact directory -- the v0.1 normalized input
+Reads an Inspect-style eval artifact directory -- the normalized input
 format, modeled on Inspect's Task / dataset / scorer / .eval-log concepts:
 
     eval-artifact/
@@ -9,6 +9,28 @@ format, modeled on Inspect's Task / dataset / scorer / .eval-log concepts:
       grader.json        verifier config, pass conditions, tests
       run.json           per-task attempts with status, usage, actions
       judge_run.json     (optional) model-judge config, judgments, reference labels
+      trajectories.jsonl (optional) per-span tool-call records (see below)
+
+Field wiring: the adapter populates the integrity model's extended fields
+only from data the artifact actually records. Nothing is invented.
+
+- Trajectory spans come from `trajectories.jsonl`, one JSON object per
+  line: {"task_id", "tool", "args", "output", "consumes", "step_id"}.
+  `output` is truncated at the boundary (MAX_SPAN_OUTPUT_CHARS). `consumes`
+  is the recorded data-flow: step_ids whose outputs this step used. It is
+  carried verbatim, never inferred -- when an artifact records no
+  consumption edges, the trajectory checks that need them stay silent.
+- Judgment.judge_id comes from a per-judgment `judge_id` (the scorer
+  identity, for multi-judge panels); `confidence` from a per-judgment
+  numeric `confidence` in [0, 1]. Neither is synthesized when absent.
+- TaskSample.failure_mode comes from a task's own `failure_mode` field or
+  its `metadata.failure_mode` -- an explicit tag in the data, never a
+  guess. A dataset-level `failure_mode_taxonomy` list declares the modes
+  the eval claims to cover.
+- RunItemScore rows come from `run.json:run_scores`, where each row tags
+  which run conditions were re-rolled (generation / grade / environment
+  indices). `run.json:claimed_delta` is the eval's own claimed score
+  change, carried only when the artifact states one.
 
 This is a read-only translation layer. Full-fidelity parsing of real Inspect
 `.eval` logs is a later milestone; the adapter pins the schema version it
@@ -29,13 +51,18 @@ from ..model import (
     IntegrityModel,
     Judgment,
     Mount,
+    RunItemScore,
     TaskSample,
+    TrajectoryStep,
 )
 from . import AuditError, register
 
 ADAPTER_NAME = "inspect"
-ADAPTER_VERSION = "0.1.0"
+ADAPTER_VERSION = "0.2.0"
 SCHEMA_VERSION = "evalwarden-artifact-v1"
+MAX_SPAN_OUTPUT_CHARS = 512  # tool results are truncated at the boundary
+
+_SPAN_KEYS = {"task_id", "step_id", "tool", "args", "output", "consumes"}
 
 
 def _read_json(path: Path) -> Any:
@@ -47,8 +74,138 @@ def _read_json(path: Path) -> Any:
         raise AuditError(f"invalid JSON in {path}: {exc}") from exc
 
 
+def _read_jsonl(path: Path) -> list[dict]:
+    """Parse a JSONL span file. Malformed lines fail clearly, with the line."""
+    try:
+        text = path.read_text(encoding="utf-8")
+    except FileNotFoundError as exc:
+        raise AuditError(f"missing required file: {path}") from exc
+    records: list[dict] = []
+    for lineno, raw in enumerate(text.splitlines(), start=1):
+        line = raw.strip()
+        if not line:
+            continue
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise AuditError(f"invalid JSON in {path} line {lineno}: {exc}") from exc
+        if not isinstance(record, dict):
+            raise AuditError(f"{path} line {lineno}: span record must be a JSON object")
+        records.append(record)
+    return records
+
+
 def _digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _failure_mode(task: dict) -> str | None:
+    """Explicit failure-mode tag: the task's own field, else its metadata.
+
+    Adapters never invent tags; an eval that does not tag its items leaves
+    the coverage checks nothing to slice by, and they stay silent.
+    """
+    direct = task.get("failure_mode")
+    if isinstance(direct, str) and direct:
+        return direct
+    metadata = task.get("metadata")
+    if isinstance(metadata, dict):
+        tagged = metadata.get("failure_mode")
+        if isinstance(tagged, str) and tagged:
+            return tagged
+    return None
+
+
+def _confidence(value: Any) -> float | None:
+    """A recorded judge confidence: numeric, in [0, 1]. Anything else is absent."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    value = float(value)
+    return value if 0.0 <= value <= 1.0 else None
+
+
+def _normalize_spans(
+    records: list[dict], unsupported: list[str]
+) -> dict[str, list[TrajectoryStep]]:
+    """Group span records by task_id, in recorded order.
+
+    `consumes` edges are carried verbatim from the record: the harness
+    recorded the data flow, the adapter only translates it. Outputs are
+    truncated at the boundary; raw tool text beyond the cap never enters
+    the model.
+    """
+    spans_by_task: dict[str, list[TrajectoryStep]] = {}
+    truncated = 0
+    unknown_keys: set[str] = set()
+    for i, record in enumerate(records):
+        unknown_keys.update(set(record) - _SPAN_KEYS)
+        task_id = record.get("task_id")
+        tool = record.get("tool")
+        if not task_id or not tool:
+            raise AuditError(
+                f"trajectories.jsonl record {i + 1}: 'task_id' and 'tool' are required"
+            )
+        args = record.get("args") or {}
+        if not isinstance(args, dict):
+            args = {"value": args}
+        output = record.get("output")
+        if output is not None and not isinstance(output, str):
+            output = str(output)
+        if output is not None and len(output) > MAX_SPAN_OUTPUT_CHARS:
+            output = output[:MAX_SPAN_OUTPUT_CHARS]
+            truncated += 1
+        steps = spans_by_task.setdefault(str(task_id), [])
+        steps.append(
+            TrajectoryStep(
+                # Step ids are adapter-local identifiers: taken from the
+                # record when present, else assigned in recorded order.
+                step_id=str(record.get("step_id") or f"s{len(steps)}"),
+                tool=str(tool),
+                args=dict(args),
+                output=output,
+                consumes=[str(c) for c in (record.get("consumes") or [])],
+            )
+        )
+    for key in sorted(unknown_keys):
+        unsupported.append(f"trajectories.jsonl:{key} (not part of the span schema; ignored)")
+    if truncated:
+        unsupported.append(
+            f"trajectories.jsonl: {truncated} span output(s) truncated to "
+            f"{MAX_SPAN_OUTPUT_CHARS} chars at the adapter boundary"
+        )
+    return spans_by_task
+
+
+def _normalize_run_scores(run: dict) -> list[RunItemScore]:
+    """Repeated-run per-item scores, with the re-rolled conditions tagged.
+
+    Rows are carried as recorded; indices default to 0 (a single condition)
+    when the artifact does not tag them, which leaves the noise estimators
+    nothing to decompose -- they report total variance or stay silent.
+    """
+    scores: list[RunItemScore] = []
+    for i, row in enumerate(run.get("run_scores") or []):
+        if not isinstance(row, dict):
+            raise AuditError(f"run.json: run_scores[{i}] must be an object")
+        score = row.get("score")
+        if isinstance(score, bool) or not isinstance(score, (int, float)):
+            raise AuditError(f"run.json: run_scores[{i}].score must be a number")
+        indices: dict[str, int] = {}
+        for field in ("generation_index", "grade_index", "environment_index"):
+            value = row.get(field, 0)
+            if isinstance(value, bool) or not isinstance(value, int):
+                raise AuditError(f"run.json: run_scores[{i}].{field} must be an integer")
+            indices[field] = value
+        scores.append(
+            RunItemScore(
+                task_id=str(row.get("task_id", "")),
+                score=float(score),
+                generation_index=indices["generation_index"],
+                grade_index=indices["grade_index"],
+                environment_index=indices["environment_index"],
+            )
+        )
+    return scores
 
 
 @register
@@ -82,6 +239,10 @@ class InspectAdapter:
             if fpath.is_file():
                 bundle[fname] = _read_json(fpath)
                 digests[fname] = _digest(fpath)
+        traj_path = path / "trajectories.jsonl"
+        if traj_path.is_file():
+            bundle["trajectories.jsonl"] = _read_jsonl(traj_path)
+            digests["trajectories.jsonl"] = _digest(traj_path)
         for fname in ("gold_map.json",):
             fpath = path / fname
             if fpath.is_file():
@@ -108,9 +269,15 @@ class InspectAdapter:
             TaskSample(
                 id=str(t.get("id", f"task-{i}")),
                 prompt=str(t.get("prompt", "")),
+                failure_mode=_failure_mode(t),
                 metadata=dict(t.get("metadata", {})),
             )
             for i, t in enumerate(dataset.get("tasks", []))
+        ]
+        taxonomy = [
+            str(mode)
+            for mode in (dataset.get("failure_mode_taxonomy") or [])
+            if isinstance(mode, str) and mode
         ]
 
         env_vars = {
@@ -162,6 +329,37 @@ class InspectAdapter:
 
         unsupported: list[str] = []
 
+        # Trajectory spans attach to the attempt that produced them. When a
+        # task somehow has several attempts, spans go to the first and the
+        # attribution is reported rather than silently duplicated.
+        spans_by_task = _normalize_spans(bundle.get("trajectories.jsonl", []), unsupported)
+        attached: set[str] = set()
+        for attempt in attempts:
+            group = spans_by_task.get(attempt.task_id)
+            if not group:
+                continue
+            if attempt.task_id in attached:
+                unsupported.append(
+                    f"trajectories.jsonl: spans for task {attempt.task_id} "
+                    "attached to the first attempt only"
+                )
+                continue
+            attempt.spans = group
+            attached.add(attempt.task_id)
+        for task_id in spans_by_task:
+            if task_id not in attached:
+                unsupported.append(
+                    f"trajectories.jsonl: spans for task {task_id!r} have no recorded attempt"
+                )
+
+        run_scores = _normalize_run_scores(run)
+        claimed = run.get("claimed_delta")
+        if claimed is not None and (
+            isinstance(claimed, bool) or not isinstance(claimed, (int, float))
+        ):
+            raise AuditError("run.json: claimed_delta must be a number")
+        claimed_delta = float(claimed) if claimed is not None else None
+
         judge_run = bundle.get("judge_run.json", {})
         judgments: list[Judgment] = []
         for j in judge_run.get("judgments", []):
@@ -175,6 +373,8 @@ class InspectAdapter:
                     scores={str(k): float(v) for k, v in (j.get("scores") or {}).items()},
                     lengths={str(k): int(v) for k, v in (j.get("lengths") or {}).items()},
                     repeat_index=int(j.get("repeat_index", 0)),
+                    confidence=_confidence(j.get("confidence")),
+                    judge_id=str(j["judge_id"]) if j.get("judge_id") else None,
                 )
             )
         if any("rationale" in j for j in judge_run.get("judgments", [])):
@@ -189,10 +389,10 @@ class InspectAdapter:
                 continue
             if isinstance(content, dict):
                 known = {
-                    "dataset.json": {"schema_version", "eval_id", "tasks"},
+                    "dataset.json": {"schema_version", "eval_id", "tasks", "failure_mode_taxonomy"},
                     "environment.json": {"env", "mounts", "notes"},
                     "grader.json": {"kind", "verifier", "accepts_empty_output", "tests", "judge"},
-                    "run.json": {"solver", "attempts", "notes"},
+                    "run.json": {"solver", "attempts", "notes", "run_scores", "claimed_delta"},
                     "judge_run.json": {"judge", "judgments", "reference_labels", "notes"},
                 }.get(fname, set())
                 for key in content:
@@ -204,10 +404,19 @@ class InspectAdapter:
             adapter_name=self.name,
             adapter_version=self.version,
             tasks=tasks,
+            failure_mode_taxonomy=taxonomy,
             environment=Environment(env_vars=env_vars, mounts=mounts),
             grader=grader,
             attempts=attempts,
             judgments=judgments,
+            run_scores=run_scores,
+            claimed_delta=claimed_delta,
             unsupported=unsupported,
             digests=dict(bundle.get("digests", {})),
+            # Checks cite canonical artifact names; point them at the real files.
+            file_aliases={
+                "tasks.json": "dataset.json",
+                "attempts.json": "run.json",
+                "run_scores.json": "run.json",
+            },
         )

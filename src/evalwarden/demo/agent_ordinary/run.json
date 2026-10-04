@@ -1,0 +1,368 @@
+{
+ "solver": "support-agent",
+ "attempts": [
+  {
+   "task_id": "o1",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 5,
+   "actions": [
+    "fetch",
+    "read",
+    "draft"
+   ],
+   "tokens_in": 1800,
+   "tokens_out": 350,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "o2",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 5,
+   "actions": [
+    "fetch",
+    "read",
+    "draft"
+   ],
+   "tokens_in": 1800,
+   "tokens_out": 350,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "o3",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 5,
+   "actions": [
+    "fetch",
+    "read",
+    "draft"
+   ],
+   "tokens_in": 1800,
+   "tokens_out": 350,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "o4",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 5,
+   "actions": [
+    "fetch",
+    "read",
+    "draft"
+   ],
+   "tokens_in": 1800,
+   "tokens_out": 350,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "o5",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 5,
+   "actions": [
+    "fetch",
+    "read",
+    "draft"
+   ],
+   "tokens_in": 1800,
+   "tokens_out": 350,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "o6",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 5,
+   "actions": [
+    "fetch",
+    "read",
+    "draft"
+   ],
+   "tokens_in": 1800,
+   "tokens_out": 350,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "o7",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 5,
+   "actions": [
+    "fetch",
+    "read",
+    "draft"
+   ],
+   "tokens_in": 1800,
+   "tokens_out": 350,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "o8",
+   "status": "fail",
+   "score": 0.0,
+   "tool_calls": 5,
+   "actions": [
+    "fetch",
+    "read",
+    "draft"
+   ],
+   "tokens_in": 1800,
+   "tokens_out": 350,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "o9",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 5,
+   "actions": [
+    "fetch",
+    "read",
+    "draft"
+   ],
+   "tokens_in": 1800,
+   "tokens_out": 350,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "o10",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 5,
+   "actions": [
+    "fetch",
+    "read",
+    "draft"
+   ],
+   "tokens_in": 1800,
+   "tokens_out": 350,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "o11",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 5,
+   "actions": [
+    "fetch",
+    "read",
+    "draft"
+   ],
+   "tokens_in": 1800,
+   "tokens_out": 350,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "o12",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 5,
+   "actions": [
+    "fetch",
+    "read",
+    "draft"
+   ],
+   "tokens_in": 1800,
+   "tokens_out": 350,
+   "tries": 1,
+   "empty_submission": false
+  }
+ ],
+ "run_scores": [
+  {
+   "task_id": "o1",
+   "score": 1.0,
+   "generation_index": 0
+  },
+  {
+   "task_id": "o1",
+   "score": 1.0,
+   "generation_index": 1
+  },
+  {
+   "task_id": "o1",
+   "score": 0.95,
+   "generation_index": 2
+  },
+  {
+   "task_id": "o2",
+   "score": 0.8,
+   "generation_index": 0
+  },
+  {
+   "task_id": "o2",
+   "score": 0.85,
+   "generation_index": 1
+  },
+  {
+   "task_id": "o2",
+   "score": 0.75,
+   "generation_index": 2
+  },
+  {
+   "task_id": "o3",
+   "score": 0.9,
+   "generation_index": 0
+  },
+  {
+   "task_id": "o3",
+   "score": 0.95,
+   "generation_index": 1
+  },
+  {
+   "task_id": "o3",
+   "score": 0.85,
+   "generation_index": 2
+  },
+  {
+   "task_id": "o4",
+   "score": 0.7,
+   "generation_index": 0
+  },
+  {
+   "task_id": "o4",
+   "score": 0.75,
+   "generation_index": 1
+  },
+  {
+   "task_id": "o4",
+   "score": 0.65,
+   "generation_index": 2
+  },
+  {
+   "task_id": "o5",
+   "score": 1.0,
+   "generation_index": 0
+  },
+  {
+   "task_id": "o5",
+   "score": 1.0,
+   "generation_index": 1
+  },
+  {
+   "task_id": "o5",
+   "score": 0.95,
+   "generation_index": 2
+  },
+  {
+   "task_id": "o6",
+   "score": 0.85,
+   "generation_index": 0
+  },
+  {
+   "task_id": "o6",
+   "score": 0.9,
+   "generation_index": 1
+  },
+  {
+   "task_id": "o6",
+   "score": 0.8,
+   "generation_index": 2
+  },
+  {
+   "task_id": "o7",
+   "score": 0.95,
+   "generation_index": 0
+  },
+  {
+   "task_id": "o7",
+   "score": 1.0,
+   "generation_index": 1
+  },
+  {
+   "task_id": "o7",
+   "score": 0.9,
+   "generation_index": 2
+  },
+  {
+   "task_id": "o8",
+   "score": 0.6,
+   "generation_index": 0
+  },
+  {
+   "task_id": "o8",
+   "score": 0.65,
+   "generation_index": 1
+  },
+  {
+   "task_id": "o8",
+   "score": 0.55,
+   "generation_index": 2
+  },
+  {
+   "task_id": "o9",
+   "score": 0.9,
+   "generation_index": 0
+  },
+  {
+   "task_id": "o9",
+   "score": 0.95,
+   "generation_index": 1
+  },
+  {
+   "task_id": "o9",
+   "score": 0.85,
+   "generation_index": 2
+  },
+  {
+   "task_id": "o10",
+   "score": 1.0,
+   "generation_index": 0
+  },
+  {
+   "task_id": "o10",
+   "score": 1.0,
+   "generation_index": 1
+  },
+  {
+   "task_id": "o10",
+   "score": 0.95,
+   "generation_index": 2
+  },
+  {
+   "task_id": "o11",
+   "score": 0.75,
+   "generation_index": 0
+  },
+  {
+   "task_id": "o11",
+   "score": 0.8,
+   "generation_index": 1
+  },
+  {
+   "task_id": "o11",
+   "score": 0.7,
+   "generation_index": 2
+  },
+  {
+   "task_id": "o12",
+   "score": 0.88,
+   "generation_index": 0
+  },
+  {
+   "task_id": "o12",
+   "score": 0.93,
+   "generation_index": 1
+  },
+  {
+   "task_id": "o12",
+   "score": 0.83,
+   "generation_index": 2
+  }
+ ],
+ "notes": "Ordinary agent eval, re-run three times (fresh generations only)."
+}

@@ -1,0 +1,90 @@
+{
+ "schema_version": "evalwarden-artifact-v1",
+ "eval_id": "agent-ordinary-demo",
+ "tasks": [
+  {
+   "id": "o1",
+   "prompt": "Help the customer to reset a customer's password.",
+   "metadata": {
+    "kind": "support-task"
+   }
+  },
+  {
+   "id": "o2",
+   "prompt": "Help the customer to track a delayed shipment.",
+   "metadata": {
+    "kind": "support-task"
+   }
+  },
+  {
+   "id": "o3",
+   "prompt": "Help the customer to explain a billing charge.",
+   "metadata": {
+    "kind": "support-task"
+   }
+  },
+  {
+   "id": "o4",
+   "prompt": "Help the customer to book a meeting room.",
+   "metadata": {
+    "kind": "support-task"
+   }
+  },
+  {
+   "id": "o5",
+   "prompt": "Help the customer to summarize an outage report.",
+   "metadata": {
+    "kind": "support-task"
+   }
+  },
+  {
+   "id": "o6",
+   "prompt": "Help the customer to update a shipping address.",
+   "metadata": {
+    "kind": "support-task"
+   }
+  },
+  {
+   "id": "o7",
+   "prompt": "Help the customer to refund a duplicate payment.",
+   "metadata": {
+    "kind": "support-task"
+   }
+  },
+  {
+   "id": "o8",
+   "prompt": "Help the customer to schedule a maintenance window.",
+   "metadata": {
+    "kind": "support-task"
+   }
+  },
+  {
+   "id": "o9",
+   "prompt": "Help the customer to translate a support reply.",
+   "metadata": {
+    "kind": "support-task"
+   }
+  },
+  {
+   "id": "o10",
+   "prompt": "Help the customer to merge two duplicate accounts.",
+   "metadata": {
+    "kind": "support-task"
+   }
+  },
+  {
+   "id": "o11",
+   "prompt": "Help the customer to verify a contractor invoice.",
+   "metadata": {
+    "kind": "support-task"
+   }
+  },
+  {
+   "id": "o12",
+   "prompt": "Help the customer to prepare a weekly status note.",
+   "metadata": {
+    "kind": "support-task"
+   }
+  }
+ ]
+}

@@ -1,0 +1,3754 @@
+{
+ "judge": {
+  "model": "panel-judges-ab",
+  "family": "test-family"
+ },
+ "judgments": [
+  {
+   "task_id": "p001",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p002",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p003",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p004",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p005",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p006",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p007",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p008",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p009",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p010",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p011",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p012",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p013",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p014",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p015",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p016",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p017",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p018",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p019",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p020",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p021",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p022",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p023",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p024",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p025",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p026",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p027",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p028",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p029",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p030",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p031",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p032",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p033",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p034",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p035",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p036",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p037",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p038",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p039",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p040",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p041",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p042",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p043",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p044",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p045",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p046",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p047",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p048",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p049",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p050",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p051",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p052",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p053",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p054",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p055",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p056",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p057",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p058",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p059",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p060",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p061",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p062",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p063",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p064",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p065",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p066",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p067",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p068",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p069",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p070",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p071",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p072",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p073",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p074",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p075",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p076",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p077",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p078",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p079",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p080",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p081",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p082",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p083",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p084",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p085",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p086",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p087",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p088",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p089",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p090",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p091",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p092",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p093",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p094",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p095",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p096",
+   "judge_id": "judge-a",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p001",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p002",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p003",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p004",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p005",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p006",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p007",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p008",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p009",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p010",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p011",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p012",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p013",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p014",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p015",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p016",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p017",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p018",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p019",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p020",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p021",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p022",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p023",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p024",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p025",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p026",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p027",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p028",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p029",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p030",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p031",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p032",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p033",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p034",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p035",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p036",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p037",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p038",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p039",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p040",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p041",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p042",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p043",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p044",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p045",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p046",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p047",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p048",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p049",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p050",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p051",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p052",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p053",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p054",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p055",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p056",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p057",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p058",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p059",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p060",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p061",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p062",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p063",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p064",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p065",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p066",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.8
+  },
+  {
+   "task_id": "p067",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p068",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p069",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p070",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p071",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p072",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p073",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p074",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p075",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p076",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p077",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p078",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p079",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p080",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p081",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p082",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p083",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p084",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p085",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p086",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p087",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p088",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p089",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p090",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p091",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p092",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p093",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p094",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p095",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-b",
+    "sol-a"
+   ],
+   "winner": "sol-b",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  },
+  {
+   "task_id": "p096",
+   "judge_id": "judge-b",
+   "candidates": [
+    "sol-a",
+    "sol-b"
+   ],
+   "presentation_order": [
+    "sol-a",
+    "sol-b"
+   ],
+   "winner": "sol-a",
+   "lengths": {
+    "sol-a": 400,
+    "sol-b": 400
+   },
+   "repeat_index": 0,
+   "confidence": 0.5
+  }
+ ],
+ "reference_labels": {
+  "p001": "sol-a",
+  "p002": "sol-b",
+  "p003": "sol-a",
+  "p004": "sol-b",
+  "p005": "sol-a",
+  "p006": "sol-b",
+  "p007": "sol-a",
+  "p008": "sol-b",
+  "p009": "sol-a",
+  "p010": "sol-b",
+  "p011": "sol-a",
+  "p012": "sol-b",
+  "p013": "sol-a",
+  "p014": "sol-b",
+  "p015": "sol-a",
+  "p016": "sol-b",
+  "p017": "sol-a",
+  "p018": "sol-b",
+  "p019": "sol-a",
+  "p020": "sol-b",
+  "p021": "sol-a",
+  "p022": "sol-b",
+  "p023": "sol-a",
+  "p024": "sol-b",
+  "p025": "sol-a",
+  "p026": "sol-b",
+  "p027": "sol-a",
+  "p028": "sol-b",
+  "p029": "sol-a",
+  "p030": "sol-b",
+  "p031": "sol-a",
+  "p032": "sol-b",
+  "p033": "sol-a",
+  "p034": "sol-b",
+  "p035": "sol-a",
+  "p036": "sol-b",
+  "p037": "sol-a",
+  "p038": "sol-b",
+  "p039": "sol-a",
+  "p040": "sol-b",
+  "p041": "sol-a",
+  "p042": "sol-b",
+  "p043": "sol-a",
+  "p044": "sol-b",
+  "p045": "sol-a",
+  "p046": "sol-b",
+  "p047": "sol-a",
+  "p048": "sol-b",
+  "p049": "sol-a",
+  "p050": "sol-b",
+  "p051": "sol-a",
+  "p052": "sol-b",
+  "p053": "sol-a",
+  "p054": "sol-b",
+  "p055": "sol-a",
+  "p056": "sol-b",
+  "p057": "sol-a",
+  "p058": "sol-b",
+  "p059": "sol-a",
+  "p060": "sol-b",
+  "p061": "sol-a",
+  "p062": "sol-b",
+  "p063": "sol-a",
+  "p064": "sol-b",
+  "p065": "sol-a",
+  "p066": "sol-b",
+  "p067": "sol-a",
+  "p068": "sol-b",
+  "p069": "sol-a",
+  "p070": "sol-b",
+  "p071": "sol-a",
+  "p072": "sol-b",
+  "p073": "sol-a",
+  "p074": "sol-b",
+  "p075": "sol-a",
+  "p076": "sol-b",
+  "p077": "sol-a",
+  "p078": "sol-b",
+  "p079": "sol-a",
+  "p080": "sol-b",
+  "p081": "sol-a",
+  "p082": "sol-b",
+  "p083": "sol-a",
+  "p084": "sol-b",
+  "p085": "sol-a",
+  "p086": "sol-b",
+  "p087": "sol-a",
+  "p088": "sol-b",
+  "p089": "sol-a",
+  "p090": "sol-b",
+  "p091": "sol-a",
+  "p092": "sol-b",
+  "p093": "sol-a",
+  "p094": "sol-b",
+  "p095": "sol-a",
+  "p096": "sol-b"
+ }
+}

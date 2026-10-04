@@ -1,0 +1,18 @@
+{
+ "kind": "judge",
+ "judge": {
+  "model": "panel-judges-ab",
+  "family": "test-family",
+  "protocol": "pairwise",
+  "counterbalanced": true,
+  "temperature": 0,
+  "repeats": 1,
+  "rubric_criteria": [
+   "correctness"
+  ],
+  "scale_anchors": {
+   "sol-a": "accurate and complete",
+   "sol-b": "inaccurate or incomplete"
+  }
+ }
+}

@@ -1,0 +1,63 @@
+{
+ "solver": "loop-agent",
+ "attempts": [
+  {
+   "task_id": "t1",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 10,
+   "actions": [
+    "read",
+    "edit",
+    "test"
+   ],
+   "tokens_in": 5200,
+   "tokens_out": 900,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "t2",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 4,
+   "actions": [
+    "grep",
+    "read"
+   ],
+   "tokens_in": 2100,
+   "tokens_out": 300,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "t3",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 3,
+   "actions": [
+    "read",
+    "edit"
+   ],
+   "tokens_in": 2600,
+   "tokens_out": 450,
+   "tries": 1,
+   "empty_submission": false
+  },
+  {
+   "task_id": "t4",
+   "status": "fail",
+   "score": 0.0,
+   "tool_calls": 3,
+   "actions": [
+    "read",
+    "draft"
+   ],
+   "tokens_in": 1400,
+   "tokens_out": 250,
+   "tries": 1,
+   "empty_submission": false
+  }
+ ],
+ "notes": "Agent run: task t1 loops on an identical failing test command before recovering."
+}
