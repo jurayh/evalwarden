@@ -1,12 +1,16 @@
-"""evalwarden reporters: terminal, HTML (self-contained), JSON, report cards."""
+"""evalwarden reporters: terminal, HTML (self-contained), JSON, SARIF, report cards."""
 from .html import render_html
+from .json_report import render_json
 from .report_card import CardEntry, render_index, render_report_card
+from .sarif import render_sarif
 from .terminal import render_terminal
 
 __all__ = [
     "CardEntry",
     "render_html",
     "render_index",
+    "render_json",
     "render_report_card",
+    "render_sarif",
     "render_terminal",
 ]

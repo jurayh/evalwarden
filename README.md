@@ -135,7 +135,7 @@ Two adapters ship: `inspect` for Inspect-style eval artifact directories, and `p
 
 ```
 evalwarden audit <eval-artifact> [--adapter auto|inspect|promptfoo] [--output report.html]
-                              [--json findings.json] [--fail-on high]
+                              [--format text|json|sarif] [--json findings.json] [--fail-on high]
                               [--price-in 3.0] [--price-out 15.0]
                               [--budget-per-task USD]
 evalwarden demo [--fixture leaky|hardened|judge_bad|judge_clean|cost_wasteful|cost_clean|promptfoo_bad|promptfoo_clean]
@@ -149,7 +149,60 @@ Exit codes: `0` policy passes, `1` findings cross `--fail-on`, `2` the audit cou
 
 ## Reports
 
-Self-contained HTML (inline CSS, no JavaScript, no remote assets), terminal output, JSON findings, and report cards. Secret values are never stored — only variable *names* enter the model. Integrity scores are diagnostic, not a certification.
+Self-contained HTML (inline CSS, no JavaScript, no remote assets), terminal output, JSON findings, SARIF, and report cards. Secret values are never stored — only variable *names* enter the model. Integrity scores are diagnostic, not a certification.
+
+## Machine-readable output and CI
+
+`--format` selects what `audit` writes to stdout. It is presentation only: the exit codes (`0` pass, `1` findings cross `--fail-on`, `2` audit could not complete) are identical in every format, so the same command gates a CI job locally and remotely.
+
+```bash
+evalwarden audit evals/my-eval --format json     # JSON findings document
+evalwarden audit evals/my-eval --format sarif    # SARIF 2.1.0 log
+evalwarden audit evals/my-eval --json findings.json  # same JSON, to a file
+```
+
+In the machine formats, stdout carries only the document; status notes go to stderr.
+
+### JSON schema
+
+The JSON document is a versioned public contract (`schema: evalwarden.findings`, `schema_version: 1.0`):
+
+| Field | Meaning |
+|-------|---------|
+| `tool` | `{"name": "evalwarden", "version": ...}` |
+| `eval_id`, `adapter` | The audited eval and the adapter that read it |
+| `verdict`, `score` | `PASS`/`BLOCKED` and the 0–100 diagnostic score |
+| `findings[]` | One record per finding: `check_id`, `severity`, `confidence`, `title`, `message`, `evidence`, `locations` (`file`, optional `line`/`excerpt`), `remediation`, and a stable `fingerprint` for baselining across runs |
+| `unsupported` | Artifact fields the adapter saw but could not translate (coverage gaps, never silently dropped) |
+
+### SARIF
+
+`--format sarif` emits a SARIF 2.1.0 log: every registered check becomes a rule (descriptions and help are the same text `evalwarden explain` prints), and every finding becomes a result — `error`/`high` severity maps to SARIF `error`, `medium` to `warning`, `low` to `note`. Locations point at the audited artifact file (prefix the path you passed to `audit`; pass a repo-relative path in CI so code scanning can resolve them). Findings with no file get a logical location naming the eval — a file or line is never invented.
+
+### GitHub Action
+
+The repo ships a composite Action (`action.yml`) that installs evalwarden from PyPI, runs the audit, uploads SARIF to code scanning, and then fails the job with the audit's exit code:
+
+```yaml
+name: eval-audit
+on: [pull_request]
+permissions:
+  contents: read
+  security-events: write  # required for the SARIF upload
+jobs:
+  evalwarden:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jurayh/evalwarden@v0.9.0
+        with:
+          path: evals/my-eval   # eval artifact directory
+          # format: sarif       # sarif | json | text (default sarif)
+          # version: 0.9.0      # PyPI version pin (default: latest)
+          # fail-on: high       # error | high | medium | low
+```
+
+Findings appear as code-scanning alerts on the PR. The SARIF upload runs even when the audit fails its policy, so a blocking finding never hides the evidence; the job then fails with the audit's exit code, also exposed as the `exit-code` output.
 
 ## Non-goals
 

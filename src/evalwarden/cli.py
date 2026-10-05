@@ -5,7 +5,6 @@ Exit codes: 0 = policy passes, 1 = findings cross the --fail-on threshold,
 """
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 import typer
@@ -14,38 +13,13 @@ import evalwarden
 from .adapters import AuditError
 from .checks import BY_ID
 from .engine import AuditResult, audit_with_policy
-from .reporters import render_html, render_terminal
+from .reporters import render_html, render_json, render_sarif, render_terminal
 from .reporters.report_card import CardEntry, render_index, render_report_card, slugify
 
 app = typer.Typer(
     help="A linter for agent evaluations. Not another eval framework.",
     no_args_is_help=True,
 )
-
-
-def _findings_json(result: AuditResult) -> dict:
-    return {
-        "eval_id": result.model.eval_id,
-        "adapter": f"{result.model.adapter_name} {result.model.adapter_version}",
-        "verdict": result.verdict,
-        "score": result.score,
-        "findings": [
-            {
-                "id": f.id,
-                "title": f.title,
-                "severity": f.severity.value,
-                "confidence": f.confidence.value,
-                "description": f.description,
-                "evidence": f.evidence,
-                "locations": [loc.render() for loc in f.locations],
-                "remediation": f.remediation,
-                "fingerprint": f.fingerprint,
-            }
-            for f in result.findings
-        ],
-        "digests": result.model.digests,
-        "unsupported": result.model.unsupported,
-    }
 
 
 @app.command()
@@ -55,8 +29,13 @@ def audit(
     output: Path = typer.Option(
         Path("evalwarden-report.html"), help="Where to write the self-contained HTML report."
     ),
+    output_format: str = typer.Option(
+        "text",
+        "--format",
+        help="Findings format written to stdout: text, json, sarif. Presentation only; exit codes are unchanged.",
+    ),
     json_output: Path | None = typer.Option(
-        None, "--json", help="Also write machine-readable JSON findings."
+        None, "--json", help="Also write machine-readable JSON findings to this file."
     ),
     fail_on: str = typer.Option(
         "high", help="Minimum finding severity that fails the audit: error|high|medium|low."
@@ -73,6 +52,9 @@ def audit(
     if fail_on not in ("error", "high", "medium", "low"):
         typer.echo("error: --fail-on must be one of error|high|medium|low", err=True)
         raise typer.Exit(2)
+    if output_format not in ("text", "json", "sarif"):
+        typer.echo("error: --format must be one of text|json|sarif", err=True)
+        raise typer.Exit(2)
     try:
         result, policy_failed = audit_with_policy(
             path,
@@ -85,12 +67,20 @@ def audit(
     except AuditError as exc:
         typer.echo(f"error: audit could not complete: {exc}", err=True)
         raise typer.Exit(2)
-    typer.echo(render_terminal(result))
+    # Machine formats own stdout: status notes go to stderr so the document
+    # on stdout stays parseable. Exit codes are identical in every format.
+    machine = output_format != "text"
+    if output_format == "json":
+        typer.echo(render_json(result))
+    elif output_format == "sarif":
+        typer.echo(render_sarif(result, base_uri=str(path)))
+    else:
+        typer.echo(render_terminal(result))
     output.write_text(render_html(result, evalwarden.__version__), encoding="utf-8")
-    typer.echo(f"Report: {output}")
+    typer.echo(f"Report: {output}", err=machine)
     if json_output is not None:
-        json_output.write_text(json.dumps(_findings_json(result), indent=2), encoding="utf-8")
-        typer.echo(f"JSON: {json_output}")
+        json_output.write_text(render_json(result), encoding="utf-8")
+        typer.echo(f"JSON: {json_output}", err=machine)
     raise typer.Exit(1 if policy_failed else 0)
 
 

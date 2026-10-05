@@ -1,0 +1,85 @@
+name: evalwarden
+description: >-
+  Audit an eval artifact with evalwarden (a linter for evals) and, in SARIF
+  mode, upload the findings to GitHub code scanning. The job fails with the
+  audit's exit code after any upload, so findings always surface.
+author: Yuriy H
+branding:
+  icon: shield
+  color: yellow
+
+inputs:
+  path:
+    description: Path to the eval artifact directory to audit.
+    required: true
+  format:
+    description: "Findings format: sarif (uploaded to code scanning), json, or text."
+    required: false
+    default: sarif
+  version:
+    description: evalwarden version to install from PyPI. Empty installs the latest; pin for reproducible audits.
+    required: false
+    default: ""
+  adapter:
+    description: "Adapter to use: auto, inspect, promptfoo."
+    required: false
+    default: auto
+  fail-on:
+    description: "Minimum finding severity that fails the job: error, high, medium, low."
+    required: false
+    default: high
+
+outputs:
+  exit-code:
+    description: "The evalwarden audit exit code: 0 passes, 1 findings cross --fail-on, 2 the audit could not complete."
+    value: ${{ steps.audit.outputs.exit-code }}
+
+runs:
+  using: composite
+  steps:
+    - name: Install evalwarden
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.version }}" ]; then
+          python3 -m pip install "evalwarden==${{ inputs.version }}"
+        else
+          python3 -m pip install evalwarden
+        fi
+
+    - name: Run evalwarden audit
+      id: audit
+      shell: bash
+      run: |
+        # Do not let the audit's policy exit code abort the step: the SARIF
+        # upload below must still run so findings reach code scanning.
+        set +e
+        if [ "${{ inputs.format }}" = "sarif" ]; then
+          evalwarden audit "${{ inputs.path }}" \
+            --adapter "${{ inputs.adapter }}" \
+            --format sarif \
+            --fail-on "${{ inputs.fail-on }}" \
+            > evalwarden.sarif
+        else
+          evalwarden audit "${{ inputs.path }}" \
+            --adapter "${{ inputs.adapter }}" \
+            --format "${{ inputs.format }}" \
+            --fail-on "${{ inputs.fail-on }}"
+        fi
+        echo "exit-code=$?" >> "$GITHUB_OUTPUT"
+
+    - name: Upload SARIF to code scanning
+      if: always() && inputs.format == 'sarif' && steps.audit.outputs.exit-code != '2'
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: evalwarden.sarif
+        category: evalwarden
+
+    - name: Enforce the audit policy
+      shell: bash
+      run: |
+        code="${{ steps.audit.outputs.exit-code }}"
+        if [ "$code" != "0" ]; then
+          echo "::error::evalwarden audit exited $code (1 = findings cross --fail-on, 2 = audit could not complete)"
+          exit "$code"
+        fi
+        echo "evalwarden audit passed"

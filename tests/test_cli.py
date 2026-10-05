@@ -44,8 +44,10 @@ def test_audit_json_output(tmp_path: Path):
     import json
 
     data = json.loads(payload.read_text())
+    assert data["schema"] == "evalwarden.findings"
+    assert data["schema_version"] == "1.0"
     assert data["verdict"] == "BLOCKED"
-    assert any(f["id"] == "ENV-001" for f in data["findings"])
+    assert any(f["check_id"] == "ENV-001" for f in data["findings"])
     assert all("confidence" in f for f in data["findings"])
 
 
