@@ -32,6 +32,10 @@ DEMO_COST_WASTEFUL = _demo_path("cost_wasteful")
 DEMO_COST_CLEAN = _demo_path("cost_clean")
 DEMO_PROMPTFOO_BAD = _demo_path("promptfoo_bad")
 DEMO_PROMPTFOO_CLEAN = _demo_path("promptfoo_clean")
+DEMO_INSPECT_NATIVE_LOOP = _demo_path("inspect_native_loop")
+DEMO_INSPECT_NATIVE_ORDINARY = _demo_path("inspect_native_ordinary")
+NATIVE_LOOP_LOG = DEMO_INSPECT_NATIVE_LOOP / "log.eval"
+NATIVE_ORDINARY_LOG = DEMO_INSPECT_NATIVE_ORDINARY / "log.eval"
 
 
 def make_model(

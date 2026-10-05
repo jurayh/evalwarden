@@ -24,7 +24,7 @@ app = typer.Typer(
 
 @app.command()
 def audit(
-    path: Path = typer.Argument(..., help="Path to the eval artifact directory."),
+    path: Path = typer.Argument(..., help="Path to the eval artifact directory or a native Inspect .eval log."),
     adapter: str = typer.Option("auto", help="Adapter to use: auto, inspect, promptfoo."),
     output: Path = typer.Option(
         Path("evalwarden-report.html"), help="Where to write the self-contained HTML report."
@@ -73,7 +73,10 @@ def audit(
     if output_format == "json":
         typer.echo(render_json(result))
     elif output_format == "sarif":
-        typer.echo(render_sarif(result, base_uri=str(path)))
+        # Locations are artifact-relative; for a single-file artifact (a
+        # native .eval log) the base is its parent directory.
+        sarif_base = str(path.parent) if path.is_file() else str(path)
+        typer.echo(render_sarif(result, base_uri=sarif_base))
     else:
         typer.echo(render_terminal(result))
     output.write_text(render_html(result, evalwarden.__version__), encoding="utf-8")
@@ -207,7 +210,7 @@ def _audit_or_exit(path: Path, budget_per_task: float | None = None) -> AuditRes
 
 @app.command("report-card")
 def report_card(
-    path: Path = typer.Argument(..., help="Path to the eval artifact directory."),
+    path: Path = typer.Argument(..., help="Path to the eval artifact directory or a native Inspect .eval log."),
     output: Path = typer.Option(
         Path("evalwarden-report-card.html"), help="Where to write the report card."
     ),

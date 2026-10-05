@@ -1,7 +1,18 @@
-"""Inspect AI adapter (v0.2).
+"""Inspect AI adapter (v0.3).
 
-Reads an Inspect-style eval artifact directory -- the normalized input
-format, modeled on Inspect's Task / dataset / scorer / .eval-log concepts:
+Reads Inspect eval artifacts in two forms:
+
+1. A real Inspect AI `.eval` log (a ZIP archive of JSON documents:
+   `header.json`, `samples/<id>_epoch_<n>.json`, `summaries.json`),
+   pointed to directly or as the single `.eval` file in a directory.
+   Native logs are parsed in memory by
+   :mod:`evalwarden.adapters.inspect_native`; nothing is extracted to
+   disk. See that module for the field mapping and its limits (notably:
+   ToolEvent records carry no consumption edges, so TRAJ-002 stays
+   silent on native logs).
+2. An Inspect-style eval artifact directory -- the normalized input
+   format, modeled on Inspect's Task / dataset / scorer / .eval-log
+   concepts:
 
     eval-artifact/
       dataset.json       samples: [{id, prompt, metadata}]
@@ -32,9 +43,8 @@ only from data the artifact actually records. Nothing is invented.
   indices). `run.json:claimed_delta` is the eval's own claimed score
   change, carried only when the artifact states one.
 
-This is a read-only translation layer. Full-fidelity parsing of real Inspect
-`.eval` logs is a later milestone; the adapter pins the schema version it
-understands and fails clearly on anything else.
+This is a read-only translation layer. The adapter pins the schema
+versions it understands and fails clearly on anything else.
 """
 from __future__ import annotations
 
@@ -56,9 +66,11 @@ from ..model import (
     TrajectoryStep,
 )
 from . import AuditError, register
+from ._inspect_archive import read_archive_members
+from .inspect_native import normalize_native_log
 
 ADAPTER_NAME = "inspect"
-ADAPTER_VERSION = "0.2.0"
+ADAPTER_VERSION = "0.3.0"
 SCHEMA_VERSION = "evalwarden-artifact-v1"
 MAX_SPAN_OUTPUT_CHARS = 512  # tool results are truncated at the boundary
 
@@ -208,14 +220,42 @@ def _normalize_run_scores(run: dict) -> list[RunItemScore]:
     return scores
 
 
+def _native_eval_path(path: Path) -> Path | None:
+    """The native ``.eval`` log for `path`, if there is exactly one.
+
+    A file with the ``.eval`` suffix is a native log. A directory is a
+    native log container only when it holds exactly one ``.eval`` file;
+    several logs in one directory are separate evals, and merging them
+    into one model would invent a single score out of many -- collect
+    fails clearly instead.
+    """
+    if path.is_file():
+        return path if path.suffix == ".eval" else None
+    if path.is_dir():
+        logs = sorted(p for p in path.glob("*.eval") if p.is_file())
+        if len(logs) > 1:
+            raise AuditError(
+                f"{path}: directory contains {len(logs)} native Inspect "
+                ".eval logs; audit one .eval file at a time "
+                "(report-cards can batch several paths)"
+            )
+        if logs:
+            return logs[0]
+    return None
+
+
 @register
 class InspectAdapter:
     name = ADAPTER_NAME
     version = ADAPTER_VERSION
 
     def detect(self, path: Path) -> Confidence:
+        if path.is_file():
+            return Confidence.HIGH if path.suffix == ".eval" else Confidence.LOW
         if not path.is_dir():
             return Confidence.LOW
+        if any(p.is_file() for p in path.glob("*.eval")):
+            return Confidence.HIGH
         has_dataset = (path / "dataset.json").is_file()
         has_grader = (path / "grader.json").is_file()
         if has_dataset and has_grader:
@@ -226,6 +266,16 @@ class InspectAdapter:
 
     def collect(self, path: Path) -> dict:
         """Read-only: files are opened for reading and never modified."""
+        native_path = _native_eval_path(path)
+        if native_path is not None:
+            # Native .eval log: parse the archive in memory. Members are
+            # never extracted to disk, and the file itself is only read.
+            return {
+                "root": path,
+                "native_eval": native_path,
+                "native_members": read_archive_members(native_path),
+                "digests": {native_path.name: _digest(native_path)},
+            }
         bundle: dict[str, Any] = {"root": path}
         digests: dict[str, str] = {}
         for fname in (
@@ -254,6 +304,10 @@ class InspectAdapter:
         return bundle
 
     def normalize(self, bundle: dict) -> IntegrityModel:
+        if "native_members" in bundle:
+            return normalize_native_log(
+                bundle, adapter_name=self.name, adapter_version=self.version
+            )
         root: Path = bundle["root"]
         dataset = bundle.get("dataset.json", {})
         environment = bundle.get("environment.json", {})
@@ -269,6 +323,12 @@ class InspectAdapter:
             TaskSample(
                 id=str(t.get("id", f"task-{i}")),
                 prompt=str(t.get("prompt", "")),
+                target=t.get("target"),
+                choices=(
+                    [str(c) for c in t["choices"]]
+                    if isinstance(t.get("choices"), list)
+                    else None
+                ),
                 failure_mode=_failure_mode(t),
                 metadata=dict(t.get("metadata", {})),
             )

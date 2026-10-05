@@ -306,8 +306,9 @@
 <span class="c"># audit the deliberately broken demo benchmark</span>
 <span class="p">$</span> evalwarden demo
 
-<span class="c"># audit your own eval artifacts</span>
-<span class="p">$</span> evalwarden audit path/to/eval --output report.html</pre>
+<span class="c"># audit your own eval artifacts (a directory, or a native Inspect .eval log directly)</span>
+<span class="p">$</span> evalwarden audit path/to/eval --output report.html
+<span class="p">$</span> evalwarden audit logs/my-task_abc123.eval</pre>
     </div>
     <div class="note">Deterministic checks with policy exit codes, so the same audit runs locally and as a CI gate. <strong>Try the cheat first:</strong> <span style="font-family:ui-monospace,Menlo,monospace;font-size:14px">evalwarden demo --fixture leaky</span> reports 0/100 BLOCKED on a solver that reads the task ID from the environment.</div>
   </div>

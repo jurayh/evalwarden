@@ -129,7 +129,25 @@ eval artifact/ ──▶ adapter (inspect | promptfoo) ──▶ integrity model
      read-only, offline                          data · boundary · grader · runs
 ```
 
-Two adapters ship: `inspect` for Inspect-style eval artifact directories, and `promptfoo` for Promptfoo's `promptfooconfig.yaml` plus the JSON export from `promptfoo eval --output results.json`. Both are strictly read-only and offline; variable names are kept for analysis while secret values never enter the normalized model. A new check is one module plus one registration line; a new reporter is one module plus one import.
+Two adapters ship: `inspect` for Inspect eval artifacts — both a native `.eval` log (see below) and the Inspect-style JSON artifact directory — and `promptfoo` for Promptfoo's `promptfooconfig.yaml` plus the JSON export from `promptfoo eval --output results.json`. Both are strictly read-only and offline; variable names are kept for analysis while secret values never enter the normalized model. A new check is one module plus one registration line; a new reporter is one module plus one import.
+
+## Native Inspect `.eval` logs
+
+Point `audit` (or `report-card` / `report-cards`) straight at a real Inspect AI log — no manual translation first:
+
+```bash
+evalwarden audit logs/2026-01-01T00-00-00_my-task_abc123.eval
+```
+
+A directory holding exactly one `.eval` file works too; a directory with several logs is refused, because each log is its own eval (batch them with `report-cards` instead). The archive is parsed in memory with the standard library only, nothing is extracted to disk, and the log is never modified. Malformed, unfinished, or unsupported-version logs fail with a clear error rather than a partial model.
+
+What a native log feeds, honestly:
+
+- **Tasks and attempts.** Samples become tasks with prompts, targets, and choices preserved, plus explicit sample metadata only — `failure_mode` appears only when the sample declares it. Each sample epoch becomes an attempt with its score, token usage, and latency as recorded. No USD cost is ever fabricated; COST checks price recorded tokens only when you pass `--price-in` / `--price-out`.
+- **Trajectories (TRAJ-001 yes, TRAJ-002 no).** Tool calls become spans with the native call id, tool name, arguments, and the tool result truncated at the adapter's 512-char boundary, so repeated-call loops fire TRAJ-001. Inspect records no downstream consumption edges, so TRAJ-002 stays silent on native logs by design.
+- **Noise (NOISE-001/002).** Repeated epochs of the log's single headline score become run scores with the epoch as the generation index, so sampling noise is measurable. Judge and environment axes are never fabricated, and mixed multi-scorer logs yield no noise series. `claimed_delta` stays absent unless the log's metadata declares it.
+- **Judges (partial).** Scorer results map to scores and, for map-valued (per-candidate) scores, judgments with the scorer's name. Reference labels appear only when the log makes them explicit (a declared `reference_labels` structure or a score's `reference_label` metadata) — a target is an answer key, not a human label, and is never treated as one.
+- **Not fed.** A native log carries no environment record (visible env vars, mounts), so ENV-001 has nothing to audit, and no declared failure-mode taxonomy, so panel-coverage checks (JUDGE-009, DATA-003) stay silent unless the log declares one. One consequence of the model: epochs land as repeated attempts per task, so COST-002 reads an `epochs: 3` protocol as 3 tries per success — the same reading repeated run entries get on the JSON path.
 
 ## CLI
 
@@ -196,7 +214,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: jurayh/evalwarden@v0.9.0
         with:
-          path: evals/my-eval   # eval artifact directory
+          path: evals/my-eval   # eval artifact directory or native Inspect .eval log
           # format: sarif       # sarif | json | text (default sarif)
           # version: 0.9.0      # PyPI version pin (default: latest)
           # fail-on: high       # error | high | medium | low

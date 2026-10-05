@@ -89,6 +89,11 @@ class Environment:
 class TaskSample:
     id: str
     prompt: str
+    # The sample's target (answer key) and, for choice tasks, its choices,
+    # when the harness records them. Adapters preserve them verbatim; no
+    # check treats a target as a human reference label on its own.
+    target: str | list[str] | None = None
+    choices: list[str] | None = None
     # Failure mode this item elicits, e.g. "verbosity-gaming". Adapters set
     # it when the eval tags items by failure mode; the JUDGE-009 / DATA-003
     # coverage checks read it and stay silent without tags.
