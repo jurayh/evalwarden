@@ -9,6 +9,7 @@ from __future__ import annotations
 import hashlib
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any
 
 
 class Severity(str, Enum):
@@ -285,3 +286,29 @@ class IntegrityModel:
     def artifact_file(self, canonical: str) -> str:
         """The real filename behind a canonical artifact name in evidence."""
         return self.file_aliases.get(canonical, canonical)
+
+    def to_canonical_document(self) -> dict[str, Any]:
+        """Serialize this model in the versioned ``evalwarden.model`` format."""
+        from .canonical import model_to_document
+
+        return model_to_document(self)
+
+    def to_canonical_json(self, *, indent: int | None = 2) -> str:
+        """Serialize this model as canonical JSON text."""
+        from .canonical import dumps_canonical
+
+        return dumps_canonical(self, indent=indent)
+
+    @classmethod
+    def from_canonical_document(cls, document: dict[str, Any]) -> "IntegrityModel":
+        """Build a model from a parsed ``evalwarden.model`` document."""
+        from .canonical import model_from_document
+
+        return model_from_document(document)
+
+    @classmethod
+    def from_canonical_json(cls, text: str | bytes) -> "IntegrityModel":
+        """Build a model from canonical JSON text or bytes."""
+        from .canonical import model_from_json
+
+        return model_from_json(text)

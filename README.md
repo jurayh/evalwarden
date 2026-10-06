@@ -126,11 +126,11 @@ Report cards live on as versioned, independently regenerable evidence in the [Ev
 ## How it works
 
 ```
-eval artifact/ ──▶ adapter (inspect | promptfoo) ──▶ integrity model ──▶ checks ──▶ report
+eval artifact/ ──▶ adapter (inspect | promptfoo | universal) ──▶ integrity model ──▶ checks ──▶ report
      read-only, offline                          data · boundary · grader · runs
 ```
 
-Two adapters ship: `inspect` for Inspect eval artifacts — both a native `.eval` log (see below) and the Inspect-style JSON artifact directory — and `promptfoo` for Promptfoo's `promptfooconfig.yaml` plus the JSON export from `promptfoo eval --output results.json`. Both are strictly read-only and offline; variable names are kept for analysis while secret values never enter the normalized model. A new check is one module plus one registration line; a new reporter is one module plus one import.
+Three adapters ship: `inspect` for Inspect eval artifacts — both a native `.eval` log (see below) and the Inspect-style JSON artifact directory — `promptfoo` for Promptfoo's `promptfooconfig.yaml` plus the JSON export from `promptfoo eval --output results.json`, and `universal` for the canonical Evalwarden input formats described below. All are strictly read-only and offline; variable names are kept for analysis while secret values never enter the normalized model. A new check is one module plus one registration line; a new reporter is one module plus one import.
 
 ## Native Inspect `.eval` logs
 
@@ -150,10 +150,91 @@ What a native log feeds, honestly:
 - **Judges (partial).** Scorer results map to scores and, for map-valued (per-candidate) scores, judgments with the scorer's name. Reference labels appear only when the log makes them explicit (a declared `reference_labels` structure or a score's `reference_label` metadata) — a target is an answer key, not a human label, and is never treated as one.
 - **Not fed.** A native log carries no environment record (visible env vars, mounts), so ENV-001 has nothing to audit, and no declared failure-mode taxonomy, so panel-coverage checks (JUDGE-009, DATA-003) stay silent unless the log declares one. One consequence of the model: epochs land as repeated attempts per task, so COST-002 reads an `epochs: 3` protocol as 3 tries per success — the same reading repeated run entries get on the JSON path.
 
+## Universal importer
+
+Any harness can integrate by emitting one canonical file — no bespoke adapter and no separate import command:
+
+```bash
+evalwarden audit my-eval.evalwarden.json
+evalwarden audit my-eval.jsonl
+evalwarden audit scores.csv
+```
+
+The formats are versioned public contracts. Validation is strict: malformed JSON names the JSON line/column, JSONL errors name the record line and field, and CSV errors name the row and field. Unknown-but-harmless fields are reported under `unsupported`; a malformed file never imports a partial model.
+
+### Canonical JSON (`evalwarden.model` 1.0)
+
+One document mirrors the integrity model:
+
+```json
+{
+  "schema": "evalwarden.model",
+  "schema_version": "1.0",
+  "eval_id": "my-eval",
+  "failure_mode_taxonomy": ["verbosity-gaming"],
+  "environment": {"env_vars": ["API_TOKEN"], "mounts": []},
+  "grader": {"kind": "script", "verifier_rule": "set_match"},
+  "tasks": [{"id": "t1", "prompt": "...", "target": "answer", "choices": null,
+             "failure_mode": null, "metadata": {}}],
+  "attempts": [{"task_id": "t1", "status": "pass", "score": 1.0,
+                "spans": []}],
+  "judgments": [],
+  "run_scores": [],
+  "claimed_delta": null,
+  "unsupported": []
+}
+```
+
+Top-level fields are `schema`, `schema_version`, `eval_id`, `failure_mode_taxonomy`, `environment`, `grader`, `tasks`, `attempts`, `judgments`, `run_scores`, `claimed_delta`, and `unsupported`. Nested objects use the integrity model's field names: tasks carry `id`, `prompt`, `target`, `choices`, `failure_mode`, and `metadata`; attempts carry status, score, usage, output, `model_id`, and nested trajectory `spans`; judgments carry verdicts plus optional `confidence` and `judge_id`; run scores carry `task_id`, `score`, and the `generation_index` / `grade_index` / `environment_index` condition tags. The grader object is flat (`kind`, verifier fields, judge fields, `scale_anchors`, and `reference_labels`). Environment values are never imported: `environment.env_vars` is a list of variable *names* only.
+
+In Python, frameworks can skip files entirely:
+
+```python
+from evalwarden.model import IntegrityModel
+
+model = IntegrityModel.from_canonical_json(text)       # or from_canonical_document(doc)
+document = model.to_canonical_document()               # serialize back to the contract
+```
+
+`evalwarden.canonical` also exposes `model_from_jsonl` and `model_from_csv` for the other two faces.
+
+### JSONL record stream
+
+One JSON object per line, tagged with `type`. The first non-blank record must be `eval` (carrying `schema`, `schema_version`, `eval_id`, optional `failure_mode_taxonomy`, `claimed_delta`, and `unsupported`):
+
+| Record type | Carries |
+|---|---|
+| `environment` | `env_vars` (names only) and `mounts`; at most one |
+| `grader` | The flat grader fields; at most one |
+| `task` | One task object |
+| `attempt` | One attempt object; may carry nested `spans` |
+| `judgment` | One judgment object |
+| `run_score` | One repeated-run score with its condition indices |
+| `span` | One trajectory step plus `task_id` and optional `attempt_index` (zero-based attempt occurrence for that task, default 0); may appear before or after its attempt |
+
+Canonical JSON and JSONL have the same reach: with the corresponding fields present, they can feed every lane — ENV (environment/mounts), GRAD (grader, cached outputs, clone metadata), COST (attempt usage), JUDGE (grader and judgments), DATA (tasks, failure modes, model-tagged attempts), TRAJ (spans, including recorded `consumes` edges), and NOISE (run scores and `claimed_delta`). Fields the stream does not state stay absent; nothing is inferred.
+
+### CSV score table
+
+The CSV contract is deliberately minimal:
+
+| Column | Required | Meaning |
+|---|---|---|
+| `task_id` | yes | Item the score belongs to |
+| `score` | yes | Finite numeric score |
+| `status` | no | `pass` / `fail` / `error` / `incomplete`; attempts are created only from rows that state it — a score alone does not state pass/fail |
+| `model_id` | no | Model that produced the row (enables DATA-001 with at least two models) |
+| `run_id` | no | Run label, mapped to `generation_index` in first-seen order |
+| `run_index` / `generation_index` | no | Fresh-generation condition index |
+| `grade_index` | no | Re-grade condition index |
+| `environment_index` | no | Environment-repeat condition index |
+
+Run scores are created only when a run or condition column states repeated-run structure, and only for a single model series — one NOISE series cannot honestly represent several models, so multi-model tables report that omission under `unsupported` instead. CSV cannot carry prompts, grader or environment records, judgments, trajectories, failure modes, claimed deltas, or data-flow edges, so it can honestly support score-based DATA-001 and NOISE-001 verdicts (and COST-001's "usage not recorded" signal when attempts exist), while checks needing the missing records stay silent and the coverage output says why.
+
 ## CLI
 
 ```
-evalwarden audit <eval-artifact> [--adapter auto|inspect|promptfoo] [--output report.html]
+evalwarden audit <eval-artifact> [--adapter auto|inspect|promptfoo|universal] [--output report.html]
                               [--format text|json|sarif] [--json findings.json] [--fail-on high]
                               [--price-in 3.0] [--price-out 15.0]
                               [--budget-per-task USD]

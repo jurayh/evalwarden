@@ -24,8 +24,8 @@ app = typer.Typer(
 
 @app.command()
 def audit(
-    path: Path = typer.Argument(..., help="Path to the eval artifact directory or a native Inspect .eval log."),
-    adapter: str = typer.Option("auto", help="Adapter to use: auto, inspect, promptfoo."),
+    path: Path = typer.Argument(..., help="Path to an eval artifact directory, native Inspect .eval log, or canonical .json/.jsonl/.csv file."),
+    adapter: str = typer.Option("auto", help="Adapter to use: auto, inspect, promptfoo, universal."),
     output: Path = typer.Option(
         Path("evalwarden-report.html"), help="Where to write the self-contained HTML report."
     ),
