@@ -1,0 +1,5 @@
+{
+ "env": {},
+ "mounts": [],
+ "notes": "Clone fixtures need no agent environment."
+}

@@ -1,0 +1,13 @@
+{
+ "kind": "script",
+ "verifier": {
+  "path": "verify.py",
+  "writable_by_agent": false,
+  "rule": "exact_string"
+ },
+ "accepts_empty_output": false,
+ "tests": [
+  "selection"
+ ],
+ "notes": "Declared verifier rule: exact string match against the stored answer."
+}

@@ -1,0 +1,317 @@
+{
+ "solver": "cached-run",
+ "attempts": [
+  {
+   "task_id": "sel-01",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Cleo, Vera, Uma, Petra"
+  },
+  {
+   "task_id": "sel-02",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Boris, Ana, Pavel"
+  },
+  {
+   "task_id": "sel-03",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Tomas, Oscar"
+  },
+  {
+   "task_id": "sel-04",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Yuri, Marek"
+  },
+  {
+   "task_id": "sel-05",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Petra, Ana"
+  },
+  {
+   "task_id": "sel-06",
+   "status": "fail",
+   "score": 0.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Yuri, Taras, Henrik"
+  },
+  {
+   "task_id": "sel-07",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Oscar, Roman, Boris"
+  },
+  {
+   "task_id": "sel-08",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Oscar, Cleo"
+  },
+  {
+   "task_id": "sel-09",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Tomas, Taras, Ruth"
+  },
+  {
+   "task_id": "sel-10",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Nadia, Dario, Yuri, Oscar"
+  },
+  {
+   "task_id": "sel-11",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Marek, Oscar"
+  },
+  {
+   "task_id": "sel-12",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Nadia, Sofia, Petra"
+  },
+  {
+   "task_id": "sel-13",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Nadia, Oscar, Ana, Vera"
+  },
+  {
+   "task_id": "sel-14",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Yuri, Tomas, Ana, Marek"
+  },
+  {
+   "task_id": "sel-15",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Nadia, Pavel"
+  },
+  {
+   "task_id": "sel-16",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Ana, Ruth"
+  },
+  {
+   "task_id": "sel-17",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Henrik, Tomas, Marek"
+  },
+  {
+   "task_id": "sel-18",
+   "status": "fail",
+   "score": 0.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Ruth, Cleo"
+  },
+  {
+   "task_id": "sel-19",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Petra, Sofia"
+  },
+  {
+   "task_id": "sel-20",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Marek, Lena, Ana"
+  },
+  {
+   "task_id": "sel-21",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Lena, Boris, Pavel"
+  },
+  {
+   "task_id": "sel-22",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Zofia, Taras"
+  },
+  {
+   "task_id": "sel-23",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Yuri, Petra, Dario"
+  },
+  {
+   "task_id": "sel-24",
+   "status": "pass",
+   "score": 1.0,
+   "tool_calls": 0,
+   "actions": [
+    "answer"
+   ],
+   "empty_submission": false,
+   "tokens_in": 300,
+   "tokens_out": 24,
+   "output": "Henrik, Marek"
+  }
+ ]
+}

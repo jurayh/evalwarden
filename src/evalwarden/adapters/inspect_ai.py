@@ -42,6 +42,12 @@ only from data the artifact actually records. Nothing is invented.
   which run conditions were re-rolled (generation / grade / environment
   indices). `run.json:claimed_delta` is the eval's own claimed score
   change, carried only when the artifact states one.
+- Grader.verifier_rule comes from `grader.json:verifier.rule`: the
+  scoring rule the artifact declares its verifier implements (a verifier
+  is code, which is never executed here -- the declared rule is what the
+  clone audit re-scores). Attempt.output comes from a per-attempt
+  `output` string in `run.json`, carried only when the artifact records
+  cached outputs; attempts without one leave the clone audit silent.
 
 This is a read-only translation layer. The adapter pins the schema
 versions it understands and fails clearly on anything else.
@@ -359,6 +365,11 @@ class InspectAdapter:
             kind=str(grader_cfg.get("kind", "script")),
             verifier_path=verifier.get("path"),
             verifier_writable_by_agent=bool(verifier.get("writable_by_agent", False)),
+            verifier_rule=(
+                str(verifier["rule"])
+                if isinstance(verifier.get("rule"), str) and verifier.get("rule")
+                else None
+            ),
             accepts_empty_output=bool(grader_cfg.get("accepts_empty_output", False)),
             tests=[str(t) for t in (grader_cfg.get("tests") or [])],
             judge_model=judge.get("model"),
@@ -383,6 +394,7 @@ class InspectAdapter:
                 latency_s=a.get("latency_s"),
                 tries=int(a.get("tries", 1)),
                 empty_submission=bool(a.get("empty_submission", False)),
+                output=a.get("output") if isinstance(a.get("output"), str) else None,
             )
             for a in (run.get("attempts") or [])
         ]

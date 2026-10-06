@@ -1,0 +1,846 @@
+{
+ "schema_version": "evalwarden-artifact-v1",
+ "eval_id": "clone-honest-demo",
+ "tasks": [
+  {
+   "id": "sel-01",
+   "prompt": "Selection board: Oscar 9, Cleo 28, Vera 20, Stefan 10, Uma 19, Petra 23. Which members scored at least 19? Answer with their names, in roster order.",
+   "target": "Cleo, Vera, Uma, Petra",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Oscar",
+      "value": 9
+     },
+     {
+      "name": "Cleo",
+      "value": 28
+     },
+     {
+      "name": "Vera",
+      "value": 20
+     },
+     {
+      "name": "Stefan",
+      "value": 10
+     },
+     {
+      "name": "Uma",
+      "value": 19
+     },
+     {
+      "name": "Petra",
+      "value": 23
+     }
+    ],
+    "threshold": 19
+   }
+  },
+  {
+   "id": "sel-02",
+   "prompt": "Roster scores: Roman 5, Boris 26, Dario 11, Ana 17, Pavel 21, Vera 16. Who scored at least 17? List the names in roster order.",
+   "target": "Boris, Ana, Pavel",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Roman",
+      "value": 5
+     },
+     {
+      "name": "Boris",
+      "value": 26
+     },
+     {
+      "name": "Dario",
+      "value": 11
+     },
+     {
+      "name": "Ana",
+      "value": 17
+     },
+     {
+      "name": "Pavel",
+      "value": 21
+     },
+     {
+      "name": "Vera",
+      "value": 16
+     }
+    ],
+    "threshold": 17
+   }
+  },
+  {
+   "id": "sel-03",
+   "prompt": "Selection board: Ana 7, Cleo 8, Tomas 26, Oscar 23, Mira 17, Ines 4. Which members scored at least 23? Answer with their names, in roster order.",
+   "target": "Tomas, Oscar",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Ana",
+      "value": 7
+     },
+     {
+      "name": "Cleo",
+      "value": 8
+     },
+     {
+      "name": "Tomas",
+      "value": 26
+     },
+     {
+      "name": "Oscar",
+      "value": 23
+     },
+     {
+      "name": "Mira",
+      "value": 17
+     },
+     {
+      "name": "Ines",
+      "value": 4
+     }
+    ],
+    "threshold": 23
+   }
+  },
+  {
+   "id": "sel-04",
+   "prompt": "Roster scores: Dario 6, Yuri 15, Marek 18, Cleo 10, Tomas 8, Ruth 14. Who scored at least 15? List the names in roster order.",
+   "target": "Yuri, Marek",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Dario",
+      "value": 6
+     },
+     {
+      "name": "Yuri",
+      "value": 15
+     },
+     {
+      "name": "Marek",
+      "value": 18
+     },
+     {
+      "name": "Cleo",
+      "value": 10
+     },
+     {
+      "name": "Tomas",
+      "value": 8
+     },
+     {
+      "name": "Ruth",
+      "value": 14
+     }
+    ],
+    "threshold": 15
+   }
+  },
+  {
+   "id": "sel-05",
+   "prompt": "Roster scores: Petra 30, Oscar 6, Ana 29, Uma 4, Pavel 16, Ines 18. Who scored at least 29? List the names in roster order.",
+   "target": "Petra, Ana",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Petra",
+      "value": 30
+     },
+     {
+      "name": "Oscar",
+      "value": 6
+     },
+     {
+      "name": "Ana",
+      "value": 29
+     },
+     {
+      "name": "Uma",
+      "value": 4
+     },
+     {
+      "name": "Pavel",
+      "value": 16
+     },
+     {
+      "name": "Ines",
+      "value": 18
+     }
+    ],
+    "threshold": 29
+   }
+  },
+  {
+   "id": "sel-06",
+   "prompt": "Scores from the workshop: Marek 25, Yuri 29, Taras 13, Henrik 21, Dario 4, Petra 12. Name everyone with a score of 21 or more, in roster order.",
+   "target": "Marek, Yuri, Henrik",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Marek",
+      "value": 25
+     },
+     {
+      "name": "Yuri",
+      "value": 29
+     },
+     {
+      "name": "Taras",
+      "value": 13
+     },
+     {
+      "name": "Henrik",
+      "value": 21
+     },
+     {
+      "name": "Dario",
+      "value": 4
+     },
+     {
+      "name": "Petra",
+      "value": 12
+     }
+    ],
+    "threshold": 21
+   }
+  },
+  {
+   "id": "sel-07",
+   "prompt": "Selection board: Tomas 7, Sofia 6, Oscar 17, Mira 4, Roman 19, Boris 29. Which members scored at least 17? Answer with their names, in roster order.",
+   "target": "Oscar, Roman, Boris",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Tomas",
+      "value": 7
+     },
+     {
+      "name": "Sofia",
+      "value": 6
+     },
+     {
+      "name": "Oscar",
+      "value": 17
+     },
+     {
+      "name": "Mira",
+      "value": 4
+     },
+     {
+      "name": "Roman",
+      "value": 19
+     },
+     {
+      "name": "Boris",
+      "value": 29
+     }
+    ],
+    "threshold": 17
+   }
+  },
+  {
+   "id": "sel-08",
+   "prompt": "Scores from the workshop: Pavel 5, Oscar 30, Stefan 26, Mira 17, Roman 21, Cleo 28. Name everyone with a score of 28 or more, in roster order.",
+   "target": "Oscar, Cleo",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Pavel",
+      "value": 5
+     },
+     {
+      "name": "Oscar",
+      "value": 30
+     },
+     {
+      "name": "Stefan",
+      "value": 26
+     },
+     {
+      "name": "Mira",
+      "value": 17
+     },
+     {
+      "name": "Roman",
+      "value": 21
+     },
+     {
+      "name": "Cleo",
+      "value": 28
+     }
+    ],
+    "threshold": 28
+   }
+  },
+  {
+   "id": "sel-09",
+   "prompt": "Roster scores: Tomas 21, Ines 5, Taras 16, Ruth 25, Dario 8, Petra 3. Who scored at least 16? List the names in roster order.",
+   "target": "Tomas, Taras, Ruth",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Tomas",
+      "value": 21
+     },
+     {
+      "name": "Ines",
+      "value": 5
+     },
+     {
+      "name": "Taras",
+      "value": 16
+     },
+     {
+      "name": "Ruth",
+      "value": 25
+     },
+     {
+      "name": "Dario",
+      "value": 8
+     },
+     {
+      "name": "Petra",
+      "value": 3
+     }
+    ],
+    "threshold": 16
+   }
+  },
+  {
+   "id": "sel-10",
+   "prompt": "Roster scores: Nadia 25, Dario 16, Henrik 8, Yuri 13, Oscar 18, Cleo 10. Who scored at least 13? List the names in roster order.",
+   "target": "Nadia, Dario, Yuri, Oscar",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Nadia",
+      "value": 25
+     },
+     {
+      "name": "Dario",
+      "value": 16
+     },
+     {
+      "name": "Henrik",
+      "value": 8
+     },
+     {
+      "name": "Yuri",
+      "value": 13
+     },
+     {
+      "name": "Oscar",
+      "value": 18
+     },
+     {
+      "name": "Cleo",
+      "value": 10
+     }
+    ],
+    "threshold": 13
+   }
+  },
+  {
+   "id": "sel-11",
+   "prompt": "Roster scores: Marek 23, Oscar 30, Sofia 14, Petra 4, Roman 12, Nadia 16. Who scored at least 23? List the names in roster order.",
+   "target": "Marek, Oscar",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Marek",
+      "value": 23
+     },
+     {
+      "name": "Oscar",
+      "value": 30
+     },
+     {
+      "name": "Sofia",
+      "value": 14
+     },
+     {
+      "name": "Petra",
+      "value": 4
+     },
+     {
+      "name": "Roman",
+      "value": 12
+     },
+     {
+      "name": "Nadia",
+      "value": 16
+     }
+    ],
+    "threshold": 23
+   }
+  },
+  {
+   "id": "sel-12",
+   "prompt": "Roster scores: Nadia 24, Cleo 15, Sofia 28, Roman 12, Petra 22, Yuri 18. Who scored at least 22? List the names in roster order.",
+   "target": "Nadia, Sofia, Petra",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Nadia",
+      "value": 24
+     },
+     {
+      "name": "Cleo",
+      "value": 15
+     },
+     {
+      "name": "Sofia",
+      "value": 28
+     },
+     {
+      "name": "Roman",
+      "value": 12
+     },
+     {
+      "name": "Petra",
+      "value": 22
+     },
+     {
+      "name": "Yuri",
+      "value": 18
+     }
+    ],
+    "threshold": 22
+   }
+  },
+  {
+   "id": "sel-13",
+   "prompt": "Selection board: Nadia 17, Mira 7, Oscar 20, Ana 30, Vera 16, Uma 14. Which members scored at least 16? Answer with their names, in roster order.",
+   "target": "Nadia, Oscar, Ana, Vera",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Nadia",
+      "value": 17
+     },
+     {
+      "name": "Mira",
+      "value": 7
+     },
+     {
+      "name": "Oscar",
+      "value": 20
+     },
+     {
+      "name": "Ana",
+      "value": 30
+     },
+     {
+      "name": "Vera",
+      "value": 16
+     },
+     {
+      "name": "Uma",
+      "value": 14
+     }
+    ],
+    "threshold": 16
+   }
+  },
+  {
+   "id": "sel-14",
+   "prompt": "Selection board: Dario 4, Yuri 20, Tomas 16, Stefan 3, Ana 11, Marek 12. Which members scored at least 11? Answer with their names, in roster order.",
+   "target": "Yuri, Tomas, Ana, Marek",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Dario",
+      "value": 4
+     },
+     {
+      "name": "Yuri",
+      "value": 20
+     },
+     {
+      "name": "Tomas",
+      "value": 16
+     },
+     {
+      "name": "Stefan",
+      "value": 3
+     },
+     {
+      "name": "Ana",
+      "value": 11
+     },
+     {
+      "name": "Marek",
+      "value": 12
+     }
+    ],
+    "threshold": 11
+   }
+  },
+  {
+   "id": "sel-15",
+   "prompt": "Selection board: Roman 6, Nadia 19, Petra 7, Vera 15, Pavel 24, Sofia 5. Which members scored at least 19? Answer with their names, in roster order.",
+   "target": "Nadia, Pavel",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Roman",
+      "value": 6
+     },
+     {
+      "name": "Nadia",
+      "value": 19
+     },
+     {
+      "name": "Petra",
+      "value": 7
+     },
+     {
+      "name": "Vera",
+      "value": 15
+     },
+     {
+      "name": "Pavel",
+      "value": 24
+     },
+     {
+      "name": "Sofia",
+      "value": 5
+     }
+    ],
+    "threshold": 19
+   }
+  },
+  {
+   "id": "sel-16",
+   "prompt": "Selection board: Marek 9, Henrik 16, Ana 28, Taras 23, Ruth 27, Oscar 26. Which members scored at least 27? Answer with their names, in roster order.",
+   "target": "Ana, Ruth",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Marek",
+      "value": 9
+     },
+     {
+      "name": "Henrik",
+      "value": 16
+     },
+     {
+      "name": "Ana",
+      "value": 28
+     },
+     {
+      "name": "Taras",
+      "value": 23
+     },
+     {
+      "name": "Ruth",
+      "value": 27
+     },
+     {
+      "name": "Oscar",
+      "value": 26
+     }
+    ],
+    "threshold": 27
+   }
+  },
+  {
+   "id": "sel-17",
+   "prompt": "Roster scores: Henrik 21, Tomas 26, Marek 18, Ines 7, Roman 10, Vera 12. Who scored at least 18? List the names in roster order.",
+   "target": "Henrik, Tomas, Marek",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Henrik",
+      "value": 21
+     },
+     {
+      "name": "Tomas",
+      "value": 26
+     },
+     {
+      "name": "Marek",
+      "value": 18
+     },
+     {
+      "name": "Ines",
+      "value": 7
+     },
+     {
+      "name": "Roman",
+      "value": 10
+     },
+     {
+      "name": "Vera",
+      "value": 12
+     }
+    ],
+    "threshold": 18
+   }
+  },
+  {
+   "id": "sel-18",
+   "prompt": "Scores from the workshop: Ruth 16, Yuri 11, Roman 15, Marek 3, Stefan 19, Cleo 25. Name everyone with a score of 19 or more, in roster order.",
+   "target": "Stefan, Cleo",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Ruth",
+      "value": 16
+     },
+     {
+      "name": "Yuri",
+      "value": 11
+     },
+     {
+      "name": "Roman",
+      "value": 15
+     },
+     {
+      "name": "Marek",
+      "value": 3
+     },
+     {
+      "name": "Stefan",
+      "value": 19
+     },
+     {
+      "name": "Cleo",
+      "value": 25
+     }
+    ],
+    "threshold": 19
+   }
+  },
+  {
+   "id": "sel-19",
+   "prompt": "Selection board: Petra 30, Mira 8, Zofia 17, Yuri 11, Pavel 10, Sofia 18. Which members scored at least 18? Answer with their names, in roster order.",
+   "target": "Petra, Sofia",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Petra",
+      "value": 30
+     },
+     {
+      "name": "Mira",
+      "value": 8
+     },
+     {
+      "name": "Zofia",
+      "value": 17
+     },
+     {
+      "name": "Yuri",
+      "value": 11
+     },
+     {
+      "name": "Pavel",
+      "value": 10
+     },
+     {
+      "name": "Sofia",
+      "value": 18
+     }
+    ],
+    "threshold": 18
+   }
+  },
+  {
+   "id": "sel-20",
+   "prompt": "Selection board: Pavel 6, Marek 23, Lena 17, Dario 7, Ana 25, Nadia 5. Which members scored at least 17? Answer with their names, in roster order.",
+   "target": "Marek, Lena, Ana",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Pavel",
+      "value": 6
+     },
+     {
+      "name": "Marek",
+      "value": 23
+     },
+     {
+      "name": "Lena",
+      "value": 17
+     },
+     {
+      "name": "Dario",
+      "value": 7
+     },
+     {
+      "name": "Ana",
+      "value": 25
+     },
+     {
+      "name": "Nadia",
+      "value": 5
+     }
+    ],
+    "threshold": 17
+   }
+  },
+  {
+   "id": "sel-21",
+   "prompt": "Scores from the workshop: Lena 21, Roman 5, Ana 9, Boris 19, Ines 7, Pavel 24. Name everyone with a score of 19 or more, in roster order.",
+   "target": "Lena, Boris, Pavel",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Lena",
+      "value": 21
+     },
+     {
+      "name": "Roman",
+      "value": 5
+     },
+     {
+      "name": "Ana",
+      "value": 9
+     },
+     {
+      "name": "Boris",
+      "value": 19
+     },
+     {
+      "name": "Ines",
+      "value": 7
+     },
+     {
+      "name": "Pavel",
+      "value": 24
+     }
+    ],
+    "threshold": 19
+   }
+  },
+  {
+   "id": "sel-22",
+   "prompt": "Selection board: Zofia 21, Mira 9, Tomas 10, Lena 4, Ana 6, Taras 15. Which members scored at least 15? Answer with their names, in roster order.",
+   "target": "Zofia, Taras",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Zofia",
+      "value": 21
+     },
+     {
+      "name": "Mira",
+      "value": 9
+     },
+     {
+      "name": "Tomas",
+      "value": 10
+     },
+     {
+      "name": "Lena",
+      "value": 4
+     },
+     {
+      "name": "Ana",
+      "value": 6
+     },
+     {
+      "name": "Taras",
+      "value": 15
+     }
+    ],
+    "threshold": 15
+   }
+  },
+  {
+   "id": "sel-23",
+   "prompt": "Selection board: Marek 7, Pavel 12, Yuri 19, Petra 23, Dario 20, Nadia 15. Which members scored at least 19? Answer with their names, in roster order.",
+   "target": "Yuri, Petra, Dario",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Marek",
+      "value": 7
+     },
+     {
+      "name": "Pavel",
+      "value": 12
+     },
+     {
+      "name": "Yuri",
+      "value": 19
+     },
+     {
+      "name": "Petra",
+      "value": 23
+     },
+     {
+      "name": "Dario",
+      "value": 20
+     },
+     {
+      "name": "Nadia",
+      "value": 15
+     }
+    ],
+    "threshold": 19
+   }
+  },
+  {
+   "id": "sel-24",
+   "prompt": "Roster scores: Henrik 28, Ines 26, Marek 29, Mira 13, Petra 16, Pavel 10. Who scored at least 28? List the names in roster order.",
+   "target": "Henrik, Marek",
+   "metadata": {
+    "clone_family": "selection",
+    "entries": [
+     {
+      "name": "Henrik",
+      "value": 28
+     },
+     {
+      "name": "Ines",
+      "value": 26
+     },
+     {
+      "name": "Marek",
+      "value": 29
+     },
+     {
+      "name": "Mira",
+      "value": 13
+     },
+     {
+      "name": "Petra",
+      "value": 16
+     },
+     {
+      "name": "Pavel",
+      "value": 10
+     }
+    ],
+    "threshold": 28
+   }
+  }
+ ]
+}

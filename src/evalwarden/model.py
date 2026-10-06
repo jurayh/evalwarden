@@ -106,6 +106,12 @@ class Grader:
     kind: str = "script"  # "script" | "judge" (model-as-judge)
     verifier_path: str | None = None
     verifier_writable_by_agent: bool = False
+    # The scoring rule the artifact declares its verifier implements, e.g.
+    # "exact_string" | "set_match". A verifier is code and this suite never
+    # executes artifact code; what an artifact can honestly offer is the
+    # rule it declares, which the clone audit (GRAD-003) re-scores.
+    # None when the artifact declares no rule: the audit then stays silent.
+    verifier_rule: str | None = None
     accepts_empty_output: bool = False
     tests: list[str] = field(default_factory=list)
     # Model-judge configuration. Populated only when kind == "judge".
@@ -177,6 +183,10 @@ class Attempt:
     latency_s: float | None = None
     tries: int = 1
     empty_submission: bool = False
+    # The attempt's cached output text, when the artifact records it.
+    # Most adapters do not retain raw outputs; the clone audit (GRAD-003)
+    # reads this and stays silent for attempts that carry none.
+    output: str | None = None
     # Which model produced this attempt. Adapters set it when the eval ran
     # more than one model; the DATA-lane checks group by it. None means the
     # eval ran a single unnamed model.

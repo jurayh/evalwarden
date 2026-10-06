@@ -48,6 +48,7 @@ Deterministic, high-precision checks. A linter that cries contamination on a cle
 |----|-------|----------|
 | GRAD-001 | Verifier writable by the agent | Error |
 | GRAD-002 | Grader grants credit without completion | Error |
+| GRAD-003 | Verifier verdicts depend on surface form (clone gap) | High |
 
 **COST — the run records**
 

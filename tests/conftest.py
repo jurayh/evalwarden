@@ -34,6 +34,8 @@ DEMO_PROMPTFOO_BAD = _demo_path("promptfoo_bad")
 DEMO_PROMPTFOO_CLEAN = _demo_path("promptfoo_clean")
 DEMO_INSPECT_NATIVE_LOOP = _demo_path("inspect_native_loop")
 DEMO_INSPECT_NATIVE_ORDINARY = _demo_path("inspect_native_ordinary")
+DEMO_CLONE_SHORTCUT = _demo_path("clone_shortcut")
+DEMO_CLONE_HONEST = _demo_path("clone_honest")
 NATIVE_LOOP_LOG = DEMO_INSPECT_NATIVE_LOOP / "log.eval"
 NATIVE_ORDINARY_LOG = DEMO_INSPECT_NATIVE_ORDINARY / "log.eval"
 

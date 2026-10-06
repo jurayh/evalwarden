@@ -10,7 +10,7 @@ from .base import Check
 from .cost import CHECKS as COST_CHECKS
 from .data import CHECKS as DATA_CHECKS
 from .env_leakage import EnvLeakageCheck
-from .grader import EmptyPathCheck, VerifierWritableCheck
+from .grader import CloneGapCheck, EmptyPathCheck, VerifierWritableCheck
 from .judge import CHECKS as JUDGE_CHECKS
 from .noise import CHECKS as NOISE_CHECKS
 from .traj import CHECKS as TRAJ_CHECKS
@@ -19,6 +19,7 @@ REGISTRY: list[Check] = [
     EnvLeakageCheck(),  # ENV-001
     VerifierWritableCheck(),  # GRAD-001
     EmptyPathCheck(),  # GRAD-002
+    CloneGapCheck(),  # GRAD-003
     *COST_CHECKS,  # COST-001 .. COST-004
     *JUDGE_CHECKS,  # JUDGE-001 .. JUDGE-009
     *DATA_CHECKS,  # DATA-001 .. DATA-003
