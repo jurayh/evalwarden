@@ -5,12 +5,14 @@ from pathlib import Path
 
 from typer.testing import CliRunner
 
+from evalwarden.checks import BY_ID
 from evalwarden.cli import app
 from evalwarden.engine import AuditResult, integrity_score
 from evalwarden.model import Confidence, Finding, Severity, SourceLocation
 from evalwarden.reporters.report_card import (
     category_of,
     category_scores,
+    grouped_checks,
     render_index,
     render_report_card,
     slugify,
@@ -121,6 +123,74 @@ def test_index_lists_cards():
 def test_slugify():
     assert slugify("tinycode-leaky-1.0") == "tinycode-leaky-1-0"
     assert slugify("Judge Demo!") == "judge-demo"
+
+
+def test_grouped_checks_lane_order_and_coverage():
+    groups = grouped_checks()
+    labels = [label for label, _ in groups]
+    assert labels == [
+        "Environment",
+        "Grader",
+        "Cost and efficiency",
+        "Judge",
+        "Dataset",
+        "Trajectory",
+        "Noise budget",
+    ]
+    seen = [cid for _, items in groups for cid, _ in items]
+    assert sorted(seen) == sorted(BY_ID)  # every check exactly once
+    for _, items in groups:
+        ids = [cid for cid, _ in items]
+        assert ids == sorted(ids)
+        for cid, title in items:
+            assert title == BY_ID[cid].meta.title
+
+
+def test_report_card_checks_run_grouped_title_first():
+    html = render_report_card(_result(), version="0.0.0-test")
+    # Lane groups appear in audit order.
+    labels = [
+        "Environment",
+        "Grader",
+        "Cost and efficiency",
+        "Judge",
+        "Dataset",
+        "Trajectory",
+        "Noise budget",
+    ]
+    positions = [html.index(f'<div class="lanelabel">{label}</div>') for label in labels]
+    assert positions == sorted(positions)
+    # Each check is its own line: plain title first, code as a muted chip.
+    assert (
+        '<li><span class="ct">Model judge lacks validation</span> '
+        '<span class="code">JUDGE-001</span></li>'
+    ) in html
+    # The old one-paragraph "ID: Title; ID: Title" format is gone.
+    assert "JUDGE-001: Model judge lacks validation" not in html
+    assert "; JUDGE-002" not in html
+    # A clean card mentions every check id exactly once (in Checks run).
+    for cid in BY_ID:
+        assert html.count(cid) == 1
+
+
+def test_report_card_finding_headline_title_first():
+    finding = Finding(
+        id="JUDGE-001",
+        title="Model judge lacks validation",
+        severity=Severity.HIGH,
+        confidence=Confidence.HIGH,
+        description="why",
+        evidence=["direct evidence"],
+        locations=[SourceLocation(file="run.json")],
+    )
+    html = render_report_card(_result(finding), version="0.0.0-test")
+    assert (
+        '<span class="title">Model judge lacks validation</span> '
+        '<span class="code">JUDGE-001</span>'
+    ) in html
+    assert "JUDGE-001: Model judge lacks validation" not in html
+    # The masthead blocked-by line leads with the title too, code in parens.
+    assert "Blocked by Model judge lacks validation (JUDGE-001)" in html
 
 
 def test_cli_report_card(tmp_path: Path):

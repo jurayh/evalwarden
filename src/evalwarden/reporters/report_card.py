@@ -36,6 +36,31 @@ def category_of(check_id: str) -> str:
     return CATEGORIES.get(check_id.split("-")[0], "Other")
 
 
+# Lane order and labels for the "Checks run" listing: the reader scans by
+# what part of the eval is being checked, so groups follow audit order.
+LANES: list[tuple[str, str]] = [
+    ("ENV", "Environment"),
+    ("GRAD", "Grader"),
+    ("COST", "Cost and efficiency"),
+    ("JUDGE", "Judge"),
+    ("DATA", "Dataset"),
+    ("TRAJ", "Trajectory"),
+    ("NOISE", "Noise budget"),
+]
+
+
+def grouped_checks() -> list[tuple[str, list[tuple[str, str]]]]:
+    """All registered checks as (lane label, [(id, title), ...]) in lane order."""
+    by_prefix: dict[str, list[tuple[str, str]]] = {}
+    for cid in sorted(BY_ID):
+        by_prefix.setdefault(cid.split("-")[0], []).append((cid, BY_ID[cid].meta.title))
+    groups = [(label, by_prefix[prefix]) for prefix, label in LANES if prefix in by_prefix]
+    groups += [
+        (prefix, items) for prefix, items in by_prefix.items() if prefix not in dict(LANES)
+    ]
+    return groups
+
+
 @dataclass
 class CategoryScore:
     name: str
@@ -131,6 +156,15 @@ _CARD_TEMPLATE = """\
   .conf { background: #f1f1f1; color: #444; border: 1px solid #ddd; text-transform: none; }
   .finding .title { font-weight: 600; }
   .finding .ev { color: #555; font-size: 13.5px; margin: 4px 0 0; }
+  .code { font-family: ui-monospace, monospace; font-size: 11px; color: #777;
+          background: #f6f6f6; border: 1px solid #e6e6e6; border-radius: 5px;
+          padding: 0 5px; white-space: nowrap; }
+  .checkgroup { margin: 0 0 9px; }
+  .checkgroup:last-child { margin-bottom: 0; }
+  .lanelabel { font-size: 11px; font-weight: 700; letter-spacing: .08em;
+               text-transform: uppercase; color: #888; }
+  ul.checks { list-style: none; margin: 3px 0 0; padding: 0; }
+  ul.checks li { padding: 1px 0; }
   .meta { color: #666; font-size: 13px; }
   .method td, .method th { text-align: left; padding: 6px 8px; border-bottom: 1px solid #f0f0f0;
                            font-size: 13px; vertical-align: top; }
@@ -149,7 +183,7 @@ _CARD_TEMPLATE = """\
     <div><span class="verdict {{ 'blocked' if result.verdict == 'BLOCKED' else 'pass' }}">{{ result.verdict }}</span></div>
     <p class="meta" style="margin-bottom:0">
       {% if result.verdict == "BLOCKED" %}
-      Blocked by {{ blocked_ids|join(", ") }}: the reported score cannot be trusted until these are fixed.
+      Blocked by {{ blocked_labels|join(", ") }}: the reported score cannot be trusted until these are fixed.
       {% else %}
       No blocking findings observed under this policy.
       {% endif %}
@@ -177,7 +211,7 @@ _CARD_TEMPLATE = """\
     {% for f in key_findings %}
     <div class="finding">
       <span class="badge sev-{{ f.severity.value }}">{{ f.severity.value }}</span><span class="badge conf">{{ f.confidence.value }} confidence</span>
-      <span class="title">{{ f.id }}: {{ f.title }}</span>
+      <span class="title">{{ f.title }}</span> <span class="code">{{ f.id }}</span>
       {% if f.evidence %}<p class="ev">{{ f.evidence[0] }}</p>{% endif %}
     </div>
     {% endfor %}
@@ -194,7 +228,7 @@ _CARD_TEMPLATE = """\
     <table class="method">
       <tr><th>Tool</th><td>evalwarden {{ version }}: a linter for agent evaluations, not another eval framework. Read-only, offline; input files are never modified.</td></tr>
       <tr><th>Adapter</th><td>{{ model.adapter_name }} {{ model.adapter_version }}</td></tr>
-      <tr><th>Checks run</th><td>{% for id, title in checks %}{{ id }}: {{ title }}{% if not loop.last %}; {% endif %}{% endfor %}</td></tr>
+      <tr><th>Checks run</th><td>{% for lane, items in check_groups %}<div class="checkgroup"><div class="lanelabel">{{ lane }}</div><ul class="checks">{% for id, title in items %}<li><span class="ct">{{ title }}</span> <span class="code">{{ id }}</span></li>{% endfor %}</ul></div>{% endfor %}</td></tr>
       <tr><th>Evidence</th><td class="fp">{% for fname, digest in model.digests.items() %}{{ fname }} sha256:{{ digest[:12] }}&hellip;{% if not loop.last %} {% endif %}{% endfor %}</td></tr>
       <tr><th>Generated</th><td>{{ generated_at }}</td></tr>
     </table>
@@ -219,13 +253,18 @@ def render_report_card(result: AuditResult, version: str | None = None) -> str:
         version = pkg_version
     env = Environment(autoescape=True)
     template = env.from_string(_CARD_TEMPLATE)
+    blocked_titles: dict[str, str] = {}
+    for f in result.blocked_by:
+        blocked_titles.setdefault(f.id, f.title)
     return template.render(
         result=result,
         model=result.model,
         categories=category_scores(result),
         key_findings=result.findings[:KEY_FINDINGS_LIMIT],
-        blocked_ids=sorted({f.id for f in result.blocked_by}),
-        checks=[(cid, BY_ID[cid].meta.title) for cid in sorted(BY_ID)],
+        blocked_labels=[
+            f"{blocked_titles[cid]} ({cid})" for cid in sorted(blocked_titles)
+        ],
+        check_groups=grouped_checks(),
         generated_at=datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         version=version,
     )

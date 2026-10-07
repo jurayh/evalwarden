@@ -96,8 +96,9 @@
   .lane ul { list-style: none; }
   .lane li { font-size: 14.5px; color: var(--muted); padding: 5px 0; border-top: 1px solid var(--border); }
   .lane li code {
-    font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; color: var(--text);
-    background: var(--surface-2); padding: 2px 7px; border-radius: 5px; margin-right: 8px;
+    font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; color: var(--faint);
+    background: var(--surface-2); padding: 2px 7px; border-radius: 5px; margin-left: 8px;
+    white-space: nowrap;
   }
 
   .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 36px; }
@@ -207,65 +208,65 @@
       <div class="lane">
         <div class="k">ENV</div>
         <h3>The evidence boundary</h3>
-        <ul><li><code>ENV-001</code>Eval-detection signal or leaked state visible to the agent</li></ul>
+        <ul><li>Eval-detection signal or leaked state visible to the agent <code>ENV-001</code></li></ul>
       </div>
       <div class="lane">
         <div class="k">GRAD</div>
         <h3>The grader</h3>
         <ul>
-          <li><code>GRAD-001</code>Verifier writable by the agent</li>
-          <li><code>GRAD-002</code>Grader grants credit without completion</li>
-          <li><code>GRAD-003</code>Verifier verdicts depend on surface form (clone gap)</li>
+          <li>Verifier writable by the agent <code>GRAD-001</code></li>
+          <li>Grader grants credit without completion <code>GRAD-002</code></li>
+          <li>Verifier verdicts depend on surface form (clone gap) <code>GRAD-003</code></li>
         </ul>
       </div>
       <div class="lane">
         <div class="k">COST</div>
         <h3>The run records</h3>
         <ul>
-          <li><code>COST-001</code>Cost per success not reported</li>
-          <li><code>COST-002</code>Successes cost multiple attempts each</li>
-          <li><code>COST-003</code>Most spend burned on attempts that never passed</li>
-          <li><code>COST-004</code>Runaway attempt burned far more than typical</li>
+          <li>Cost per success not reported <code>COST-001</code></li>
+          <li>Successes cost multiple attempts each <code>COST-002</code></li>
+          <li>Most spend burned on attempts that never passed <code>COST-003</code></li>
+          <li>Runaway attempt burned far more than typical <code>COST-004</code></li>
         </ul>
       </div>
       <div class="lane">
         <div class="k">DATA</div>
         <h3>The dataset itself</h3>
         <ul>
-          <li><code>DATA-001</code>Dataset looks saturated — most items solved by every model</li>
-          <li><code>DATA-002</code>Dataset contains near-duplicate items</li>
-          <li><code>DATA-003</code>Failure modes under-elicited — too few eliciting items, or a declared mode with none</li>
+          <li>Dataset looks saturated — most items solved by every model <code>DATA-001</code></li>
+          <li>Dataset contains near-duplicate items <code>DATA-002</code></li>
+          <li>Failure modes under-elicited — too few eliciting items, or a declared mode with none <code>DATA-003</code></li>
         </ul>
       </div>
       <div class="lane full">
         <div class="k">JUDGE</div>
         <h3>The model judge</h3>
         <ul>
-          <li><code>JUDGE-001</code>Judge lacks validation — no labels, unanchored rubric, hot single-sample</li>
-          <li><code>JUDGE-002</code>Pairwise order not counterbalanced</li>
-          <li><code>JUDGE-003</code>Judge contradicts itself on repeated judgments</li>
-          <li><code>JUDGE-004</code>Judge disagrees with reference labels</li>
-          <li><code>JUDGE-005</code>Position bias — presentation order predicts the winner</li>
-          <li><code>JUDGE-006</code>Verbosity bias — longer answers win disproportionately</li>
-          <li><code>JUDGE-007</code>Judge confidence miscalibrated — stated confidence does not track accuracy</li>
-          <li><code>JUDGE-008</code>Redundant judges in panel — a judge never differs from the rest</li>
-          <li><code>JUDGE-009</code>Panel blind spots — failure modes no judge in the panel catches</li>
+          <li>Judge lacks validation — no labels, unanchored rubric, hot single-sample <code>JUDGE-001</code></li>
+          <li>Pairwise order not counterbalanced <code>JUDGE-002</code></li>
+          <li>Judge contradicts itself on repeated judgments <code>JUDGE-003</code></li>
+          <li>Judge disagrees with reference labels <code>JUDGE-004</code></li>
+          <li>Position bias — presentation order predicts the winner <code>JUDGE-005</code></li>
+          <li>Verbosity bias — longer answers win disproportionately <code>JUDGE-006</code></li>
+          <li>Judge confidence miscalibrated — stated confidence does not track accuracy <code>JUDGE-007</code></li>
+          <li>Redundant judges in panel — a judge never differs from the rest <code>JUDGE-008</code></li>
+          <li>Panel blind spots — failure modes no judge in the panel catches <code>JUDGE-009</code></li>
         </ul>
       </div>
       <div class="lane">
         <div class="k">TRAJ</div>
         <h3>The agent's trajectory</h3>
         <ul>
-          <li><code>TRAJ-001</code>Trajectory repeats identical tool calls</li>
-          <li><code>TRAJ-002</code>Tool outputs consumed by nothing downstream</li>
+          <li>Trajectory repeats identical tool calls <code>TRAJ-001</code></li>
+          <li>Tool outputs consumed by nothing downstream <code>TRAJ-002</code></li>
         </ul>
       </div>
       <div class="lane">
         <div class="k">NOISE</div>
         <h3>The noise budget</h3>
         <ul>
-          <li><code>NOISE-001</code>One noise source dominates the eval budget</li>
-          <li><code>NOISE-002</code>Claimed score change inside the noise floor</li>
+          <li>One noise source dominates the eval budget <code>NOISE-001</code></li>
+          <li>Claimed score change inside the noise floor <code>NOISE-002</code></li>
         </ul>
       </div>
     </div>
