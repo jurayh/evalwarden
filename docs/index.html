@@ -5,6 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>evalwarden — a linter for evals</title>
 <meta name="description" content="evalwarden audits the measurement system around a benchmark score: the dataset, the evidence boundary, the grader, the run records, and the cost.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f1216'/%3E%3Cpath d='M20 33.5 28.5 42 44 24' fill='none' stroke='%23f0a92e' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="evalwarden">
+<meta property="og:title" content="evalwarden — a linter for evals">
+<meta property="og:description" content="evalwarden audits the measurement system around a benchmark score: the dataset, the evidence boundary, the grader, the run records, and the cost.">
+<meta property="og:url" content="https://jurayh.github.io/evalwarden/">
+<meta property="og:image" content="https://jurayh.github.io/evalwarden/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="evalwarden — a linter for evals">
+<meta name="twitter:description" content="evalwarden audits the measurement system around a benchmark score: the dataset, the evidence boundary, the grader, the run records, and the cost.">
+<meta name="twitter:image" content="https://jurayh.github.io/evalwarden/og.png">
 <style>
   :root {
     --bg: #0f1216;
@@ -92,7 +105,6 @@
   }
   .lane.full { grid-column: 1 / -1; }
   .lane .k { font-size: 12px; letter-spacing: 2px; color: var(--accent); font-weight: 700; margin-bottom: 6px; }
-  .lane h3 { font-size: 18px; margin-bottom: 12px; }
   .lane ul { list-style: none; }
   .lane li { font-size: 14.5px; color: var(--muted); padding: 5px 0; border-top: 1px solid var(--border); }
   .lane li code {
@@ -138,11 +150,72 @@
   footer a:hover { color: var(--accent); }
   footer .fine { color: var(--faint); font-size: 13.5px; }
 
+  ::selection { background: var(--accent); color: #14100a; }
+  a:focus-visible, .btn:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px;
+  }
+
+  .install code { flex: 1; }
+  .copy-btn {
+    font: inherit; font-size: 13px; font-weight: 600; color: var(--muted);
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px;
+    padding: 5px 12px; cursor: pointer; flex-shrink: 0;
+  }
+  .copy-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+  .term {
+    margin-top: 44px; max-width: 780px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    overflow: hidden;
+  }
+  .term-bar {
+    display: flex; align-items: center; gap: 7px;
+    padding: 11px 16px; border-bottom: 1px solid var(--border); background: var(--surface-2);
+  }
+  .term-bar .dot { width: 11px; height: 11px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+  .term-bar .dot.amber { background: var(--accent); }
+  .term-bar .fname { margin-left: 8px; font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; color: var(--faint); }
+  .term pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13.5px;
+    line-height: 1.75; padding: 20px 22px; overflow-x: auto; color: var(--muted);
+  }
+  .term .cmd { color: var(--text); }
+  .term .cmd .p { color: var(--accent); }
+  .term .blocked { color: var(--red); font-weight: 700; }
+  .term .hl { color: var(--text); font-weight: 600; }
+  .term-cap { margin-top: 14px; font-size: 14px; color: var(--faint); max-width: 780px; }
+  .term-cap strong { color: var(--muted); }
+
+  .trust { border-bottom: 1px solid var(--border); }
+  .trust-row {
+    display: flex; flex-wrap: wrap; gap: 8px 28px; align-items: center;
+    padding-top: 18px; padding-bottom: 18px; font-size: 13.5px; color: var(--muted);
+  }
+  .trust-row strong { color: var(--text); font-weight: 600; }
+
+  .lane summary {
+    list-style: none; cursor: pointer; display: flex; align-items: baseline; gap: 12px;
+  }
+  .lane summary::-webkit-details-marker { display: none; }
+  .lane summary .k { margin-bottom: 0; flex-shrink: 0; }
+  .lane summary .lname { font-size: 18px; font-weight: 700; color: var(--text); }
+  .lane summary .n { margin-left: auto; font-size: 13px; color: var(--faint); white-space: nowrap; }
+  .lane summary::after { content: "+"; color: var(--accent); font-weight: 700; font-size: 18px; line-height: 1; }
+  .lane[open ] summary::after { content: "–"; }
+  .lane summary:hover .lname { color: var(--accent); }
+  .lane ul { margin-top: 6px; }
+
+  a.stat { display: block; text-decoration: none; color: inherit; }
+  a.stat:hover { border-color: var(--accent); }
+  .stat .go { display: inline-block; margin-top: 14px; font-size: 13.5px; font-weight: 600; color: var(--accent); }
+
   @media (max-width: 720px) {
     h1 { font-size: 36px; }
     .problem-grid, .lanes, .stats { grid-template-columns: 1fr; }
     section { padding: 52px 0; }
     .hero { padding: 72px 0 56px; }
+    .term pre { font-size: 12px; padding: 16px; }
+    .trust-row { gap: 6px 18px; }
   }
 </style>
 </head>
@@ -154,15 +227,38 @@
     <h1>A linter for evals,<br><span class="dim">not another eval framework.</span></h1>
     <p class="lede">Benchmark scores get cited as proof of capability. Almost nobody audits the benchmarks themselves. evalwarden reads your eval artifacts and tells you <strong>whether the score can be trusted</strong> — the dataset, the evidence boundary, the grader, the run records, and the cost.</p>
     <div class="install">
-      <span class="prompt">$</span><code>pip install evalwarden</code>
+      <span class="prompt">$</span><code>pip install evalwarden</code><button class="copy-btn" id="copy-install" type="button" aria-label="Copy install command">Copy</button>
     </div>
     <div class="ctas">
       <a class="btn primary" href="https://github.com/jurayh/evalwarden">GitHub</a>
       <a class="btn" href="https://pypi.org/project/evalwarden/">PyPI</a>
       <a class="btn" href="https://github.com/jurayh/evidence-registry">Evidence registry</a>
     </div>
+    <div class="term">
+      <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot amber"></span><span class="fname">terminal — a real audit of a native Inspect log</span></div>
+<pre><span class="cmd"><span class="p">$</span> evalwarden audit src/evalwarden/demo/inspect_native_loop/log.eval</span>
+evalwarden audit: evalwarden-native-loop
+adapter: inspect 0.3.0
+Integrity: 90 / 100 <span class="blocked">BLOCKED</span> (0 errors, 1 high, 0 medium, 0 low)
+claim blocked by: TRAJ-001
+
+<span class="hl">H TRAJ-001 [high|confidence:high] Trajectory loops: lookup({"query": "status"}) repeated 5x in task loop-1</span>
+    evidence: loop: lookup({"query": "status"}) x5 (longest run x5)
+    at: log.eval -- attempt loop-1: 1 looped call pair(s) over 6 spans</pre>
+    </div>
+    <p class="term-cap">From a real audit, excerpted. The agent in this log called the same tool with the same arguments <strong>five times in a row</strong>. The eval scored it anyway.</p>
   </div>
 </header>
+
+<div class="trust">
+  <div class="wrap trust-row">
+    <span><strong>evalwarden 0.12.0</strong></span>
+    <span>MIT licensed</span>
+    <span>Read-only: never runs your evals</span>
+    <span>Zero model calls</span>
+    <span><strong>Works with</strong> Inspect AI · Promptfoo · JSONL / CSV · GitHub Actions + SARIF</span>
+  </div>
+</div>
 
 <section>
   <div class="wrap">
@@ -180,6 +276,27 @@
       <div class="problem-card">
         <div class="k">Dead datasets</div>
         <p><strong>Two-thirds of the benchmark</strong> is items every model already answers. Perfect judges scoring dead examples is theater.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">How it works</div>
+    <h2>Point it at the artifacts. Get a verdict.</h2>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="k">Step 1 · Point</div>
+        <p>A directory of eval artifacts, a <strong>native Inspect .eval log</strong>, or one <strong>JSONL or CSV file</strong> from any other harness. No translation step, no changes to your eval.</p>
+      </div>
+      <div class="problem-card">
+        <div class="k">Step 2 · Lint</div>
+        <p><strong>24 deterministic checks</strong> across seven lanes read the artifacts. Read-only, zero model calls, nothing executed and nothing modified.</p>
+      </div>
+      <div class="problem-card">
+        <div class="k">Step 3 · Gate</div>
+        <p>A <strong>score and findings with file-level evidence</strong>, plus policy exit codes, so the same audit runs in a terminal, as JSON, or as <strong>SARIF in CI</strong>.</p>
       </div>
     </div>
   </div>
@@ -205,42 +322,37 @@
     <div class="eyebrow">The check catalog</div>
     <h2>Twenty-four checks across seven lanes.</h2>
     <div class="lanes">
-      <div class="lane">
-        <div class="k">ENV</div>
-        <h3>The evidence boundary</h3>
+      <details class="lane">
+        <summary><span class="k">ENV</span><span class="lname">The evidence boundary</span><span class="n">1 check</span></summary>
         <ul><li>Eval-detection signal or leaked state visible to the agent <code>ENV-001</code></li></ul>
-      </div>
-      <div class="lane">
-        <div class="k">GRAD</div>
-        <h3>The grader</h3>
+      </details>
+      <details class="lane">
+        <summary><span class="k">GRAD</span><span class="lname">The grader</span><span class="n">3 checks</span></summary>
         <ul>
           <li>Verifier writable by the agent <code>GRAD-001</code></li>
           <li>Grader grants credit without completion <code>GRAD-002</code></li>
           <li>Verifier verdicts depend on surface form (clone gap) <code>GRAD-003</code></li>
         </ul>
-      </div>
-      <div class="lane">
-        <div class="k">COST</div>
-        <h3>The run records</h3>
+      </details>
+      <details class="lane">
+        <summary><span class="k">COST</span><span class="lname">The run records</span><span class="n">4 checks</span></summary>
         <ul>
           <li>Cost per success not reported <code>COST-001</code></li>
           <li>Successes cost multiple attempts each <code>COST-002</code></li>
           <li>Most spend burned on attempts that never passed <code>COST-003</code></li>
           <li>Runaway attempt burned far more than typical <code>COST-004</code></li>
         </ul>
-      </div>
-      <div class="lane">
-        <div class="k">DATA</div>
-        <h3>The dataset itself</h3>
+      </details>
+      <details class="lane">
+        <summary><span class="k">DATA</span><span class="lname">The dataset itself</span><span class="n">3 checks</span></summary>
         <ul>
           <li>Dataset looks saturated — most items solved by every model <code>DATA-001</code></li>
           <li>Dataset contains near-duplicate items <code>DATA-002</code></li>
           <li>Failure modes under-elicited — too few eliciting items, or a declared mode with none <code>DATA-003</code></li>
         </ul>
-      </div>
-      <div class="lane full">
-        <div class="k">JUDGE</div>
-        <h3>The model judge</h3>
+      </details>
+      <details class="lane full">
+        <summary><span class="k">JUDGE</span><span class="lname">The model judge</span><span class="n">9 checks</span></summary>
         <ul>
           <li>Judge lacks validation — no labels, unanchored rubric, hot single-sample <code>JUDGE-001</code></li>
           <li>Pairwise order not counterbalanced <code>JUDGE-002</code></li>
@@ -252,23 +364,21 @@
           <li>Redundant judges in panel — a judge never differs from the rest <code>JUDGE-008</code></li>
           <li>Panel blind spots — failure modes no judge in the panel catches <code>JUDGE-009</code></li>
         </ul>
-      </div>
-      <div class="lane">
-        <div class="k">TRAJ</div>
-        <h3>The agent's trajectory</h3>
+      </details>
+      <details class="lane">
+        <summary><span class="k">TRAJ</span><span class="lname">The agent's trajectory</span><span class="n">2 checks</span></summary>
         <ul>
           <li>Trajectory repeats identical tool calls <code>TRAJ-001</code></li>
           <li>Tool outputs consumed by nothing downstream <code>TRAJ-002</code></li>
         </ul>
-      </div>
-      <div class="lane">
-        <div class="k">NOISE</div>
-        <h3>The noise budget</h3>
+      </details>
+      <details class="lane">
+        <summary><span class="k">NOISE</span><span class="lname">The noise budget</span><span class="n">2 checks</span></summary>
         <ul>
           <li>One noise source dominates the eval budget <code>NOISE-001</code></li>
           <li>Claimed score change inside the noise floor <code>NOISE-002</code></li>
         </ul>
-      </div>
+      </details>
     </div>
   </div>
 </section>
@@ -278,21 +388,24 @@
     <div class="eyebrow">Proof on real benchmarks</div>
     <h2>It does not manufacture problems. It finds real ones.</h2>
     <div class="stats">
-      <div class="stat">
+      <a class="stat" href="https://jurayh.github.io/evidence-registry/packs/swe-bench-verified-via-inspect-evals/card.html">
         <div class="num pass">100/100</div>
         <div class="label">SWE-bench Verified · Pass</div>
         <p><strong>Zero findings.</strong> Gold patches and grading stay harness-side where the agent cannot reach them. A clean benchmark reads clean.</p>
-      </div>
-      <div class="stat">
+        <span class="go">Read the full card →</span>
+      </a>
+      <a class="stat" href="https://jurayh.github.io/evidence-registry/packs/healthbench-via-inspect-evals/card.html">
         <div class="num block">85/100</div>
         <div class="label">HealthBench · Blocked</div>
         <p>The model judge ships with <strong>no calibration set in the eval definition</strong> — anyone auditing the artifact alone cannot verify the judge.</p>
-      </div>
-      <div class="stat">
+        <span class="go">Read the full card →</span>
+      </a>
+      <a class="stat" href="https://jurayh.github.io/evidence-registry/">
         <div class="num amber">67% vs 7%</div>
         <div class="label">MMLU vs GPQA · Saturation</div>
         <p><strong>Two-thirds of the MMLU slice is dead</strong> — answered correctly by every model — versus 7% on GPQA. The check says so with a number.</p>
-      </div>
+        <span class="go">Read both cards in the registry →</span>
+      </a>
     </div>
   </div>
 </section>
@@ -326,6 +439,20 @@
     <div class="fine">evalwarden is MIT-licensed. Integrity scores are diagnostic, not a certification.</div>
   </div>
 </footer>
+
+<script>
+  (function () {
+    var btn = document.getElementById('copy-install');
+    if (!btn) return;
+    if (!navigator.clipboard || !navigator.clipboard.writeText) { btn.hidden = true; return; }
+    btn.addEventListener('click', function () {
+      navigator.clipboard.writeText('pip install evalwarden').then(function () {
+        btn.textContent = 'Copied';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1600);
+      }, function () { btn.hidden = true; });
+    });
+  })();
+</script>
 
 </body>
 </html>
