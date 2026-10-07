@@ -86,6 +86,10 @@
   .problem-card .k { font-size: 13px; color: var(--accent); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
   .problem-card p { color: var(--muted); font-size: 15px; }
   .problem-card p strong { color: var(--text); }
+  .problem-card p a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .problem-card p a:hover { text-decoration: underline; }
+
+  .hood-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 36px; }
 
   table.diff { width: 100%; border-collapse: collapse; margin-top: 32px; font-size: 15px; }
   table.diff th {
@@ -211,7 +215,7 @@
 
   @media (max-width: 720px) {
     h1 { font-size: 36px; }
-    .problem-grid, .lanes, .stats { grid-template-columns: 1fr; }
+    .problem-grid, .lanes, .stats, .hood-grid { grid-template-columns: 1fr; }
     section { padding: 52px 0; }
     .hero { padding: 72px 0 56px; }
     .term pre { font-size: 12px; padding: 16px; }
@@ -314,6 +318,32 @@ claim blocked by: TRAJ-001
       <tr><td><span class="yes">evalwarden</span></td><td class="muted">Never — read-only adapters</td><td class="muted">No</td><td class="yes">Yes, in CI</td></tr>
     </table>
     <div class="note"><strong>Precision over recall, always.</strong> A false contamination accusation is worse than a missed issue. Checks stay silent when the evidence is thin, every finding carries a confidence label, and every report card says <strong>diagnostic, not a certification</strong>.</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Under the hood</div>
+    <h2>Adapters in. Findings out. Nothing in between runs.</h2>
+    <div class="hood-grid">
+      <div class="problem-card">
+        <div class="k">1 · Adapters</div>
+        <p>Adapters read your eval artifacts <strong>read-only</strong> — Inspect AI including native .eval logs, Promptfoo, or plain JSON, JSONL, and CSV — and normalize them into <strong>one canonical model</strong>.</p>
+      </div>
+      <div class="problem-card">
+        <div class="k">2 · Checks</div>
+        <p>Checks are <strong>pure deterministic functions</strong> over that model. Zero model calls, no network, no execution of anything from the artifact being audited.</p>
+      </div>
+      <div class="problem-card">
+        <div class="k">3 · Findings</div>
+        <p>Every finding carries <strong>evidence, a severity, and a confidence label</strong>. When the evidence is thin, the check stays silent instead of guessing.</p>
+      </div>
+      <div class="problem-card">
+        <div class="k">4 · Reporters</div>
+        <p>The same findings render as terminal output, an <strong>HTML report card</strong>, JSON, or <strong>SARIF for CI</strong> — one audit, every surface.</p>
+      </div>
+    </div>
+    <div class="note"><strong>Built to extend:</strong> a new check is one module plus one registration line, and all shared logic lives in pure helper modules. The architecture is the contribution guide.</div>
   </div>
 </section>
 
@@ -426,6 +456,31 @@ claim blocked by: TRAJ-001
 <span class="p">$</span> evalwarden audit logs/my-task_abc123.eval</pre>
     </div>
     <div class="note">Deterministic checks with policy exit codes, so the same audit runs locally and as a CI gate. <strong>Try the cheat first:</strong> <span style="font-family:ui-monospace,Menlo,monospace;font-size:14px">evalwarden demo --fixture leaky</span> reports 0/100 BLOCKED on a solver that reads the task ID from the environment.</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Contribute</div>
+    <h2>Three ways in.</h2>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="k">Write a check</div>
+        <p>One module plus one registration line. The bar is a <strong>kill-criterion spike</strong>: seeded data with the failure planted, where the check must fire on the broken eval and stay silent on the clean one.</p>
+      </div>
+      <div class="problem-card">
+        <div class="k">Connect a framework</div>
+        <p>Emit the <strong>universal importer format</strong> (canonical JSON, JSONL, or CSV) and your harness is supported with no new code here. A full adapter is the deeper option when the artifacts carry more.</p>
+      </div>
+      <div class="problem-card">
+        <div class="k">Audit a benchmark</div>
+        <p>Build an <strong>evidence pack</strong> for the <a href="https://jurayh.github.io/evidence-registry/">Evidence Registry</a>: pinned public inputs, a verify script, and a card a stranger can regenerate.</p>
+      </div>
+    </div>
+    <div class="ctas">
+      <a class="btn primary" href="https://github.com/jurayh/evalwarden/blob/main/CONTRIBUTING.md">Read CONTRIBUTING.md</a>
+      <a class="btn" href="https://jurayh.github.io/evidence-registry/">Registry gallery</a>
+    </div>
   </div>
 </section>
 

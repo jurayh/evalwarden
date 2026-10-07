@@ -338,3 +338,5 @@ pytest
 ```
 
 The test suite is the product's credibility: every rule has positive, negative, and precision fixtures (clean evals must *not* be flagged), the adapter has a read-only contract test, and the fixtures run end to end.
+
+Contributing a check, an adapter, or an evidence pack? Start with [CONTRIBUTING.md](CONTRIBUTING.md).
