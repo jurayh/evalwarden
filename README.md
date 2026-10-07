@@ -17,6 +17,28 @@ evalwarden demo
 
 That audits a deliberately broken benchmark and writes `evalwarden-demo-report.html`. Open it in a browser. No model key required.
 
+## What an audit looks like
+
+Point it at a real Inspect AI log. This agent called the same tool with the same arguments five times in a row (packaged fixture: `src/evalwarden/demo/inspect_native_loop/log.eval`, generated with Inspect AI):
+
+```console
+$ evalwarden audit src/evalwarden/demo/inspect_native_loop/log.eval
+evalwarden audit: evalwarden-native-loop
+adapter: inspect 0.3.0
+Integrity: 90 / 100 BLOCKED (0 errors, 1 high, 0 medium, 0 low)
+claim blocked by: TRAJ-001
+
+H TRAJ-001 [high|confidence:high] Trajectory loops: lookup({"query": "status"}) repeated 5x in task loop-1
+    evidence: loop: lookup({"query": "status"}) x5 (longest run x5)
+    at: log.eval -- attempt loop-1: 1 looped call pair(s) over 6 spans
+```
+
+Three ways in, depending on what you already have:
+
+- **Native Inspect logs:** audit a real `.eval` file directly, no translation step. [Native Inspect `.eval` logs](#native-inspect-eval-logs)
+- **Any other harness:** emit one canonical JSON, JSONL, or CSV file instead of writing an adapter. [Universal importer](#universal-importer)
+- **In CI:** JSON and SARIF output, plus a GitHub Action that uploads findings to code scanning. [Machine-readable output and CI](#machine-readable-output-and-ci)
+
 ## The flagship demo: caught red-handed
 
 A tiny synthetic coding benchmark reports **3/3 PASS**. The solver earned none of it: it reads `TASK_ID` from the environment, looks up the answer in `gold_map.json`, and submits the gold patch. The auditor flags the exact leak channels, each with file-level evidence:
