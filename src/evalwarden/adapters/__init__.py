@@ -9,8 +9,11 @@ translate; the core never becomes a harness. Each adapter:
 - pins its own version and the schema versions it understands,
 - reports unsupported fields explicitly instead of silently dropping them.
 
-v0.1 ships one adapter: Inspect AI style eval artifacts. Promptfoo, Harbor,
-and BrowserGym adapters plug into REGISTRY later with the same contract.
+Five adapters ship: Inspect AI eval artifacts (artifact directories and
+native ``.eval`` logs), Promptfoo results, Claude Code session files, Codex
+rollout files, and a universal importer for the canonical
+``evalwarden.model`` JSON, JSONL, and CSV formats. New adapters plug into
+REGISTRY with the same contract.
 """
 from __future__ import annotations
 

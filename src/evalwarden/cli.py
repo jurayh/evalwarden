@@ -11,7 +11,7 @@ import typer
 
 import evalwarden
 from .adapters import AuditError
-from .checks import BY_ID
+from .checks import BY_ID, get_check
 from .engine import AuditResult, audit_with_policy
 from .reporters import render_html, render_json, render_sarif, render_terminal
 from .reporters.report_card import CardEntry, render_index, render_report_card, slugify
@@ -323,7 +323,7 @@ def demo(
 @app.command()
 def explain(check_id: str = typer.Argument(..., help="Check ID, e.g. ENV-001.")) -> None:
     """Explain a check: the threat, what evidence it needs, how to fix it."""
-    check = BY_ID.get(check_id.upper())
+    check = get_check(check_id)
     if check is None:
         known = ", ".join(sorted(BY_ID))
         typer.echo(f"unknown check {check_id!r} (known: {known})", err=True)

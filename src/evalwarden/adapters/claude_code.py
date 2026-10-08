@@ -41,7 +41,6 @@ other type instead of silently dropping data):
 """
 from __future__ import annotations
 
-import hashlib
 import json
 from datetime import datetime
 from pathlib import Path
@@ -57,6 +56,7 @@ from ..model import (
     TrajectoryStep,
 )
 from . import AuditError, register
+from ._io import digest_file, parse_ts, read_jsonl
 
 ADAPTER_NAME = "claude-code"
 ADAPTER_VERSION = "0.1.0"
@@ -90,33 +90,6 @@ SKIPPED_RECORD_TYPES = {
     "permission-mode",
     "pr-link",
 }
-
-
-def _digest(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
-def _read_jsonl(path: Path) -> list[dict]:
-    """Parse a JSONL session file. Malformed lines fail clearly, with the line."""
-    try:
-        text = path.read_text(encoding="utf-8")
-    except FileNotFoundError as exc:
-        raise AuditError(f"missing session file: {path}") from exc
-    except UnicodeDecodeError as exc:
-        raise AuditError(f"{path}: session file must be UTF-8 text") from exc
-    records: list[dict] = []
-    for lineno, raw in enumerate(text.splitlines(), start=1):
-        line = raw.strip()
-        if not line:
-            continue
-        try:
-            record = json.loads(line)
-        except json.JSONDecodeError as exc:
-            raise AuditError(f"invalid JSON in {path} line {lineno}: {exc}") from exc
-        if not isinstance(record, dict):
-            raise AuditError(f"{path} line {lineno}: record must be a JSON object")
-        records.append(record)
-    return records
 
 
 def _looks_like_claude(path: Path) -> bool:
@@ -189,15 +162,6 @@ def _tool_result_text(block: dict) -> str:
     return ""
 
 
-def _parse_ts(value: Any) -> datetime | None:
-    if not isinstance(value, str):
-        return None
-    try:
-        return datetime.fromisoformat(value.replace("Z", "+00:00"))
-    except ValueError:
-        return None
-
-
 def _usage_int(usage: dict, key: str) -> int:
     value = usage.get(key)
     return int(value) if isinstance(value, (int, float)) and not isinstance(value, bool) else 0
@@ -251,7 +215,7 @@ class _SessionBuilder:
             )
         if self.session_id is None and isinstance(record.get("sessionId"), str):
             self.session_id = record["sessionId"]
-        ts = _parse_ts(record.get("timestamp"))
+        ts = parse_ts(record.get("timestamp"))
         if ts is not None:
             self.first_ts = ts if self.first_ts is None else min(self.first_ts, ts)
             self.last_ts = ts if self.last_ts is None else max(self.last_ts, ts)
@@ -445,15 +409,15 @@ class ClaudeCodeAdapter:
                         meta = {}
                     if isinstance(meta, dict) and isinstance(meta.get("description"), str):
                         meta_description = meta["description"]
-                    digests[meta_path.name] = _digest(meta_path)
+                    digests[meta_path.name] = digest_file(meta_path)
             sources.append({
                 "path": file_path,
-                "records": _read_jsonl(file_path),
+                "records": read_jsonl(file_path),
                 "parent_stem": parent.stem if parent else None,
                 "agent_id": agent_id,
                 "meta_description": meta_description,
             })
-            digests[file_path.name] = _digest(file_path)
+            digests[file_path.name] = digest_file(file_path)
         if not sources:
             raise AuditError(f"claude-code adapter found no readable session files under {path}")
         return {"root": path, "sources": sources, "digests": digests}

@@ -15,7 +15,6 @@ judgments, spans, grader data, or data-flow edges.
 """
 from __future__ import annotations
 
-import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -31,6 +30,7 @@ from ..canonical import (
 )
 from ..model import Confidence, IntegrityModel
 from . import AuditError, register
+from ._io import digest_file
 
 ADAPTER_NAME = CANONICAL_ADAPTER_NAME
 ADAPTER_VERSION = CANONICAL_ADAPTER_VERSION
@@ -44,10 +44,6 @@ _CANONICAL_FILES = (
     "attempts.json",
     "run_scores.json",
 )
-
-
-def _digest(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def _looks_like_jsonl(text: str) -> bool:
@@ -133,7 +129,7 @@ class UniversalAdapter:
             "root": path,
             "format": _format_for(path, text),
             "text": text,
-            "digests": {path.name: _digest(path)},
+            "digests": {path.name: digest_file(path)},
         }
 
     def normalize(self, bundle: dict) -> IntegrityModel:

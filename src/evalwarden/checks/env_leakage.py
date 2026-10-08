@@ -135,3 +135,8 @@ class EnvLeakageCheck(Check):
                     )
                 )
         return findings
+
+
+CHECKS: list[Check] = [
+    EnvLeakageCheck(),  # ENV-001
+]

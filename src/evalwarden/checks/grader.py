@@ -218,3 +218,10 @@ class CloneGapCheck(Check):
                 remediation=self.meta.remediation,
             )
         ]
+
+
+CHECKS: list[Check] = [
+    VerifierWritableCheck(),  # GRAD-001
+    EmptyPathCheck(),  # GRAD-002
+    CloneGapCheck(),  # GRAD-003
+]

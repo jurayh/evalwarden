@@ -46,7 +46,6 @@ trajectory data.
 """
 from __future__ import annotations
 
-import hashlib
 import json
 import re
 from datetime import datetime
@@ -63,6 +62,7 @@ from ..model import (
     TrajectoryStep,
 )
 from . import AuditError, register
+from ._io import digest_file, parse_ts, read_jsonl
 
 ADAPTER_NAME = "codex"
 ADAPTER_VERSION = "0.1.0"
@@ -111,10 +111,6 @@ _SESSION_ID_RE = re.compile(
 )
 
 
-def _digest(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
 def _session_id_from_filename(path: Path) -> str:
     match = _SESSION_ID_RE.search(path.name)
     if not match:
@@ -125,29 +121,6 @@ def _session_id_from_filename(path: Path) -> str:
             "session_meta -- is the authoritative source"
         )
     return match.group(1)
-
-
-def _read_jsonl(path: Path) -> list[dict]:
-    """Parse a rollout JSONL file. Malformed lines fail clearly, with the line."""
-    try:
-        text = path.read_text(encoding="utf-8")
-    except FileNotFoundError as exc:
-        raise AuditError(f"missing rollout file: {path}") from exc
-    except UnicodeDecodeError as exc:
-        raise AuditError(f"{path}: rollout file must be UTF-8 text") from exc
-    records: list[dict] = []
-    for lineno, raw in enumerate(text.splitlines(), start=1):
-        line = raw.strip()
-        if not line:
-            continue
-        try:
-            record = json.loads(line)
-        except json.JSONDecodeError as exc:
-            raise AuditError(f"invalid JSON in {path} line {lineno}: {exc}") from exc
-        if not isinstance(record, dict):
-            raise AuditError(f"{path} line {lineno}: record must be a JSON object")
-        records.append(record)
-    return records
 
 
 def _looks_like_codex(path: Path) -> bool:
@@ -176,15 +149,6 @@ def _rollout_files(path: Path) -> list[Path]:
     if path.is_file():
         return [path]
     return sorted(p for p in path.rglob("rollout-*.jsonl") if p.is_file())
-
-
-def _parse_ts(value: Any) -> datetime | None:
-    if not isinstance(value, str):
-        return None
-    try:
-        return datetime.fromisoformat(value.replace("Z", "+00:00"))
-    except ValueError:
-        return None
 
 
 def _message_text(payload: dict) -> str:
@@ -252,7 +216,7 @@ class _RolloutBuilder:
         payload = record.get("payload")
         if not isinstance(payload, dict):
             raise AuditError(f"{self.path} line {lineno}: record payload must be an object")
-        ts = _parse_ts(record.get("timestamp"))
+        ts = parse_ts(record.get("timestamp"))
         if ts is not None:
             self.first_ts = ts if self.first_ts is None else min(self.first_ts, ts)
             self.last_ts = ts if self.last_ts is None else max(self.last_ts, ts)
@@ -525,10 +489,10 @@ class CodexAdapter:
         for file_path in files:
             sources.append({
                 "path": file_path,
-                "records": _read_jsonl(file_path),
+                "records": read_jsonl(file_path, kind="rollout file"),
                 "session_id": _session_id_from_filename(file_path),
             })
-            digests[file_path.name] = _digest(file_path)
+            digests[file_path.name] = digest_file(file_path)
         return {"root": path, "sources": sources, "digests": digests}
 
     def normalize(self, bundle: dict) -> IntegrityModel:

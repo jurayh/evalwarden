@@ -54,8 +54,6 @@ versions it understands and fails clearly on anything else.
 """
 from __future__ import annotations
 
-import hashlib
-import json
 from pathlib import Path
 from typing import Any
 
@@ -73,6 +71,7 @@ from ..model import (
 )
 from . import AuditError, register
 from ._inspect_archive import read_archive_members
+from ._io import digest_file, read_json, read_jsonl
 from .inspect_native import normalize_native_log
 
 ADAPTER_NAME = "inspect"
@@ -81,40 +80,6 @@ SCHEMA_VERSION = "evalwarden-artifact-v1"
 MAX_SPAN_OUTPUT_CHARS = 512  # tool results are truncated at the boundary
 
 _SPAN_KEYS = {"task_id", "step_id", "tool", "args", "output", "consumes"}
-
-
-def _read_json(path: Path) -> Any:
-    try:
-        return json.loads(path.read_text(encoding="utf-8"))
-    except FileNotFoundError as exc:
-        raise AuditError(f"missing required file: {path}") from exc
-    except json.JSONDecodeError as exc:
-        raise AuditError(f"invalid JSON in {path}: {exc}") from exc
-
-
-def _read_jsonl(path: Path) -> list[dict]:
-    """Parse a JSONL span file. Malformed lines fail clearly, with the line."""
-    try:
-        text = path.read_text(encoding="utf-8")
-    except FileNotFoundError as exc:
-        raise AuditError(f"missing required file: {path}") from exc
-    records: list[dict] = []
-    for lineno, raw in enumerate(text.splitlines(), start=1):
-        line = raw.strip()
-        if not line:
-            continue
-        try:
-            record = json.loads(line)
-        except json.JSONDecodeError as exc:
-            raise AuditError(f"invalid JSON in {path} line {lineno}: {exc}") from exc
-        if not isinstance(record, dict):
-            raise AuditError(f"{path} line {lineno}: span record must be a JSON object")
-        records.append(record)
-    return records
-
-
-def _digest(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def _failure_mode(task: dict) -> str | None:
@@ -280,7 +245,7 @@ class InspectAdapter:
                 "root": path,
                 "native_eval": native_path,
                 "native_members": read_archive_members(native_path),
-                "digests": {native_path.name: _digest(native_path)},
+                "digests": {native_path.name: digest_file(native_path)},
             }
         bundle: dict[str, Any] = {"root": path}
         digests: dict[str, str] = {}
@@ -293,18 +258,20 @@ class InspectAdapter:
         ):
             fpath = path / fname
             if fpath.is_file():
-                bundle[fname] = _read_json(fpath)
-                digests[fname] = _digest(fpath)
+                bundle[fname] = read_json(fpath)
+                digests[fname] = digest_file(fpath)
         traj_path = path / "trajectories.jsonl"
         if traj_path.is_file():
-            bundle["trajectories.jsonl"] = _read_jsonl(traj_path)
-            digests["trajectories.jsonl"] = _digest(traj_path)
+            bundle["trajectories.jsonl"] = read_jsonl(
+                traj_path, kind="required file", record="span record"
+            )
+            digests["trajectories.jsonl"] = digest_file(traj_path)
         for fname in ("gold_map.json",):
             fpath = path / fname
             if fpath.is_file():
                 # Recorded for the digest manifest only; never parsed for content
                 # beyond its existence (it is the leak, not the evidence).
-                digests[fname] = _digest(fpath)
+                digests[fname] = digest_file(fpath)
                 bundle.setdefault("extra_files", []).append(fname)
         bundle["digests"] = digests
         return bundle

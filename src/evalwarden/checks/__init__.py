@@ -1,25 +1,27 @@
-"""Rule registry. v0.3 ships deterministic, high-precision checks only.
+"""Rule registry: deterministic, high-precision checks only.
 
 Sequencing rule: earn trust with deterministic evidence before adding
 probabilistic signals. Every finding carries a confidence label; a linter that
 cries contamination on a clean eval is worse than no auditor.
+
+Each lane module exports a ``CHECKS`` list; the registry is those lists in
+lane order. Adding a check is one class in a lane module plus one line in
+that lane's list.
 """
 from __future__ import annotations
 
 from .base import Check
 from .cost import CHECKS as COST_CHECKS
 from .data import CHECKS as DATA_CHECKS
-from .env_leakage import EnvLeakageCheck
-from .grader import CloneGapCheck, EmptyPathCheck, VerifierWritableCheck
+from .env_leakage import CHECKS as ENV_CHECKS
+from .grader import CHECKS as GRADER_CHECKS
 from .judge import CHECKS as JUDGE_CHECKS
 from .noise import CHECKS as NOISE_CHECKS
 from .traj import CHECKS as TRAJ_CHECKS
 
 REGISTRY: list[Check] = [
-    EnvLeakageCheck(),  # ENV-001
-    VerifierWritableCheck(),  # GRAD-001
-    EmptyPathCheck(),  # GRAD-002
-    CloneGapCheck(),  # GRAD-003
+    *ENV_CHECKS,  # ENV-001
+    *GRADER_CHECKS,  # GRAD-001 .. GRAD-003
     *COST_CHECKS,  # COST-001 .. COST-004
     *JUDGE_CHECKS,  # JUDGE-001 .. JUDGE-009
     *DATA_CHECKS,  # DATA-001 .. DATA-003

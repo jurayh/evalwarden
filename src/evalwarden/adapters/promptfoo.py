@@ -22,7 +22,6 @@ results. It never executes an eval.
 """
 from __future__ import annotations
 
-import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -36,6 +35,7 @@ from ..model import (
     TaskSample,
 )
 from . import AuditError, register
+from ._io import digest_file, read_json
 
 ADAPTER_NAME = "promptfoo"
 ADAPTER_VERSION = "0.6.0"
@@ -71,15 +71,6 @@ def _envelope_has_config(results_path: Path) -> bool:
     return isinstance(envelope, dict) and isinstance(envelope.get("config"), dict)
 
 
-def _read_json(path: Path) -> Any:
-    try:
-        return json.loads(path.read_text(encoding="utf-8"))
-    except FileNotFoundError as exc:
-        raise AuditError(f"missing required file: {path}") from exc
-    except json.JSONDecodeError as exc:
-        raise AuditError(f"invalid JSON in {path}: {exc}") from exc
-
-
 def _read_yaml(path: Path) -> Any:
     try:
         import yaml
@@ -94,10 +85,6 @@ def _read_yaml(path: Path) -> Any:
         raise AuditError(f"missing required file: {path}") from exc
     except yaml.YAMLError as exc:
         raise AuditError(f"invalid YAML in {path}: {exc}") from exc
-
-
-def _digest(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def _config_path(path: Path) -> Path | None:
@@ -138,11 +125,11 @@ class PromptfooAdapter:
         if config_path is not None:
             bundle["config"] = _read_yaml(config_path)
             bundle["config_file"] = config_path.name
-            digests[config_path.name] = _digest(config_path)
+            digests[config_path.name] = digest_file(config_path)
         results_path = path / RESULTS_NAME
         if results_path.is_file():
-            bundle["results"] = _read_json(results_path)
-            digests[RESULTS_NAME] = _digest(results_path)
+            bundle["results"] = read_json(results_path)
+            digests[RESULTS_NAME] = digest_file(results_path)
         bundle["digests"] = digests
         return bundle
 

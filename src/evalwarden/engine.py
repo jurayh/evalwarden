@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-from . import adapters  # noqa: F401  (import registers the Inspect adapter)
+from . import adapters  # noqa: F401  (the adapter modules imported below register themselves)
 from .adapters import AuditError, autodetect
 from .adapters import inspect_ai  # noqa: F401  (registers itself on import)
 from .adapters import promptfoo  # noqa: F401  (registers itself on import)
