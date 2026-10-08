@@ -117,9 +117,40 @@ def test_loop_finding_is_deterministic_evidence():
     model = make_model(attempts=[make_attempt(task_id="t1", spans=_loop5(rng, "x"))])
     (finding,) = LoopCheck().run(model)
     assert finding.id == "TRAJ-001"
-    assert finding.severity == Severity.HIGH
+    # _loop5 repeats are scattered (longest run 1): reported, one
+    # severity down -- scattered repeats can be deliberate re-verification.
+    assert finding.severity == Severity.MEDIUM
     assert finding.confidence == Confidence.HIGH
     assert "read_file" in finding.evidence[0] and "x5" in finding.evidence[0]
+
+
+def test_spin_finding_is_high():
+    rng = random.Random(SEED)
+    model = make_model(attempts=[make_attempt(task_id="t1", spans=_spin3(rng, "x"))])
+    (finding,) = LoopCheck().run(model)
+    assert finding.id == "TRAJ-001"
+    assert finding.severity == Severity.HIGH  # 3x back-to-back is the stuck signature
+
+
+def test_shell_repeats_with_recaptioned_descriptions_still_loop():
+    # Real Claude Code shell args carry a free-text "description" that
+    # changes between otherwise identical calls (Optimal Misbehavior
+    # corpus). The caption is prose, not call semantics.
+    calls = [
+        ("Read", {"file_path": "a.py"}),
+        ("PowerShell", {"command": "node verify.js", "description": "Run verify"}),
+        ("Edit", {"file_path": "a.py", "old_string": "x", "new_string": "y"}),
+        ("PowerShell", {"command": "node verify.js", "description": "Verify again"}),
+        ("Read", {"file_path": "b.py"}),
+        ("PowerShell", {"command": "node verify.js", "description": "Re-run verification"}),
+        ("Grep", {"pattern": "todo"}),
+        ("PowerShell", {"command": "node verify.js", "description": "Final verify pass"}),
+    ]
+    spans = _chain("cap", calls)
+    model = make_model(attempts=[make_attempt(task_id="t1", spans=spans)])
+    (finding,) = LoopCheck().run(model)
+    assert finding.id == "TRAJ-001"
+    assert "PowerShell" in finding.evidence[0] and "x4" in finding.evidence[0]
 
 
 def test_unused_finding_names_steps():

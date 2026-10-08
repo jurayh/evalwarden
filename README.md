@@ -264,10 +264,24 @@ evalwarden demo [--fixture leaky|hardened|judge_bad|judge_clean|cost_wasteful|co
              [--output evalwarden-demo-report.html] [--budget-per-task USD]
 evalwarden report-card <eval-artifact> [--output card.html]
 evalwarden report-cards <eval...> [--fixtures a,b] [--output-dir cards/]
+evalwarden trace [sessions-path] [--demo] [--since 7d] [--project NAME]
+              [--agent all|claude-code|codex] [--output trace-report.html]
 evalwarden explain <CHECK-ID>
 ```
 
 Exit codes: `0` policy passes, `1` findings cross `--fail-on`, `2` the audit could not complete. The same policy runs locally and as a CI gate.
+
+## Trace observatory
+
+`evalwarden trace` reads the Claude Code and Codex sessions already on
+your disk (auto-discovered under `~/.claude/projects` and
+`~/.codex/sessions`, or `--demo` for built-in sessions) and renders one
+local page: every session segmented into explore / plan / edit / test /
+review phases, repeated tool calls priced in dollars from the usage the
+harness actually recorded, and a "what this page cannot see" section
+naming what the format does not record. No account, no rerun, no
+upload. Both importers are validated against real public session
+corpora with exact token reconciliation.
 
 ## Reports
 

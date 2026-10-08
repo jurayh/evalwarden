@@ -18,6 +18,14 @@ def test_canonical_call_distinguishes_values_and_tools():
     assert canonical_call("read", {"a": 1}) != canonical_call("write", {"a": 1})
 
 
+def test_canonical_call_ignores_prose_captions():
+    a = canonical_call("Bash", {"command": "npm test", "description": "Run tests"})
+    b = canonical_call("Bash", {"command": "npm test", "description": "Tests, again"})
+    assert a == b
+    c = canonical_call("Bash", {"command": "npm run build", "description": "Run tests"})
+    assert a != c  # a changed semantic argument is still a different call
+
+
 def test_canonical_call_survives_non_json_values():
     key = canonical_call("tool", {"x": object()})
     assert key.startswith("tool(")

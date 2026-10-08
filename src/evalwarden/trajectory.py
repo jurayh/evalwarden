@@ -13,7 +13,14 @@ Two waste shapes, both deterministic:
 Exact definitions:
 - canonical_call(tool, args): "tool({json, sorted keys})". Two calls are
   "the same" iff their canonical keys are byte-identical -- no fuzzy
-  matching, by design. A single changed argument is a different call.
+  matching, by design. A single changed argument is a different call,
+  with one exception: prose caption fields (see PROSE_ARG_KEYS) are
+  dropped before comparison. Harnesses attach a human-written caption
+  to shell calls ("Run the tests after the fix"); the caption describes
+  the call, it is not part of what the call does, and real traces show
+  identical commands captioned differently escaping detection while
+  caption-free calls dominate the hits (Optimal Misbehavior corpus,
+  Oct 2026).
 - A loop hit is a canonical key occurring >= total_at times in one
   trajectory, or >= consecutive_at times back-to-back. The consecutive rule
   catches the classic spin (read, read, read); the total rule catches the
@@ -33,13 +40,22 @@ import json
 from dataclasses import dataclass
 
 
+# Argument keys that carry prose about a call rather than call
+# semantics. Claude Code's Bash/PowerShell inputs include a
+# human-readable "description" of the command; the same command with a
+# reworded caption is the same call.
+PROSE_ARG_KEYS = {"description"}
+
+
 def canonical_call(tool: str, args: dict) -> str:
     """One canonical string for a (tool, args) pair.
 
-    Argument order does not matter; argument values do. Non-JSON values
+    Argument order does not matter; argument values do, except prose
+    caption fields (PROSE_ARG_KEYS), which are dropped. Non-JSON values
     fall back to str() so adapters never crash the linter on odd types.
     """
-    return f"{tool}({json.dumps(args, sort_keys=True, default=str)})"
+    semantic = {k: v for k, v in args.items() if k not in PROSE_ARG_KEYS}
+    return f"{tool}({json.dumps(semantic, sort_keys=True, default=str)})"
 
 
 @dataclass

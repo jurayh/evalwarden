@@ -59,20 +59,34 @@ class LoopCheck(Check):
             hits = find_loops(calls, LOOP_TOTAL_AT, LOOP_CONSECUTIVE_AT)
             if not hits:
                 continue
+            # The spinniest hit leads. Severity leans on the longest
+            # back-to-back run: consecutive identical calls are the
+            # stuck-agent signature, while the same total scattered
+            # across a long session can be deliberate re-verification
+            # (playtest screenshots in the Optimal Misbehavior corpus
+            # repeated 14x with a longest run of 2) -- still reported,
+            # one severity down.
+            ordered = sorted(
+                hits, key=lambda h: (-h.max_consecutive, -h.total))
+            severity = (
+                Severity.HIGH
+                if ordered[0].max_consecutive >= LOOP_CONSECUTIVE_AT
+                else Severity.MEDIUM
+            )
             findings.append(
                 Finding(
                     id=self.meta.id,
                     title=(
-                        f"Trajectory loops: {_short(hits[0].key)} repeated "
-                        f"{hits[0].total}x in task {attempt.task_id}"
+                        f"Trajectory loops: {_short(ordered[0].key)} repeated "
+                        f"{ordered[0].total}x in task {attempt.task_id}"
                     ),
-                    severity=Severity.HIGH,
+                    severity=severity,
                     confidence=Confidence.HIGH,
                     description=self.meta.threat,
                     evidence=[
                         f"loop: {_short(h.key)} x{h.total} "
                         f"(longest run x{h.max_consecutive})"
-                        for h in hits[:MAX_EVIDENCE]
+                        for h in ordered[:MAX_EVIDENCE]
                     ],
                     locations=[
                         _traj_loc(
