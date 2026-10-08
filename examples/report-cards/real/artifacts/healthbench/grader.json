@@ -13,5 +13,5 @@
     ],
     "scale_anchors": {}
   },
-  "notes": "Judge defaults from healthbench() in healthbench.py. Each (conversation, rubric item) pair is graded criteria_met=true/false by the judge model per GRADER_TEMPLATE (scorer.py); the score is the points-weighted sum. The task package also ships a 29,511-item physician-graded meta_eval subset (DATASET_URLS['meta_eval'] in dataset.py, with a judge-vs-physician macro-F1 agreement scorer in meta_evaluation.py); this artifact translates the main eval subset only and does not encode those labels (audited separately as healthbench-meta-eval-via-inspect-evals). The rubric is a boolean checklist with point weights, not a scalar scale with anchored levels."
+  "notes": "Judge defaults from healthbench() in healthbench.py. Each (conversation, rubric item) pair is graded criteria_met=true/false by the judge model per GRADER_TEMPLATE (scorer.py); the score is the points-weighted sum. No labeled calibration set ships in the eval definition: judge validation lives in the separate healthbench_meta_eval maintenance task (29,511 physician-graded items, macro F1), not in this artifact. The rubric is a boolean checklist with point weights, not a scalar scale with anchored levels."
 }

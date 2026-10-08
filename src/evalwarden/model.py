@@ -170,13 +170,6 @@ class TrajectoryStep:
     args: dict = field(default_factory=dict)  # normalized JSON-able arguments
     output: str | None = None  # redacted/truncated tool result (kept for future checks)
     consumes: list[str] = field(default_factory=list)  # step_ids whose outputs this step used
-    # Token usage the harness attributes to this single step, when it records
-    # any (Claude Code records usage per assistant record; Codex records it
-    # per turn). None when the format records usage only for a group of
-    # steps or not at all -- adapters never split a shared total across
-    # steps, because a split would fabricate per-step precision.
-    tokens_in: int | None = None
-    tokens_out: int | None = None
 
 
 @dataclass

@@ -43,10 +43,7 @@ pinned sources are unchanged.
 from __future__ import annotations
 
 import argparse
-import csv
-import hashlib
 import json
-import random
 import urllib.request
 from pathlib import Path
 
@@ -326,13 +323,11 @@ def build_healthbench(work: Path) -> Path:
                     "Each (conversation, rubric item) pair is graded "
                     "criteria_met=true/false by the judge model per "
                     "GRADER_TEMPLATE (scorer.py); the score is the "
-                    "points-weighted sum. The task package also ships a 29,511-item "
-                    "physician-graded meta_eval subset (DATASET_URLS['meta_eval'] "
-                    "in dataset.py, with a judge-vs-physician macro-F1 agreement "
-                    "scorer in meta_evaluation.py); this artifact translates the "
-                    "main eval subset only and does not encode those labels "
-                    "(audited separately as healthbench-meta-eval-via-inspect-evals). "
-                    "The rubric is a boolean checklist with point "
+                    "points-weighted sum. No labeled calibration set ships "
+                    "in the eval definition: judge validation lives in the "
+                    "separate healthbench_meta_eval maintenance task "
+                    "(29,511 physician-graded items, macro F1), not in this "
+                    "artifact. The rubric is a boolean checklist with point "
                     "weights, not a scalar scale with anchored levels."
                 ),
             },
@@ -353,12 +348,9 @@ def build_healthbench(work: Path) -> Path:
                 "judge_defaults_source": "healthbench() task signature (judge_model, judge_temperature)",
                 "grader_template": "GRADER_TEMPLATE in scorer.py",
                 "judge_validation_note": (
-                    "The task package ships the healthbench_meta_eval subset "
-                    "(29,511 physician-graded items, URL pinned in dataset.py, "
-                    "judge-vs-physician agreement scorer in meta_evaluation.py); "
-                    "this artifact translates the main eval subset only, which "
-                    "does not encode those labels. The meta_eval subset is "
-                    "audited as its own card (healthbench-meta-eval-via-inspect-evals)."
+                    "The benchmark authors validate the grader in the paper "
+                    "via the healthbench_meta_eval subset; that validation "
+                    "is NOT part of the eval definition artifact audited here."
                 ),
                 "no_traces": True,
                 "generated_by": "examples/report-cards/real/build_real_cards.py",
@@ -368,221 +360,6 @@ def build_healthbench(work: Path) -> Path:
         encoding="utf-8",
     )
     print(f"healthbench: {len(tasks)} tasks -> {out}")
-    return out
-
-
-# Pinned in DATASET_URLS["meta_eval"] in inspect_evals/healthbench/dataset.py
-# at the pinned commit (read by a human; the machine link is this file's hash).
-HB_META_EVAL_URL = (
-    "https://openaipublic.blob.core.windows.net/simple-evals/healthbench/"
-    "2025-05-07-06-14-12_oss_meta_eval.jsonl"
-)
-# Exact judge defaults from meta_evaluation_scorer() in
-# inspect_evals/healthbench/meta_evaluation.py at the pinned commit.
-HB_META_JUDGE_MODEL = "openai/gpt-4o-mini"
-HB_META_JUDGE_TEMPERATURE = 0.0
-
-
-def _healthbench_meta_id(prompt_id: str, completion_id: str) -> str:
-    """Replicate create_stable_id(prompt_id, completion_id, prefix="healthbench_meta")
-    from inspect_evals/utils/deps_utils.py at the pinned commit."""
-    combined = "\0".join([prompt_id, completion_id])
-    return "healthbench_meta_" + hashlib.md5(combined.encode()).hexdigest()[:8]
-
-
-def _meta_eval_judge_input(record: dict) -> str:
-    """Replicate _create_conversation_string(state, completion) from
-    inspect_evals/healthbench/scorer.py: the conversation turns plus the
-    pre-recorded completion as the final assistant turn. This is exactly what
-    the meta_evaluation_scorer feeds the judge model."""
-    turns = list(record["prompt"]) + [{"role": "assistant", "content": record["completion"]}]
-    return "\n\n".join(f"{m['role']}: {m['content']}" for m in turns)
-
-
-def _physician_majority(grades: list[bool]) -> bool:
-    """Replicate calculate_physician_majority() in meta_evaluation.py."""
-    return sum(grades) > len(grades) / 2
-
-
-def build_healthbench_meta_eval(work: Path) -> Path:
-    """Translate the inspect_evals healthbench meta_eval subset (default args).
-
-    This subset is the benchmark's own judge-validation instrument: 29,511
-    records, each carrying 2-5 physician boolean grades (binary_labels) for a
-    pre-recorded assistant completion. meta_evaluation_scorer grades the judge
-    model against the physician majority and reports macro F1. The physician
-    labels are the ground truth the judge is validated against, so they are
-    attached as the grader's reference_labels (via judge_run.json) and kept
-    out of the task prompts: the integrity question is what the JUDGE can see.
-    """
-    out = work / "healthbench-meta-eval"
-    out.mkdir(parents=True, exist_ok=True)
-
-    lines = _get_jsonl_head(HB_META_EVAL_URL, N_SAMPLES)
-    records = [json.loads(ln) for ln in lines[:N_SAMPLES]]
-    assert len(records) == N_SAMPLES, f"expected {N_SAMPLES} records, got {len(records)}"
-
-    tasks = []
-    reference_labels: dict[str, str] = {}
-    criterion_texts: list[str] = []
-    for rec in records:
-        tid = _healthbench_meta_id(rec["prompt_id"], rec["completion_id"])
-        grades = rec["binary_labels"]
-        reference_labels[tid] = "true" if _physician_majority(grades) else "false"
-        tasks.append(
-            {
-                "id": tid,
-                "prompt": _meta_eval_judge_input(rec),
-                "metadata": {
-                    "category": rec["category"],
-                    "n_physician_grades": len(grades),
-                    "prompt_id": rec["prompt_id"],
-                    "completion_id": rec["completion_id"],
-                },
-            }
-        )
-        if len(criterion_texts) < 4:
-            criterion_texts.append(rec["rubric"])
-
-    (out / "dataset.json").write_text(
-        json.dumps(
-            {
-                "schema_version": SCHEMA_VERSION,
-                "eval_id": "HealthBench meta_eval via inspect_evals",
-                "tasks": tasks,
-                "notes": (
-                    f"Definition sample: {N_SAMPLES} of 29,511 meta_eval records "
-                    "(URL pinned in DATASET_URLS['meta_eval'], dataset.py). Each "
-                    "record is a (conversation, pre-recorded completion) pair the "
-                    "judge grades against one rubric criterion; the task prompt "
-                    "is exactly the judge's input per _create_conversation_string. "
-                    "The completion is the response under evaluation, not an "
-                    "answer: the ground truth is the physician majority, which is "
-                    "harness-side (judge_run.json reference_labels) and excluded "
-                    "here."
-                ),
-            },
-            indent=2,
-        ),
-        encoding="utf-8",
-    )
-
-    (out / "environment.json").write_text(
-        json.dumps(
-            {
-                "env": {},
-                "mounts": [],
-                "notes": (
-                    "The meta_eval subset declares no agent solver: completions "
-                    "are pre-recorded responses under evaluation, not agent "
-                    "outputs. The task definition declares no agent-visible "
-                    "environment. The instrument under audit is the judge model "
-                    "itself, validated against the physician labels."
-                ),
-            },
-            indent=2,
-        ),
-        encoding="utf-8",
-    )
-
-    (out / "grader.json").write_text(
-        json.dumps(
-            {
-                "kind": "judge",
-                "judge": {
-                    # Defaults from meta_evaluation_scorer().
-                    "model": HB_META_JUDGE_MODEL,
-                    "protocol": "pointwise",
-                    "temperature": HB_META_JUDGE_TEMPERATURE,
-                    "repeats": 1,
-                    "rubric_criteria": criterion_texts,
-                    # No scale_anchors: the criterion is graded
-                    # criteria_met=true/false, not a scalar scale.
-                    "scale_anchors": {},
-                },
-                "notes": (
-                    "Judge defaults from meta_evaluation_scorer() in "
-                    "meta_evaluation.py. The scorer grades the judge model's "
-                    "criteria_met verdict on (conversation, completion, rubric) "
-                    "against the physician majority of binary_labels and "
-                    "reports judge-vs-physician agreement via macro_f1_metric. "
-                    "The 12 sampled records' physician majorities are attached "
-                    "as reference_labels in judge_run.json; the full 29,511-item "
-                    "labeled set is the calibration evidence this card's "
-                    "JUDGE-001 finding (or lack thereof) rests on."
-                ),
-            },
-            indent=2,
-        ),
-        encoding="utf-8",
-    )
-
-    (out / "judge_run.json").write_text(
-        json.dumps(
-            {
-                "judge": {
-                    "model": HB_META_JUDGE_MODEL,
-                    "protocol": "pointwise",
-                    "temperature": HB_META_JUDGE_TEMPERATURE,
-                },
-                "judgments": [],
-                "reference_labels": reference_labels,
-                "notes": (
-                    "No judge runs exist: this is a definition-level card. The "
-                    "reference_labels are the physician majorities for the 12 "
-                    "sampled records (\"true\"/\"false\"), drawn from the full "
-                    "29,511-item physician-graded set pinned in the task "
-                    "definition. Their presence is what clears JUDGE-001's "
-                    "labeled-calibration-set finding."
-                ),
-            },
-            indent=2,
-        ),
-        encoding="utf-8",
-    )
-
-    (out / "PROVENANCE.json").write_text(
-        json.dumps(
-            {
-                "benchmark": "HealthBench meta_eval subset (OpenAI, 2025)",
-                "task_definition": "inspect_evals/healthbench @ " + INSPECT_EVALS_COMMIT,
-                "task_files_read": [
-                    "healthbench.py",
-                    "dataset.py",
-                    "meta_evaluation.py",
-                    "scorer.py",
-                ],
-                "dataset_url": HB_META_EVAL_URL,
-                "dataset_split": "meta_eval (29,511 records per DATASET_URLS)",
-                "sample": f"first {N_SAMPLES} JSONL records via ranged head fetch",
-                "judge_defaults_source": (
-                    "meta_evaluation_scorer() signature (judge_model, "
-                    "judge_temperature)"
-                ),
-                "judge_input_format_source": (
-                    "_create_conversation_string(state, completion) in scorer.py"
-                ),
-                "agreement_metric": (
-                    "macro_f1_metric in meta_evaluation.py: judge criteria_met "
-                    "vs physician majority over binary_labels"
-                ),
-                "reference_label_rule": (
-                    "physician majority per calculate_physician_majority(): "
-                    "sum(binary_labels) > len(binary_labels)/2, encoded as "
-                    "\"true\"/\"false\""
-                ),
-                "excluded": [
-                    "binary_labels (physician boolean grades): public in the dataset but harness-side; they are the ground truth the judge is validated against, attached as reference_labels via judge_run.json",
-                    "anonymized_physician_ids: not needed to describe the instrument",
-                ],
-                "no_traces": True,
-                "generated_by": "examples/report-cards/real/build_real_cards.py",
-            },
-            indent=2,
-        ),
-        encoding="utf-8",
-    )
-    print(f"healthbench-meta-eval: {len(tasks)} tasks -> {out}")
     return out
 
 
@@ -915,232 +692,12 @@ def build_mmlu(work: Path) -> Path:
     return out
 
 
-# GPQA Diamond: the dataset is a single CSV whose URL and sha256 are pinned
-# in the task source itself (gpqa.py: GPQA_DIAMOND_DATASET_URL,
-# GPQA_DIAMOND_DATASET_SHA256, computed 2026-04-07).
-GPQA_CSV_URL = (
-    "https://openaipublic.blob.core.windows.net/simple-evals/gpqa_diamond.csv"
-)
-GPQA_CSV_SHA256 = (
-    "41d1213cd7a4998605a26c2798500652572007161b3a92817ba46b35befcd305"
-)
-# Fixed choice-shuffle seed from the task (DEFAULT_SHUFFLE_SEED in gpqa.py).
-# The raw CSV lists the correct answer first, so the seeded shuffle makes the
-# presented exam identical on every build.
-GPQA_SHUFFLE_SEED = 42
-# Exact prompt template: MultipleChoiceTemplate.SINGLE_ANSWER_COT from
-# inspect_ai (src/inspect_ai/solver/_multiple_choice.py); the task's solver is
-# multiple_choice(cot=True) by default. Choices are lettered per
-# answer_options() in the same module ("A) ...").
-GPQA_PROMPT_TEMPLATE = (
-    "Answer the following multiple choice question. The last line of your "
-    "response should be of the following format: 'ANSWER: $LETTER' "
-    "(without quotes) where LETTER is one of {letters}. Think step by step "
-    "before answering.\n"
-    "\n"
-    "{question}\n"
-    "\n"
-    "{choices}"
-)
-
-
-def _get_bytes(url: str) -> bytes:
-    req = urllib.request.Request(url, headers={"User-Agent": "evalwarden-card-builder/1.0"})
-    with urllib.request.urlopen(req, timeout=120) as resp:
-        return resp.read()
-
-
-def _gpqa_shuffled_choices(
-    records: list[dict[str, str]],
-) -> list[tuple[list[str], str]]:
-    """Replicate the task's seeded choice shuffle.
-
-    Mirrors inspect_ai MemoryDataset.shuffle_choices(seed=42): ONE
-    random.Random(42) shared across samples in dataset order; per sample the
-    choice positions are shuffled and the target letter remapped (the correct
-    answer is choices[0] in the raw CSV). Returns (shuffled choices,
-    target letter) per record.
-    """
-    rand = random.Random(GPQA_SHUFFLE_SEED)
-    out = []
-    for rec in records:
-        choices = [
-            rec["Correct Answer"],
-            rec["Incorrect Answer 1"],
-            rec["Incorrect Answer 2"],
-            rec["Incorrect Answer 3"],
-        ]
-        positions = list(range(len(choices)))
-        rand.shuffle(positions)
-        shuffled = [choices[i] for i in positions]
-        target_letter = chr(ord("A") + positions.index(0))
-        out.append((shuffled, target_letter))
-    return out
-
-
-def _format_gpqa_prompt(question: str, choices: list[str]) -> str:
-    letters = ",".join(chr(ord("A") + i) for i in range(len(choices)))
-    choice_lines = "\n".join(
-        f"{chr(ord('A') + i)}) {c}" for i, c in enumerate(choices)
-    )
-    return GPQA_PROMPT_TEMPLATE.format(
-        letters=letters, question=question, choices=choice_lines
-    )
-
-
-def build_gpqa(work: Path) -> Path:
-    """Translate the inspect_evals gpqa_diamond task definition (default args)."""
-    out = work / "gpqa"
-    out.mkdir(parents=True, exist_ok=True)
-
-    raw = _get_bytes(GPQA_CSV_URL)
-    digest = hashlib.sha256(raw).hexdigest()
-    if digest != GPQA_CSV_SHA256:
-        raise RuntimeError(
-            f"gpqa_diamond.csv hash mismatch: got {digest}, "
-            f"task source pins {GPQA_CSV_SHA256}"
-        )
-    records = list(csv.DictReader(raw.decode("utf-8").splitlines()))
-    assert len(records) == 198, f"expected 198 rows, got {len(records)}"
-    sample = records[:N_SAMPLES]
-    shuffled = _gpqa_shuffled_choices(sample)
-
-    tasks = []
-    for rec, (choices, _target) in zip(sample, shuffled):
-        tasks.append(
-            {
-                "id": rec["Record ID"],
-                "prompt": _format_gpqa_prompt(rec["Question"], choices),
-                "metadata": {
-                    "high_level_domain": rec["High-level domain"],
-                    "subdomain": rec["Subdomain"],
-                },
-            }
-        )
-
-    (out / "dataset.json").write_text(
-        json.dumps(
-            {
-                "schema_version": SCHEMA_VERSION,
-                "eval_id": "GPQA Diamond via inspect_evals",
-                "tasks": tasks,
-                "notes": (
-                    f"Definition sample: {N_SAMPLES} of 198 questions from "
-                    "gpqa_diamond.csv (URL and sha256 pinned in the task "
-                    "source; hash verified before use). The solver sees only "
-                    "the formatted multiple-choice question with the "
-                    "seed-42-shuffled choices. The correct-answer identity "
-                    "(target letter) is public in the dataset but EXCLUDED "
-                    "here: it is the harness-side sample target that "
-                    "choice() grades against, which the agent never sees. "
-                    "Sample = first 12 CSV rows in file order; the task "
-                    "applies no dataset-level shuffle, so this matches the "
-                    "task's own sample order."
-                ),
-            },
-            indent=2,
-        ),
-        encoding="utf-8",
-    )
-
-    (out / "environment.json").write_text(
-        json.dumps(
-            {
-                "env": {},
-                "mounts": [],
-                "notes": (
-                    "The solver is multiple_choice(cot=True) over plain "
-                    "`generate` (no tools, no sandbox). The task definition "
-                    "(gpqa.py) declares no agent-visible environment "
-                    "variables and no mounts."
-                ),
-            },
-            indent=2,
-        ),
-        encoding="utf-8",
-    )
-
-    (out / "grader.json").write_text(
-        json.dumps(
-            {
-                "kind": "script",
-                "verifier": {
-                    "path": (
-                        "inspect_ai.scorer.choice: parses the model's selected "
-                        "letter from the completion and compares it to the "
-                        "harness-side target letter"
-                    ),
-                    "writable_by_agent": False,
-                },
-                "tests": ["letter-match (A/B/C/D)"],
-                "notes": (
-                    "choice() grades the selected letter against the sample "
-                    "target, which lives in harness-side sample metadata. "
-                    "Scoring runs harness-side after the agent submits; the "
-                    "agent never sees the target and has no write path to the "
-                    "scoring. Completions with no parseable letter score as "
-                    "incorrect (0.0); there is no empty-output credit path. "
-                    "No judge model is involved: JUDGE-001..006 do not apply."
-                ),
-            },
-            indent=2,
-        ),
-        encoding="utf-8",
-    )
-
-    (out / "PROVENANCE.json").write_text(
-        json.dumps(
-            {
-                "benchmark": "GPQA Diamond (Rein et al., 2023)",
-                "task_definition": "inspect_evals/gpqa @ " + INSPECT_EVALS_COMMIT,
-                "task_files_read": ["gpqa.py", "eval.yaml"],
-                "dataset_url": GPQA_CSV_URL,
-                "dataset_sha256": GPQA_CSV_SHA256,
-                "dataset_sha256_source": (
-                    "GPQA_DIAMOND_DATASET_SHA256 in gpqa.py (pinned in the "
-                    "task source; verified by this builder before use)"
-                ),
-                "dataset_split": "gpqa_diamond.csv (198 questions)",
-                "sample": f"first {N_SAMPLES} CSV rows in file order",
-                "choice_shuffle": (
-                    "replicated from inspect_ai MemoryDataset.shuffle_choices "
-                    "(single random.Random(42) across samples in order; "
-                    "target letter remapped); seed from DEFAULT_SHUFFLE_SEED "
-                    "in gpqa.py"
-                ),
-                "prompt_template_source": (
-                    "MultipleChoiceTemplate.SINGLE_ANSWER_COT from "
-                    "UKGovernmentBEIS/inspect_ai "
-                    "src/inspect_ai/solver/_multiple_choice.py (read "
-                    "2026-09-29); task solver is multiple_choice(cot=True)"
-                ),
-                "translation": (
-                    "mechanical: prompt = SINGLE_ANSWER_COT template over "
-                    "question + seed-shuffled lettered choices; metadata = "
-                    "record id, high-level domain, subdomain"
-                ),
-                "excluded": [
-                    "correct-answer identity (target letter): public in the dataset but harness-side; it is the sample target that choice() grades against",
-                    "validator metadata columns (expert/non-expert validator accuracy, feedback, etc.): collected during benchmark construction; not read by the task definition",
-                    "pre-revision fields: superseded by the revised columns the task reads",
-                ],
-                "no_traces": True,
-                "generated_by": "examples/report-cards/real/build_real_cards.py",
-            },
-            indent=2,
-        ),
-        encoding="utf-8",
-    )
-    print(f"gpqa: {len(tasks)} tasks -> {out}")
-    return out
-
-
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--work-dir", required=True, help="Where to write the artifacts.")
     parser.add_argument(
         "--only",
-        choices=["swe-bench-verified", "healthbench", "healthbench-meta-eval", "writingbench", "mmlu", "gpqa"],
+        choices=["swe-bench-verified", "healthbench", "writingbench", "mmlu"],
         default=None,
         help="Build just one artifact (default: all).",
     )
@@ -1149,10 +706,8 @@ def main() -> None:
     builders = {
         "swe-bench-verified": build_swe_bench,
         "healthbench": build_healthbench,
-        "healthbench-meta-eval": build_healthbench_meta_eval,
         "writingbench": build_writingbench,
         "mmlu": build_mmlu,
-        "gpqa": build_gpqa,
     }
     for name, fn in builders.items():
         if args.only is None or args.only == name:

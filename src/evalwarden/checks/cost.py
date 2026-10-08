@@ -232,13 +232,6 @@ class WastedSpendCheck(Check):
         summary = model.cost_summary
         if summary is None:
             return []
-        # Wasted spend is defined over recorded outcomes. A model whose
-        # attempts carry no outcome at all (every status "incomplete" --
-        # e.g. a coding-agent trace import, where the format records no
-        # pass/fail) has no failed spend to measure: counting all of it
-        # as wasted would manufacture the finding, so stay silent.
-        if not any(a.status in ("pass", "fail", "error") for a in model.attempts):
-            return []
         if summary.wasted_share <= WASTED_SHARE:
             return []
         return [

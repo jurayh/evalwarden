@@ -416,11 +416,7 @@ def _parse_span(
 ) -> TrajectoryStep:
     data = _object(raw, path, locations)
     _unknown_fields(
-        data,
-        {"step_id", "tool", "args", "output", "consumes", "tokens_in", "tokens_out"},
-        path,
-        unsupported,
-        locations,
+        data, {"step_id", "tool", "args", "output", "consumes"}, path, unsupported, locations
     )
     args_raw = _object(data.get("args", {}), f"{path}.args", locations)
     return TrajectoryStep(
@@ -429,8 +425,6 @@ def _parse_span(
         args=_json_value(args_raw, f"{path}.args", locations),
         output=_optional_string(data.get("output"), f"{path}.output", locations),
         consumes=_string_list(data.get("consumes", []), f"{path}.consumes", locations),
-        tokens_in=_optional_integer(data.get("tokens_in"), f"{path}.tokens_in", locations, minimum=0),
-        tokens_out=_optional_integer(data.get("tokens_out"), f"{path}.tokens_out", locations, minimum=0),
     )
 
 
@@ -810,14 +804,6 @@ def model_to_document(model: IntegrityModel) -> dict[str, Any]:
                         "args": _json_value(span.args, "$.attempts[].spans[].args"),
                         "output": span.output,
                         "consumes": list(span.consumes),
-                        # Per-step usage is emitted only when an adapter
-                        # recorded it, so documents for spans without it
-                        # stay byte-identical to the pre-usage format.
-                        **(
-                            {"tokens_in": span.tokens_in, "tokens_out": span.tokens_out}
-                            if span.tokens_in is not None or span.tokens_out is not None
-                            else {}
-                        ),
                     }
                     for span in attempt.spans
                 ],

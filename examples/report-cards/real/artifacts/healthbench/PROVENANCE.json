@@ -12,7 +12,7 @@
   "sample": "first 12 JSONL records",
   "judge_defaults_source": "healthbench() task signature (judge_model, judge_temperature)",
   "grader_template": "GRADER_TEMPLATE in scorer.py",
-  "judge_validation_note": "The task package ships the healthbench_meta_eval subset (29,511 physician-graded items, URL pinned in dataset.py, judge-vs-physician agreement scorer in meta_evaluation.py); this artifact translates the main eval subset only, which does not encode those labels. The meta_eval subset is audited as its own card (healthbench-meta-eval-via-inspect-evals).",
+  "judge_validation_note": "The benchmark authors validate the grader in the paper via the healthbench_meta_eval subset; that validation is NOT part of the eval definition artifact audited here.",
   "no_traces": true,
   "generated_by": "examples/report-cards/real/build_real_cards.py"
 }

@@ -155,14 +155,6 @@ def test_cost_003_wasted_spend_fires():
     assert findings[0].confidence == Confidence.HIGH
 
 
-def test_cost_003_silent_when_no_outcomes_recorded():
-    # Trace imports: every attempt is "incomplete" because the format
-    # records no pass/fail. All spend counting as "wasted" would
-    # manufacture the finding, so the check stays silent.
-    attempts = [_eff_attempt("t1", "incomplete"), _eff_attempt("t2", "incomplete")]
-    assert WastedSpendCheck().run(_run_with_summary(attempts)) == []
-
-
 def test_cost_003_no_finding_when_mostly_useful():
     attempts = [
         _eff_attempt("t1", "pass"),
