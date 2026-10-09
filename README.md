@@ -17,6 +17,8 @@ evalwarden demo
 
 That audits a deliberately broken benchmark and writes `evalwarden-demo-report.html`. Open it in a browser. No model key required.
 
+To audit your own benchmark instead — a native Inspect log, a CSV of scores, or a JSONL stream from any other harness — follow the guide: [Audit your own benchmark](https://jurayh.github.io/evalwarden/guide.html). Every command and output in it is real.
+
 ## What an audit looks like
 
 Point it at a real Inspect AI log. This agent called the same tool with the same arguments five times in a row (packaged fixture: `src/evalwarden/demo/inspect_native_loop/log.eval`, generated with Inspect AI):

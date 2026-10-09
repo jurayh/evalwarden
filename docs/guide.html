@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audit your own benchmark — the evalwarden guide</title>
+<meta name="description" content="Three ways to audit your own benchmark with evalwarden: a native Inspect AI log, a CSV of scores, or a small JSONL stream from any harness. Every command and output in this guide is real.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f1216'/%3E%3Cpath d='M20 33.5 28.5 42 44 24' fill='none' stroke='%23f0a92e' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="evalwarden">
+<meta property="og:title" content="Audit your own benchmark — the evalwarden guide">
+<meta property="og:description" content="Three ways to audit your own benchmark with evalwarden: a native Inspect AI log, a CSV of scores, or a small JSONL stream from any harness. Every command and output in this guide is real.">
+<meta property="og:url" content="https://jurayh.github.io/evalwarden/guide.html">
+<meta property="og:image" content="https://jurayh.github.io/evalwarden/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Audit your own benchmark — the evalwarden guide">
+<meta name="twitter:description" content="Three ways to audit your own benchmark with evalwarden: a native Inspect AI log, a CSV of scores, or a small JSONL stream from any harness. Every command and output in this guide is real.">
+<meta name="twitter:image" content="https://jurayh.github.io/evalwarden/og.png">
+<style>
+  :root {
+    --bg: #0f1216;
+    --surface: #171c23;
+    --surface-2: #1e242e;
+    --border: #2a323e;
+    --text: #e8ecf1;
+    --muted: #9aa4b2;
+    --faint: #6b7482;
+    --accent: #f0a92e;
+    --accent-dim: rgba(240, 169, 46, 0.12);
+    --green: #4cc38a;
+    --red: #e5534b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 72px 0; border-top: 1px solid var(--border); }
+
+  .eyebrow {
+    font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin-bottom: 20px;
+  }
+  h1 { font-size: 44px; line-height: 1.15; letter-spacing: -1.2px; font-weight: 700; }
+  h1 .dim { color: var(--muted); font-weight: 400; }
+  h2 { font-size: 28px; letter-spacing: -0.5px; margin-bottom: 12px; }
+  h3 { font-size: 20px; letter-spacing: -0.3px; margin: 40px 0 8px; }
+  .lede { font-size: 19px; color: var(--muted); max-width: 640px; margin-top: 20px; }
+  .lede strong { color: var(--text); font-weight: 600; }
+
+  .topnav { border-bottom: 1px solid var(--border); }
+  .topnav-row { display: flex; align-items: center; gap: 28px; padding-top: 16px; padding-bottom: 16px; flex-wrap: wrap; }
+  .topnav .brand { color: var(--text); font-weight: 700; font-size: 17px; text-decoration: none; letter-spacing: -0.3px; }
+  .topnav .brand span { color: var(--accent); }
+  .topnav a.navlink { color: var(--muted); text-decoration: none; font-size: 14.5px; font-weight: 600; }
+  .topnav a.navlink:hover { color: var(--accent); }
+  .topnav .spacer { margin-left: auto; }
+
+  .pagehead { padding: 72px 0 64px; border-bottom: 1px solid var(--border); }
+
+  .install {
+    display: flex; align-items: center; gap: 12px; margin-top: 36px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 18px; max-width: 460px;
+  }
+  .install code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 16px; color: var(--text); }
+  .install .prompt { color: var(--accent); font-family: ui-monospace, Menlo, monospace; }
+
+  .ctas { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 11px 22px; border-radius: 8px;
+    font-weight: 600; font-size: 15px; text-decoration: none;
+    border: 1px solid var(--border); color: var(--text); background: var(--surface);
+  }
+  .btn:hover { border-color: var(--accent); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #14100a; }
+  .btn.primary:hover { filter: brightness(1.08); }
+
+  .problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 36px; }
+  .problem-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 24px;
+  }
+  .problem-card .k { font-size: 13px; color: var(--accent); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+  .problem-card p { color: var(--muted); font-size: 15px; }
+  .problem-card p strong { color: var(--text); }
+  .problem-card p a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .problem-card p a:hover { text-decoration: underline; }
+  a.problem-card { display: block; text-decoration: none; }
+  a.problem-card:hover { border-color: var(--accent); }
+  .problem-card .go { display: inline-block; margin-top: 14px; font-size: 13.5px; font-weight: 600; color: var(--accent); }
+
+  .prose p { color: var(--muted); font-size: 16px; max-width: 720px; margin-top: 14px; }
+  .prose p strong { color: var(--text); }
+  .prose p a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .prose p a:hover { text-decoration: underline; }
+  .prose ul { color: var(--muted); font-size: 16px; max-width: 720px; margin: 12px 0 0 20px; }
+  .prose li { margin-top: 6px; }
+  .prose li strong { color: var(--text); }
+  .prose code {
+    font-family: ui-monospace, Menlo, monospace; font-size: 13.5px; color: var(--text);
+    background: var(--surface-2); padding: 2px 7px; border-radius: 5px; white-space: nowrap;
+  }
+
+  .term {
+    margin-top: 28px; max-width: 780px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    overflow: hidden;
+  }
+  .term-bar {
+    display: flex; align-items: center; gap: 7px;
+    padding: 11px 16px; border-bottom: 1px solid var(--border); background: var(--surface-2);
+  }
+  .term-bar .dot { width: 11px; height: 11px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+  .term-bar .dot.amber { background: var(--accent); }
+  .term-bar .fname { margin-left: 8px; font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; color: var(--faint); }
+  .term pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13.5px;
+    line-height: 1.75; padding: 20px 22px; overflow-x: auto; color: var(--muted);
+  }
+  .term .cmd { color: var(--text); }
+  .term .cmd .p { color: var(--accent); }
+  .term .blocked { color: var(--red); font-weight: 700; }
+  .term .pass { color: var(--green); font-weight: 700; }
+  .term .hl { color: var(--text); font-weight: 600; }
+  .term .c { color: var(--faint); }
+  .term-cap { margin-top: 14px; font-size: 14px; color: var(--faint); max-width: 780px; }
+  .term-cap strong { color: var(--muted); }
+
+  .quick {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 28px; margin-top: 32px;
+  }
+  .quick pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 15px;
+    line-height: 1.9; overflow-x: auto;
+  }
+  .quick .c { color: var(--faint); }
+  .quick .p { color: var(--accent); }
+
+  table.diff { width: 100%; border-collapse: collapse; margin-top: 32px; font-size: 15px; }
+  table.diff th {
+    text-align: left; font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--faint); padding: 12px 16px; border-bottom: 1px solid var(--border);
+  }
+  table.diff td { padding: 16px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  table.diff tr:last-child td { border-bottom: none; }
+  table.diff td:first-child { font-weight: 700; white-space: nowrap; }
+  table.diff td.muted, table.diff .muted { color: var(--muted); }
+
+  .note {
+    margin-top: 28px; padding: 18px 22px; border-left: 3px solid var(--accent);
+    background: var(--accent-dim); border-radius: 0 10px 10px 0;
+    color: var(--muted); font-size: 15px; max-width: 780px;
+  }
+  .note strong { color: var(--text); }
+  .note a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .note a:hover { text-decoration: underline; }
+
+  footer { padding: 56px 0; border-top: 1px solid var(--border); }
+  footer .links { display: flex; gap: 28px; flex-wrap: wrap; margin-bottom: 20px; }
+  footer a { color: var(--muted); text-decoration: none; font-size: 15px; font-weight: 600; }
+  footer a:hover { color: var(--accent); }
+  footer .fine { color: var(--faint); font-size: 13.5px; }
+
+  ::selection { background: var(--accent); color: #14100a; }
+  a:focus-visible, .btn:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px;
+  }
+
+  @media (max-width: 720px) {
+    h1 { font-size: 34px; }
+    .problem-grid { grid-template-columns: 1fr; }
+    section { padding: 52px 0; }
+    .pagehead { padding: 52px 0 44px; }
+    .term pre { font-size: 12px; padding: 16px; }
+    .term { margin-top: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="wrap topnav-row">
+    <a class="brand" href="index.html">eval<span>warden</span></a>
+    <a class="navlink" href="demo-card.html">Full report card</a>
+    <a class="navlink" href="https://jurayh.github.io/evidence-registry/">Evidence registry</a>
+    <span class="spacer"></span>
+    <a class="navlink" href="https://github.com/jurayh/evalwarden">GitHub</a>
+    <a class="navlink" href="https://pypi.org/project/evalwarden/">PyPI</a>
+  </div>
+</nav>
+
+<header class="pagehead">
+  <div class="wrap">
+    <div class="eyebrow">Guide</div>
+    <h1>Audit your own benchmark.<br><span class="dim">Three ways in, depending on what you already have.</span></h1>
+    <p class="lede">evalwarden never runs your eval. It reads the artifacts your harness already produces and tells you <strong>whether the score can be trusted</strong>. Pick the path that matches your artifacts: a native Inspect AI log, a spreadsheet of scores, or a small record stream from any other harness.</p>
+    <div class="install">
+      <span class="prompt">$</span><code>pip install evalwarden</code>
+    </div>
+    <div class="problem-grid">
+      <a class="problem-card" href="#path-1">
+        <div class="k">Path 1 · Inspect AI</div>
+        <p>You have a <strong>.eval log</strong>. Point the auditor straight at it. No translation step.</p>
+        <span class="go">About 5 minutes →</span>
+      </a>
+      <a class="problem-card" href="#path-2">
+        <div class="k">Path 2 · Spreadsheet</div>
+        <p>You have <strong>scores in a CSV</strong>. Ten items, two models, one command.</p>
+        <span class="go">About 5 minutes →</span>
+      </a>
+      <a class="problem-card" href="#path-3">
+        <div class="k">Path 3 · Any harness</div>
+        <p>You run <strong>something else</strong>. Emit eleven lines of JSONL and the full check set can see your eval.</p>
+        <span class="go">About 10 minutes →</span>
+      </a>
+    </div>
+    <p class="term-cap">Every command and output on this page is real, captured from <strong>evalwarden 0.13.1</strong>. The checks are deterministic: copy the example files exactly as shown and your run matches, line for line.</p>
+  </div>
+</header>
+
+<section id="path-1">
+  <div class="wrap prose">
+    <div class="eyebrow">Path 1 · Inspect AI</div>
+    <h2>You run Inspect AI. About 5 minutes.</h2>
+    <p>Point <code>audit</code> at a native <code>.eval</code> log. The example uses the packaged demo log from the repo (<code>inspect_native_loop/log.eval</code>, generated with Inspect AI and shipped inside the package's demo fixtures); your own log works the same way. A directory holding exactly one <code>.eval</code> file works too.</p>
+    <div class="term">
+      <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot amber"></span><span class="fname">terminal — auditing a native Inspect log</span></div>
+<pre><span class="cmd"><span class="p">$</span> evalwarden audit log.eval</span>
+evalwarden audit: evalwarden-native-loop
+adapter: inspect 0.3.0
+Integrity: 90 / 100 <span class="blocked">BLOCKED</span> (0 errors, 1 high, 0 medium, 0 low)
+claim blocked by: TRAJ-001
+
+<span class="hl">H TRAJ-001 [high|confidence:high] Trajectory loops: lookup({"query": "status"}) repeated 5x in task loop-1</span>
+    evidence: loop: lookup({"query": "status"}) x5 (longest run x5)
+    at: log.eval -- attempt loop-1: 1 looped call pair(s) over 6 spans
+    fix: Add loop guards to the agent harness: cap identical retries, detect repeated (tool, args) pairs at runtime and break out, or surface the repeated failure to the operator instead of spinning.
+
+cost summary (estimates, not metered billing):
+    attempts=3 successes=3 tokens_in=3463 tokens_out=0
+    estimated total: $0.0104
+    cost per success: $0.0035
+    avg tool calls per success: 3.33
+    avg tries per success: 1.0 (max 1 on one attempt)
+    wasted on non-passing attempts: $0.0000 (0% of spend)
+    output tokens per attempt: p50=0 p90=0 max=0 (loop-1)
+
+coverage gaps (seen but not translated):
+    - log.eval: ToolEvent records carry no downstream consumption edges; TRAJ-002 cannot be assessed on native logs
+    - log.eval: span output(s) truncated to 512 chars at the adapter boundary
+
+Integrity score is diagnostic, not a certification.
+
+Report: evalwarden-report.html</pre>
+    </div>
+    <p class="term-cap">The audit <strong>exits 1</strong>: a high-severity finding crosses the default policy. The same command also wrote a self-contained HTML report (<strong>evalwarden-report.html</strong>) next to the log.</p>
+    <h3>What just happened</h3>
+    <p>The <strong>inspect adapter</strong> parsed the log archive in memory — nothing extracted to disk, the log never modified — and normalized its samples, attempts, and tool calls into the canonical model. All 24 checks ran over that model. One fired: the agent in this log called the same tool with the same arguments <strong>five times in a row</strong>, and the eval scored the run anyway (TRAJ-001).</p>
+    <p>The rest of the output is the auditor being explicit about its limits. The <strong>cost summary</strong> is estimated from the token counts recorded in the log (3,463 input tokens at the default prices, adjustable with <code>--price-in</code> / <code>--price-out</code>) — estimates, never metered billing. The <strong>coverage gaps</strong> name what a native log cannot support: Inspect records no downstream consumption edges, so TRAJ-002 (outputs consumed by nothing) cannot be assessed here, and span outputs are truncated at 512 characters at the adapter boundary. Silence is always explained, never implied.</p>
+    <h3>The shareable version: a report card</h3>
+    <p>The terminal output is for you. The <strong>report card</strong> is the one-page version for everyone else — a single self-contained HTML file with the verdict, the findings, and the full list of checks that ran:</p>
+    <div class="term">
+      <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot amber"></span><span class="fname">terminal — writing a report card</span></div>
+<pre><span class="cmd"><span class="p">$</span> evalwarden report-card log.eval</span>
+Report card: evalwarden-report-card.html (90/100 BLOCKED)</pre>
+    </div>
+    <p>Want to see the format before installing anything? <a href="demo-card.html">The hosted demo card</a> is a real card in this exact format, generated from the bundled judge demo (50/100 BLOCKED).</p>
+  </div>
+</section>
+
+<section id="path-2">
+  <div class="wrap prose">
+    <div class="eyebrow">Path 2 · Spreadsheet</div>
+    <h2>You have scores in a spreadsheet. About 5 minutes.</h2>
+    <p>The CSV contract is deliberately minimal: <code>task_id</code> and <code>score</code> are required. State a <code>status</code> and the row becomes an attempt — a bare score claims no pass or fail. Add <code>model_id</code> and the cross-model checks get their second model. This table is small enough to print in full: ten items, two models, twenty rows.</p>
+    <div class="term">
+      <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot amber"></span><span class="fname">scores.csv</span></div>
+<pre>task_id,score,status,model_id
+q1,1,pass,model-a
+q1,1,pass,model-b
+q2,1,pass,model-a
+q2,1,pass,model-b
+q3,1,pass,model-a
+q3,1,pass,model-b
+q4,1,pass,model-a
+q4,1,pass,model-b
+q5,1,pass,model-a
+q5,1,pass,model-b
+q6,1,pass,model-a
+q6,1,pass,model-b
+q7,1,pass,model-a
+q7,1,pass,model-b
+q8,1,pass,model-a
+q8,0,fail,model-b
+q9,1,pass,model-a
+q9,1,pass,model-b
+q10,0,fail,model-a
+q10,0,fail,model-b</pre>
+    </div>
+    <div class="term">
+      <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot amber"></span><span class="fname">terminal — auditing a score table</span></div>
+<pre><span class="cmd"><span class="p">$</span> evalwarden audit scores.csv</span>
+evalwarden audit: scores
+adapter: universal 1.0.0
+Integrity: 95 / 100 <span class="pass">PASS</span> (0 errors, 0 high, 1 medium, 0 low)
+
+<span class="hl">M COST-001 [medium|confidence:high] Token usage not recorded: cost per success unknown</span>
+    evidence: 20 attempt(s) recorded, none with tokens_in/tokens_out.
+    evidence: Cost per completed task cannot be computed from this run log.
+    at: scores.csv -- attempts[] tokens_in/tokens_out/tries
+    fix: Record tokens in/out, latency, tool calls, and retry counts per attempt in the run log, and report cost per successful task alongside the pass rate.
+
+coverage gaps (seen but not translated):
+    - scores.csv: task prompts, grader, environment, judgments, and trajectories are not carried by the CSV contract; checks needing them cannot be assessed
+    - scores.csv: no run_id or condition index column states repeated-run structure, so no run scores were created
+
+Integrity score is diagnostic, not a certification.
+
+Report: evalwarden-report.html</pre>
+    </div>
+    <p class="term-cap">The audit <strong>exits 0</strong>: the one finding is medium, below the default <code>--fail-on high</code> policy.</p>
+    <h3>What a score table can and cannot say</h3>
+    <p>It fired once. The table records outcomes but no usage, so <strong>COST-001</strong> reports that cost per success is unknowable from this artifact. That is the honest ceiling of a bare score table, and the audit says so instead of guessing.</p>
+    <p>Notice what stayed silent, and why. Eight of the ten items are answered correctly by both models, which looks saturated — but <strong>DATA-001</strong> requires at least <strong>30 common items</strong> scored by two or more models before it will call a dataset dead. Ten items is below the evidence floor, so the check stays silent and the accusation is never made. Scale the same table past 30 items and DATA-001 gets the evidence it needs.</p>
+    <p>The coverage gaps carry the rest: a CSV holds no prompts, grader, environment, judgments, or trajectories, so the checks that need those records <strong>cannot be assessed</strong> — listed, not hidden. And with no run column, no noise series exists. Add a <code>run_id</code> column (one model per file: a single noise series cannot honestly represent several models) and repeated runs become run scores that <strong>NOISE-001</strong> can decompose into sampling, judge, and environment noise.</p>
+  </div>
+</section>
+
+<section id="path-3">
+  <div class="wrap prose">
+    <div class="eyebrow">Path 3 · Any harness</div>
+    <h2>You run something else. About 10 minutes.</h2>
+    <p>Any harness can integrate by emitting one canonical file — no adapter to write, no import command to learn. The JSONL face is one JSON object per line: an <code>eval</code> record first, then <code>grader</code>, <code>task</code>, <code>attempt</code>, and <code>judgment</code> records as your eval produces them. The worked example is a tiny pairwise-judged writing eval. Its judge is declared the way many real harnesses declare one: a model, a pairwise protocol, and — deliberately — no calibration labels, no scale anchors, no counterbalancing.</p>
+    <div class="term">
+      <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot amber"></span><span class="fname">judged.jsonl</span></div>
+<pre>{"type": "eval", "schema": "evalwarden.model", "schema_version": "1.0", "eval_id": "tiny-judged-eval"}
+{"type": "grader", "kind": "judge", "judge_model": "judge-1", "protocol": "pairwise"}
+{"type": "task", "id": "w1", "prompt": "Write a tagline for a coffee mug."}
+{"type": "task", "id": "w2", "prompt": "Write a tagline for a desk lamp."}
+{"type": "task", "id": "w3", "prompt": "Write a tagline for a backpack."}
+{"type": "attempt", "task_id": "w1", "status": "pass", "score": 1.0, "model_id": "model-a"}
+{"type": "attempt", "task_id": "w2", "status": "pass", "score": 1.0, "model_id": "model-a"}
+{"type": "attempt", "task_id": "w3", "status": "fail", "score": 0.0, "model_id": "model-a"}
+{"type": "judgment", "task_id": "w1", "candidates": ["a", "b"], "presentation_order": ["a", "b"], "winner": "a", "judge_id": "judge-1"}
+{"type": "judgment", "task_id": "w2", "candidates": ["a", "b"], "presentation_order": ["a", "b"], "winner": "a", "judge_id": "judge-1"}
+{"type": "judgment", "task_id": "w3", "candidates": ["a", "b"], "presentation_order": ["b", "a"], "winner": "b", "judge_id": "judge-1"}</pre>
+    </div>
+    <div class="term">
+      <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot amber"></span><span class="fname">terminal — auditing a JSONL stream</span></div>
+<pre><span class="cmd"><span class="p">$</span> evalwarden audit judged.jsonl</span>
+evalwarden audit: tiny-judged-eval
+adapter: universal 1.0.0
+Integrity: 70 / 100 <span class="blocked">BLOCKED</span> (0 errors, 2 high, 2 medium, 0 low)
+claim blocked by: JUDGE-001, JUDGE-002
+
+<span class="hl">H JUDGE-001 [high|confidence:high] Model judge has no labeled calibration set</span>
+    evidence: grader uses model judge judge-1 with no reference labels attached.
+    evidence: Judge scores are unvalidated against human judgment.
+    at: judged.jsonl -- reference_labels (absent)
+    fix: Collect a labeled calibration set and report judge-vs-human agreement before trusting scores; anchor the rubric scale with explicit examples per level; pin temperature to 0 or take multiple repeats per item.
+
+<span class="hl">H JUDGE-002 [high|confidence:high] Pairwise protocol without order counterbalancing</span>
+    evidence: judge protocol is pairwise and counterbalanced is not enabled.
+    evidence: Presentation order is a known confound for LLM judges; verdicts may reflect position rather than quality.
+    at: judged.jsonl -- judge.protocol=pairwise, judge.counterbalanced (absent/false)
+    fix: Counterbalance presentation order (AB and BA) for every pair, randomize order per judgment, and record the order with each verdict.
+
+<span class="c">… two more findings in the full output: COST-001 (medium, token usage not recorded, as in Path 2) and JUDGE-001 again (medium, the rubric has no explicit scale anchors)</span>
+
+Integrity score is diagnostic, not a certification.
+
+Report: evalwarden-report.html</pre>
+    </div>
+    <p class="term-cap">The audit <strong>exits 1</strong>. Wiring your harness to emit this stream is the real integration work; the format itself is these five record types plus the optional ones in the README.</p>
+    <h3>Read the silences, too</h3>
+    <p>In all three judgments, the winner is the candidate presented <strong>first</strong> — exactly the pattern JUDGE-005 (position bias) exists to catch. It did not fire. Naming a bias takes at least <strong>20 judged pairs</strong>, and this stream has 3. The check can see the shape of the problem and still refuses to accuse on this little evidence. That restraint is the product.</p>
+    <p>This stream is the minimum, not the ceiling. The full contract — environment records, trajectory spans with consumption edges, run scores, claimed deltas — is specified in the README's <a href="https://github.com/jurayh/evalwarden#universal-importer">Universal importer</a> section, including the equivalent canonical JSON document. Fields the stream does not state stay absent; nothing is inferred.</p>
+  </div>
+</section>
+
+<section id="reading">
+  <div class="wrap prose">
+    <div class="eyebrow">The report</div>
+    <h2>Reading your first report.</h2>
+    <p>All three paths produce the same anatomy — terminal output, an HTML report, and the one-page card. Six parts, in the order to read them.</p>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="k">1 · Score and verdict</div>
+        <p>The score starts at <strong>100</strong> and takes fixed deductions per finding: <strong>error −25, high −10, medium −5, low −1</strong>. Path 1: 100 − 10 = <strong>90</strong>. Path 3: 100 − 10 − 10 − 5 − 5 = <strong>70</strong>. The verdict is <strong>BLOCKED</strong> when a blocking finding is present, <strong>PASS</strong> otherwise — and every surface repeats that the score is <strong>diagnostic, not a certification</strong>.</p>
+      </div>
+      <div class="problem-card">
+        <div class="k">2 · A finding</div>
+        <p>Severity letter, check ID, and a <strong>[severity|confidence]</strong> pair, then the claim in one line. Under it: <strong>evidence</strong> (the exact records behind the claim), <strong>at</strong> (where in your artifact they live), and <strong>fix</strong> (the remediation). Severity says how bad it is; confidence says how direct the evidence is.</p>
+      </div>
+      <div class="problem-card">
+        <div class="k">3 · Checks run</div>
+        <p>Every report lists <strong>all 24 checks</strong>, grouped by lane, whether they fired or not — titles first, IDs attached. That list is the audit's scope: a check that appears there ran against your artifact. A check that appears nowhere was not skipped quietly; it was not part of the audit at all.</p>
+      </div>
+      <div class="problem-card">
+        <div class="k">4 · Coverage gaps</div>
+        <p>The honest section. It names evidence your artifact <strong>did not carry</strong> or the adapter <strong>could not translate</strong>: no consumption edges in a native log, no grader in a CSV, no run structure for a noise series. A PASS with long coverage gaps is a narrow claim. Read this before you quote the score.</p>
+      </div>
+      <div class="problem-card">
+        <div class="k">5 · Cost summary</div>
+        <p>When attempts record token usage, the report prices them: attempts, successes, <strong>cost per success</strong>, spend wasted on non-passing attempts. Estimates at the configured prices — never metered billing. When usage is not recorded at all, <strong>COST-001</strong> fires instead (Paths 2 and 3).</p>
+      </div>
+      <div class="problem-card">
+        <div class="k">6 · Policy exit codes</div>
+        <p>The <code>audit</code> command's exit code is the verdict as a number, so scripts and CI can gate on it. <code>report-card</code> always exits 0 — it writes a document. <strong>The gate is <code>audit</code>.</strong></p>
+      </div>
+    </div>
+    <table class="diff">
+      <tr><th>Exit code</th><th>Meaning</th><th>Seen in this guide</th></tr>
+      <tr><td>0</td><td>Policy passes: no finding at or above <code>--fail-on</code> (default <code>high</code>)</td><td class="muted">Path 2 — a medium finding, policy passes</td></tr>
+      <tr><td>1</td><td>Findings cross the policy</td><td class="muted">Paths 1 and 3 — high findings present</td></tr>
+      <tr><td>2</td><td>The audit could not complete (unreadable or unsupported artifact)</td><td class="muted">—</td></tr>
+    </table>
+    <div class="note"><strong>The policy is yours to tune.</strong> Path 2 exits 0 at the default threshold. Run the same audit with <code>--fail-on medium</code> and it exits 1 — verified against the exact <code>scores.csv</code> above. Strict in CI, lenient while you are still fixing the harness: same audit, same findings, different gate.</div>
+  </div>
+</section>
+
+<section id="ci">
+  <div class="wrap prose">
+    <div class="eyebrow">Automation</div>
+    <h2>Put it in CI.</h2>
+    <p>The repo ships a composite GitHub Action: it installs evalwarden from PyPI, runs the audit, uploads findings as SARIF to code scanning, and only then fails the job with the audit's exit code — so a blocking finding never hides its own evidence.</p>
+    <div class="quick">
+<pre><span class="c"># .github/workflows/eval-audit.yml</span>
+name: eval-audit
+on: [pull_request]
+permissions:
+  contents: read
+  security-events: write  <span class="c"># required for the SARIF upload</span>
+jobs:
+  evalwarden:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jurayh/evalwarden@v0.9.0
+        with:
+          path: evals/my-eval   <span class="c"># eval artifact directory or native Inspect .eval log</span>
+          <span class="c"># format: sarif       # sarif | json | text (default sarif)</span>
+          <span class="c"># version: 0.9.0      # PyPI version pin (default: latest)</span>
+          <span class="c"># fail-on: high       # error | high | medium | low</span></pre>
+    </div>
+    <p>Findings appear as code-scanning alerts on the pull request, and the audit's exit code is exposed as the <code>exit-code</code> output. Prefer a local gate? The same policy ships as a pre-commit hook:</p>
+    <div class="quick">
+<pre><span class="c"># .pre-commit-config.yaml</span>
+- repo: https://github.com/jurayh/evalwarden
+  rev: v0.13.1
+  hooks:
+    - id: evalwarden-audit
+      args: [evals/my-eval]   <span class="c"># your eval artifact directory or native Inspect .eval log</span></pre>
+    </div>
+    <p>The hook runs <code>evalwarden audit</code> on the path in <code>args</code> and fails the commit when findings cross the policy (default <code>--fail-on high</code>; add <code>--fail-on</code> to <code>args</code> to tune it).</p>
+  </div>
+</section>
+
+<section id="deeper">
+  <div class="wrap prose">
+    <div class="eyebrow">Go deeper</div>
+    <h2>The catalog, and the registry.</h2>
+    <p>Two commands cover the whole check catalog. <code>evalwarden checks</code> lists all 24 checks grouped by lane; <code>evalwarden explain &lt;ID&gt;</code> gives one check's threat model and fix in full:</p>
+    <div class="term">
+      <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot amber"></span><span class="fname">terminal — the check catalog</span></div>
+<pre><span class="cmd"><span class="p">$</span> evalwarden checks</span>
+24 checks in 7 lanes. `evalwarden explain &lt;ID&gt;` explains any check.
+
+Environment
+  Eval-detection signal or leaked state visible to the agent (ENV-001)
+
+Grader
+  Verifier writable by the agent (GRAD-001)
+  Grader grants credit without completion (GRAD-002)
+  Verifier verdicts depend on surface form (clone gap) (GRAD-003)
+<span class="c">… four more lanes (Cost and efficiency, Judge, Dataset, Trajectory, Noise budget) in the full output</span>
+
+<span class="cmd"><span class="p">$</span> evalwarden explain JUDGE-001</span>
+JUDGE-001: Model judge lacks validation
+
+threat: A model judge with no labeled calibration set is an unvalidated measurement instrument: its scores have no demonstrated relationship to human judgment. Unanchored rubrics and unpinned sampling temperature make the verdicts drift further without anyone noticing.
+
+fix: Collect a labeled calibration set and report judge-vs-human agreement before trusting scores; anchor the rubric scale with explicit examples per level; pin temperature to 0 or take multiple repeats per item.</pre>
+    </div>
+    <h3>Publish the audit: the Evidence Registry</h3>
+    <p>An audit you run locally proves something to you. An <strong>evidence pack</strong> proves it to everyone: pinned public inputs, a verify script, and a report card a stranger can regenerate byte for byte. Sixteen benchmarks are already in the <a href="https://jurayh.github.io/evidence-registry/">Evidence Registry</a> — including MATH, blocked at 80/100 because its default judge is the model under test, and SWE-bench Verified, clean at 100/100. If your benchmark should be there, <a href="https://github.com/jurayh/evalwarden/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> describes the pack format and the bar a pack has to clear.</p>
+    <div class="ctas">
+      <a class="btn primary" href="https://jurayh.github.io/evidence-registry/">Browse the registry</a>
+      <a class="btn" href="demo-card.html">See a full report card</a>
+      <a class="btn" href="index.html">Back to the overview</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="links">
+      <a href="https://github.com/jurayh/evalwarden">GitHub</a>
+      <a href="https://pypi.org/project/evalwarden/">PyPI</a>
+      <a href="https://github.com/jurayh/evidence-registry">Evidence registry</a>
+    </div>
+    <div class="fine">evalwarden is MIT-licensed. Integrity scores are diagnostic, not a certification.</div>
+  </div>
+</footer>
+
+</body>
+</html>
