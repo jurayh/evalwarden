@@ -266,10 +266,13 @@ evalwarden report-card <eval-artifact> [--output card.html]
 evalwarden report-cards <eval...> [--fixtures a,b] [--output-dir cards/]
 evalwarden trace [sessions-path] [--demo] [--since 7d] [--project NAME]
               [--agent all|claude-code|codex] [--output trace-report.html]
+evalwarden checks
 evalwarden explain <CHECK-ID>
 ```
 
 Exit codes: `0` policy passes, `1` findings cross `--fail-on`, `2` the audit could not complete. The same policy runs locally and as a CI gate.
+
+Shell completion: `evalwarden --install-completion` installs tab completion for the current shell.
 
 ## Trace observatory
 
@@ -339,6 +342,21 @@ jobs:
 ```
 
 Findings appear as code-scanning alerts on the PR. The SARIF upload runs even when the audit fails its policy, so a blocking finding never hides the evidence; the job then fails with the audit's exit code, also exposed as the `exit-code` output.
+
+### Pre-commit
+
+The repo ships a [pre-commit](https://pre-commit.com) hook definition, so the same audit can run before every commit:
+
+```yaml
+# .pre-commit-config.yaml
+- repo: https://github.com/jurayh/evalwarden
+  rev: v0.13.1
+  hooks:
+    - id: evalwarden-audit
+      args: [evals/my-eval]   # your eval artifact directory or native Inspect .eval log
+```
+
+The hook runs `evalwarden audit` on the path you pass in `args` and fails the commit when findings cross the policy (default `--fail-on high`; add `--fail-on` to `args` to tune it).
 
 ## Non-goals
 

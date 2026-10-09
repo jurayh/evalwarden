@@ -144,3 +144,23 @@ def test_demo_cost_clean_fixture(tmp_path: Path):
     assert result.exit_code == 0, result.output
     assert "PASS" in result.output
     assert "COST-002" not in result.output
+
+
+def test_checks_lists_full_registry_grouped():
+    import re
+
+    from evalwarden.checks import REGISTRY
+    from evalwarden.reporters.report_card import LANES
+
+    result = runner.invoke(app, ["checks"])
+    assert result.exit_code == 0, result.output
+    assert result.output.startswith(f"{len(REGISTRY)} checks")
+    # Title-first lines for every registered check, no more, no fewer.
+    listed = re.findall(r"\(([A-Z]+-\d{3})\)", result.output)
+    assert sorted(listed) == sorted(c.meta.id for c in REGISTRY)
+    assert len(listed) == len(set(listed))
+    for check in REGISTRY:
+        assert f"{check.meta.title} ({check.meta.id})" in result.output
+    # Lanes appear in the same order the report card uses.
+    positions = [result.output.index(f"\n{label}\n") for _, label in LANES]
+    assert positions == sorted(positions)

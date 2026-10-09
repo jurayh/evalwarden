@@ -1,0 +1,7 @@
+- id: evalwarden-audit
+  name: evalwarden audit
+  description: Audit an eval artifact with evalwarden; fails when findings cross the --fail-on policy.
+  entry: evalwarden audit
+  language: python
+  pass_filenames: false
+  always_run: true

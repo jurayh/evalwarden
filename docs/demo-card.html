@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Integrity report card: judge-bad-demo</title>
+<style>
+  :root { color-scheme: light; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+         margin: 0; color: #1a1a1a; background: #f4f4f4; line-height: 1.5; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 32px 24px 64px; }
+  .card { background: #fff; border: 1px solid #e3e3e3; border-radius: 12px;
+          padding: 24px 26px; margin-bottom: 16px; }
+  .masthead { text-align: center; padding: 28px 26px; }
+  .masthead .kicker { font-size: 12px; font-weight: 700; letter-spacing: .12em;
+                      text-transform: uppercase; color: #666; }
+  .masthead h1 { margin: 6px 0 2px; font-size: 24px; }
+  .score { font-size: 56px; font-weight: 800; line-height: 1.1; }
+  .verdict { display: inline-block; font-weight: 800; font-size: 14px; letter-spacing: .08em;
+             border-radius: 8px; padding: 4px 14px; margin-top: 8px; }
+  .verdict.blocked { background: #b3261e; color: #fff; }
+  .verdict.pass { background: #1e7b34; color: #fff; }
+  table.cats { width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.cats td { padding: 10px 4px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+  table.cats tr:last-child td { border-bottom: none; }
+  .catname { width: 32%; font-weight: 600; }
+  .catscore { width: 12%; text-align: right; font-variant-numeric: tabular-nums; }
+  .bar { height: 8px; background: #eee; border-radius: 4px; overflow: hidden; min-width: 120px; }
+  .bar i { display: block; height: 100%; border-radius: 4px; }
+  .bar i.good { background: #1e7b34; } .bar i.warn { background: #d99a00; } .bar i.bad { background: #b3261e; }
+  .counts { color: #888; font-size: 12px; white-space: nowrap; }
+  h2 { margin: 0 0 10px; font-size: 16px; }
+  .finding { border-top: 1px solid #f0f0f0; padding: 12px 0; }
+  .finding:first-of-type { border-top: none; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 700; border-radius: 6px;
+           padding: 2px 8px; margin-right: 6px; text-transform: uppercase; letter-spacing: .04em; }
+  .sev-error { background: #fdecea; color: #b3261e; border: 1px solid #f5c6c2; }
+  .sev-high { background: #fff4e5; color: #8a5a00; border: 1px solid #f0d9a8; }
+  .sev-medium { background: #eef4ff; color: #1a56db; border: 1px solid #c9dbff; }
+  .sev-low { background: #f1f1f1; color: #555; border: 1px solid #ddd; }
+  .conf { background: #f1f1f1; color: #444; border: 1px solid #ddd; text-transform: none; }
+  .finding .title { font-weight: 600; }
+  .finding .ev { color: #555; font-size: 13.5px; margin: 4px 0 0; }
+  .code { font-family: ui-monospace, monospace; font-size: 11px; color: #777;
+          background: #f6f6f6; border: 1px solid #e6e6e6; border-radius: 5px;
+          padding: 0 5px; white-space: nowrap; }
+  .checkgroup { margin: 0 0 9px; }
+  .checkgroup:last-child { margin-bottom: 0; }
+  .lanelabel { font-size: 11px; font-weight: 700; letter-spacing: .08em;
+               text-transform: uppercase; color: #888; }
+  ul.checks { list-style: none; margin: 3px 0 0; padding: 0; }
+  ul.checks li { padding: 1px 0; }
+  .meta { color: #666; font-size: 13px; }
+  .method td, .method th { text-align: left; padding: 6px 8px; border-bottom: 1px solid #f0f0f0;
+                           font-size: 13px; vertical-align: top; }
+  .method th { color: #666; font-weight: 600; white-space: nowrap; }
+  .fp { font-family: ui-monospace, monospace; font-size: 12px; color: #888; }
+  footer { margin-top: 24px; color: #888; font-size: 12.5px; text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="card masthead">
+    <div class="kicker">Integrity report card</div>
+    <h1>judge-bad-demo</h1>
+    <div class="score">50<span style="font-size:22px;color:#888">/100</span></div>
+    <div><span class="verdict blocked">BLOCKED</span></div>
+    <p class="meta" style="margin-bottom:0">
+      
+      Blocked by Pairwise protocol without order counterbalancing (JUDGE-002), Judge flips verdict on t01 (3 repeats) (JUDGE-003), Judge agrees with reference labels on only 12/25 items (JUDGE-004): the reported score cannot be trusted until these are fixed.
+      
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Category scores</h2>
+    <table class="cats">
+      
+      <tr>
+        <td class="catname">Environment</td>
+        <td><div class="bar"><i class="good" style="width:100%"></i></div></td>
+        <td class="catscore">100</td>
+        <td class="counts">clean</td>
+      </tr>
+      
+      <tr>
+        <td class="catname">Grader</td>
+        <td><div class="bar"><i class="good" style="width:100%"></i></div></td>
+        <td class="catscore">100</td>
+        <td class="counts">clean</td>
+      </tr>
+      
+      <tr>
+        <td class="catname">Judge</td>
+        <td><div class="bar"><i class="bad" style="width:50%"></i></div></td>
+        <td class="catscore">50</td>
+        <td class="counts">3H 4M </td>
+      </tr>
+      
+      <tr>
+        <td class="catname">Cost and efficiency</td>
+        <td><div class="bar"><i class="good" style="width:100%"></i></div></td>
+        <td class="catscore">100</td>
+        <td class="counts">clean</td>
+      </tr>
+      
+    </table>
+    <p class="meta">Same fixed severity deductions as the full report: error -25, high -10, medium -5, low -1. Diagnostic, not a certification.</p>
+  </div>
+
+  <div class="card">
+    <h2>Key findings (5 of 7)</h2>
+    
+    
+    <div class="finding">
+      <span class="badge sev-high">high</span><span class="badge conf">high confidence</span>
+      <span class="title">Pairwise protocol without order counterbalancing</span> <span class="code">JUDGE-002</span>
+      <p class="ev">judge protocol is pairwise and counterbalanced is not enabled.</p>
+    </div>
+    
+    <div class="finding">
+      <span class="badge sev-high">high</span><span class="badge conf">high confidence</span>
+      <span class="title">Judge flips verdict on t01 (3 repeats)</span> <span class="code">JUDGE-003</span>
+      <p class="ev">task &#39;t01&#39;: 3 repeated judgments of [&#39;sol-a&#39;, &#39;sol-b&#39;] produced winners [&#39;sol-a&#39;, &#39;sol-b&#39;].</p>
+    </div>
+    
+    <div class="finding">
+      <span class="badge sev-high">high</span><span class="badge conf">high confidence</span>
+      <span class="title">Judge agrees with reference labels on only 12/25 items</span> <span class="code">JUDGE-004</span>
+      <p class="ev">agreement 48% (12/25) below 75% over labeled items.</p>
+    </div>
+    
+    <div class="finding">
+      <span class="badge sev-medium">medium</span><span class="badge conf">high confidence</span>
+      <span class="title">Judge rubric has no explicit scale anchors</span> <span class="code">JUDGE-001</span>
+      <p class="ev">judge rubric defines criteria but no anchored scale levels.</p>
+    </div>
+    
+    <div class="finding">
+      <span class="badge sev-medium">medium</span><span class="badge conf">medium confidence</span>
+      <span class="title">Judge samples at temperature 0.7 with only 1 repeat(s)</span> <span class="code">JUDGE-001</span>
+      <p class="ev">temperature=0.7, repeats=1: sampling noise can flip verdicts with no way to detect it.</p>
+    </div>
+    
+    
+    <p class="meta">Plus 2 more in the full audit report.</p>
+    
+    
+  </div>
+
+  <div class="card">
+    <h2>Methodology</h2>
+    <table class="method">
+      <tr><th>Tool</th><td>evalwarden 0.13.1: a linter for agent evaluations, not another eval framework. Read-only, offline; input files are never modified.</td></tr>
+      <tr><th>Adapter</th><td>inspect 0.3.0</td></tr>
+      <tr><th>Checks run</th><td><div class="checkgroup"><div class="lanelabel">Environment</div><ul class="checks"><li><span class="ct">Eval-detection signal or leaked state visible to the agent</span> <span class="code">ENV-001</span></li></ul></div><div class="checkgroup"><div class="lanelabel">Grader</div><ul class="checks"><li><span class="ct">Verifier writable by the agent</span> <span class="code">GRAD-001</span></li><li><span class="ct">Grader grants credit without completion</span> <span class="code">GRAD-002</span></li><li><span class="ct">Verifier verdicts depend on surface form (clone gap)</span> <span class="code">GRAD-003</span></li></ul></div><div class="checkgroup"><div class="lanelabel">Cost and efficiency</div><ul class="checks"><li><span class="ct">Cost per success not reported</span> <span class="code">COST-001</span></li><li><span class="ct">Successes cost multiple attempts each</span> <span class="code">COST-002</span></li><li><span class="ct">Most spend produced no successful task</span> <span class="code">COST-003</span></li><li><span class="ct">Runaway attempt burned far more than a typical one</span> <span class="code">COST-004</span></li></ul></div><div class="checkgroup"><div class="lanelabel">Judge</div><ul class="checks"><li><span class="ct">Model judge lacks validation</span> <span class="code">JUDGE-001</span></li><li><span class="ct">Pairwise order not counterbalanced</span> <span class="code">JUDGE-002</span></li><li><span class="ct">Judge contradicts itself on repeated judgments</span> <span class="code">JUDGE-003</span></li><li><span class="ct">Judge disagrees with reference labels</span> <span class="code">JUDGE-004</span></li><li><span class="ct">Position bias: presentation order predicts the winner</span> <span class="code">JUDGE-005</span></li><li><span class="ct">Verbosity bias: longer answers win disproportionately</span> <span class="code">JUDGE-006</span></li><li><span class="ct">Judge confidence miscalibrated</span> <span class="code">JUDGE-007</span></li><li><span class="ct">Redundant judges in panel</span> <span class="code">JUDGE-008</span></li><li><span class="ct">Panel blind spots: failure modes no judge catches</span> <span class="code">JUDGE-009</span></li></ul></div><div class="checkgroup"><div class="lanelabel">Dataset</div><ul class="checks"><li><span class="ct">Eval dataset looks saturated</span> <span class="code">DATA-001</span></li><li><span class="ct">Eval dataset contains near-duplicate items</span> <span class="code">DATA-002</span></li><li><span class="ct">Failure modes under-elicited</span> <span class="code">DATA-003</span></li></ul></div><div class="checkgroup"><div class="lanelabel">Trajectory</div><ul class="checks"><li><span class="ct">Trajectory repeats identical tool calls</span> <span class="code">TRAJ-001</span></li><li><span class="ct">Tool outputs consumed by nothing downstream</span> <span class="code">TRAJ-002</span></li></ul></div><div class="checkgroup"><div class="lanelabel">Noise budget</div><ul class="checks"><li><span class="ct">One noise source dominates the eval budget</span> <span class="code">NOISE-001</span></li><li><span class="ct">Claimed score change versus the noise floor</span> <span class="code">NOISE-002</span></li></ul></div></td></tr>
+      <tr><th>Evidence</th><td class="fp">dataset.json sha256:7e2c228d6dbe&hellip; environment.json sha256:298517f8649d&hellip; grader.json sha256:391354aadbd5&hellip; run.json sha256:2738c109086d&hellip; judge_run.json sha256:3b3c27bdadbb&hellip;</td></tr>
+      <tr><th>Generated</th><td>2026-10-09 07:06 UTC</td></tr>
+    </table>
+    <p class="meta">Every finding carries a confidence label; precision over recall. Secret values are never stored in reports. Integrity scores are diagnostic, not a certification.</p>
+  </div>
+
+  <footer>Generated by evalwarden 0.13.1 &middot; 2026-10-09 07:06 UTC</footer>
+
+</div>
+</body>
+</html>

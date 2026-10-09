@@ -14,7 +14,13 @@ from .adapters import AuditError
 from .checks import BY_ID, get_check
 from .engine import AuditResult, audit_with_policy
 from .reporters import render_html, render_json, render_sarif, render_terminal
-from .reporters.report_card import CardEntry, render_index, render_report_card, slugify
+from .reporters.report_card import (
+    CardEntry,
+    grouped_checks,
+    render_index,
+    render_report_card,
+    slugify,
+)
 
 app = typer.Typer(
     help="A linter for agent evaluations. Not another eval framework.",
@@ -318,6 +324,22 @@ def demo(
     typer.echo(f"Report: {output}")
     if policy_failed:
         typer.echo("demo fixture has findings by design; the exit code stays 0 (use `audit` for policy gates)")
+
+
+@app.command()
+def checks() -> None:
+    """List every registered check, grouped by lane."""
+    groups = grouped_checks()
+    total = sum(len(items) for _, items in groups)
+    typer.echo(
+        f"{total} checks in {len(groups)} lanes. "
+        "`evalwarden explain <ID>` explains any check."
+    )
+    for lane, items in groups:
+        typer.echo("")
+        typer.echo(lane)
+        for check_id, title in items:
+            typer.echo(f"  {title} ({check_id})")
 
 
 @app.command()
