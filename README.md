@@ -2,7 +2,7 @@
 
 **A linter for evals, not another eval framework.**
 
-Benchmark scores get cited as proof of capability: which model to deploy, which paper to accept, which agent to buy. Almost nobody audits the benchmarks themselves. A solver can read the task ID from the environment, look up the gold answer, and report 100%. A grader can be writable by the agent it grades. A model judge can be uncalibrated, biased, and self-contradictory — while two-thirds of the dataset is dead weight every model already answers. The score looks fine. The score is meaningless.
+Benchmark scores get cited as proof of capability: which model to deploy, which paper to accept, which agent to buy. Almost nobody audits the benchmarks themselves. A solver can read the task ID from the environment, look up the gold answer, and report 100%. A grader can be writable by the agent it grades. A model judge can be uncalibrated, biased, and self-contradictory — while nearly two-thirds of the dataset is dead weight every model already answers. The score looks fine. The score is meaningless.
 
 evalwarden audits the measurement system around a score: the dataset, the evidence boundary, the grader, the run records, and the cost. It never runs your evals and never changes your harness. It reads your eval artifacts and tells you whether the score can be trusted, with file-level evidence for every finding.
 
@@ -139,7 +139,7 @@ The linter runs against real public benchmarks, translated mechanically from the
 |-----------|--------|
 | [SWE-bench Verified](examples/report-cards/real/swe-bench-verified-via-inspect-evals.html) (via inspect_evals) | **100/100 PASS, zero findings.** Gold patches, test patches, and grading stay harness-side where the agent cannot reach them. It does not manufacture problems. |
 | [HealthBench](examples/report-cards/real/healthbench-via-inspect-evals.html) (via inspect_evals) | **85/100 BLOCKED.** The model judge ships with no calibration set in the eval definition itself. (The authors validated their grader in the paper through a separate meta-eval task — the linter flags precisely the gap: anyone auditing the artifact alone cannot verify the judge.) |
-| MMLU vs GPQA (DATA-001 saturation) | **67% of MMLU items are dead** — answered correctly by every model tested — vs **7% on GPQA**. Two-thirds of the slice measures nothing; the check says so with a number. |
+| MMLU vs GPQA (DATA-001 saturation) | **64% of MMLU items are dead** — answered correctly by every model in a flagship 3-model panel (GPT-4, Claude 3 Opus, Gemini 1.0 Pro) across the full 57-subject test set — vs **7% on GPQA**. Nearly two-thirds of the benchmark measures nothing; the check says so with a number. |
 
 The [reading guide](examples/report-cards/real/README.md) walks through the cards, the translation, and the scope limits.
 

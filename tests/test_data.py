@@ -1,7 +1,9 @@
 """DATA-lane checks: saturation (DATA-001) and redundancy (DATA-002).
 
-The kill-criterion proof ran on real data (MMLU via Stanford HELM Classic vs
-GPQA paper baselines): dead fraction 0.67 vs 0.07, 9.5x separation. These
+The kill-criterion proof ran on real data (MMLU via the HELM MMLU suite
+v1.0.0, full test set, flagship 3-model panel, vs GPQA paper baselines):
+dead fraction 0.636 vs 0.071, about 9x separation (re-verified Oct 2026;
+the original HELM Classic attribution was a mislabel). These
 tests pin the metric logic offline with hand-built matrices shaped like the
 real outcomes, so CI stays hermetic.
 """
@@ -74,7 +76,7 @@ def test_saturation_stats_needs_two_models():
 
 
 def test_saturation_check_fires_on_saturated():
-    # Shaped like the real MMLU outcome (dead ~0.67).
+    # Shaped like the real MMLU outcome (dead ~0.64).
     model = make_model(attempts=_attempts_from_matrix(_matrix(67, 27, 6)))
     findings = SaturationCheck().run(model)
     assert len(findings) == 1
