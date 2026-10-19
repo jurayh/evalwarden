@@ -1,4 +1,4 @@
-"""CLI: evalwarden audit | demo | explain. A linter-style interface.
+"""CLI: evalwarden audit | diff | demo | explain. A linter-style interface.
 
 Exit codes: 0 = policy passes, 1 = findings cross the --fail-on threshold,
 2 = the audit could not complete.
@@ -12,7 +12,8 @@ import typer
 import evalwarden
 from .adapters import AuditError
 from .checks import BY_ID, get_check
-from .engine import AuditResult, audit_with_policy
+from .engine import AuditResult, audit_with_policy, diff_pair
+from .model import Severity
 from .reporters import render_html, render_json, render_sarif, render_terminal
 from .reporters.report_card import (
     CardEntry,
@@ -90,6 +91,90 @@ def audit(
     if json_output is not None:
         json_output.write_text(render_json(result), encoding="utf-8")
         typer.echo(f"JSON: {json_output}", err=machine)
+    raise typer.Exit(1 if policy_failed else 0)
+
+
+@app.command()
+def diff(
+    baseline: Path = typer.Argument(..., help="Baseline eval artifact (the run already trusted)."),
+    candidate: Path = typer.Argument(..., help="Candidate eval artifact (the run under judgment)."),
+    adapter: str = typer.Option("auto", help="Adapter for both artifacts: auto, inspect, promptfoo, universal, claude-code, codex."),
+    fail_on: str = typer.Option(
+        "high", help="Minimum finding severity that fails the diff: error|high|medium|low."
+    ),
+) -> None:
+    """Compare two eval artifacts item by item: what flipped, where, is it real?
+
+    Both artifacts load through the adapters exactly as `audit` loads
+    one. The report is the movement over the items both runs attempted:
+    pass-to-fail and fail-to-pass flips with a paired significance test,
+    regression slices by task metadata, and a gate verdict. Exit codes
+    follow `audit`: 0 = policy passes, 1 = findings cross --fail-on,
+    2 = the comparison could not complete.
+    """
+    if fail_on not in ("error", "high", "medium", "low"):
+        typer.echo("error: --fail-on must be one of error|high|medium|low", err=True)
+        raise typer.Exit(2)
+    try:
+        result, policy_failed = diff_pair(
+            baseline, candidate, adapter_name=adapter, fail_on=fail_on
+        )
+    except AuditError as exc:
+        typer.echo(f"error: diff could not complete: {exc}", err=True)
+        raise typer.Exit(2)
+
+    typer.echo(
+        f"evalwarden diff: {result.baseline.eval_id} -> {result.candidate.eval_id}"
+    )
+    for comparison in result.comparisons:
+        stats = comparison.stats
+        alignment = comparison.alignment
+        typer.echo(f"  series {comparison.label}:")
+        typer.echo(
+            f"    alignment: {alignment.n_paired} paired items "
+            f"({len(alignment.baseline_only)} baseline-only, "
+            f"{len(alignment.candidate_only)} candidate-only; "
+            f"coverage {alignment.coverage:.0%})"
+        )
+        if comparison.judgeable:
+            typer.echo(
+                f"    aggregate on paired items: {stats.baseline_mean:.1%} -> "
+                f"{stats.candidate_mean:.1%} ({stats.mean_delta:+.1%})"
+            )
+            typer.echo(
+                f"    flips: {stats.regressions} pass-to-fail, "
+                f"{stats.gains} fail-to-pass, {stats.unchanged} unchanged; "
+                f"McNemar p={stats.p_value:.3g}; net regression "
+                f"{stats.net_regression_rate:+.1%}"
+            )
+        else:
+            typer.echo(f"    not judged: {comparison.unjudged_reason}")
+    for note in result.notes:
+        typer.echo(f"  note: {note}")
+    typer.echo("")
+    typer.echo(
+        f"Verdict: {result.score} / 100 {result.verdict} "
+        "(score is diagnostic, not a certification)"
+    )
+    if result.blocked_by:
+        blocked_ids = sorted({f.id for f in result.blocked_by})
+        typer.echo(f"claim blocked by: {', '.join(blocked_ids)}")
+    if not result.findings:
+        typer.echo("no blocking findings observed under this policy.")
+    sev_label = {Severity.ERROR: "E", Severity.HIGH: "H", Severity.MEDIUM: "M", Severity.LOW: "L"}
+    for finding in result.findings:
+        typer.echo("")
+        typer.echo(
+            f"{sev_label[finding.severity]} {finding.id} "
+            f"[{finding.severity.value}|confidence:{finding.confidence.value}] "
+            f"{finding.title}"
+        )
+        for ev in finding.evidence:
+            typer.echo(f"    evidence: {ev}")
+        for loc in finding.locations:
+            typer.echo(f"    at: {loc.render()}")
+        if finding.remediation:
+            typer.echo(f"    fix: {finding.remediation}")
     raise typer.Exit(1 if policy_failed else 0)
 
 

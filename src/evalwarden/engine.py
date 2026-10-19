@@ -17,6 +17,7 @@ from .adapters import claude_code  # noqa: F401  (registers itself on import)
 from .adapters import codex  # noqa: F401  (registers itself on import)
 from .adapters import universal  # noqa: F401  (registers itself on import)
 from .checks import REGISTRY
+from .checks.diff import PairedRegressionCheck, SeriesComparison
 from .model import SEVERITY_ORDER, Finding, IntegrityModel, Severity
 
 
@@ -102,6 +103,81 @@ def audit_with_policy(
 ) -> tuple[AuditResult, bool]:
     """Run the audit; return (result, policy_failed)."""
     result = audit(path, adapter_name, price_in_per_1m, price_out_per_1m, budget_per_task_usd)
+    levels = _FAIL_ON_LEVELS[fail_on]
+    policy_failed = any(f.severity in levels for f in result.findings)
+    return result, policy_failed
+
+
+def load_model(path: str | Path, adapter_name: str = "auto") -> IntegrityModel:
+    """Load one eval artifact into the normalized model.
+
+    The front half of the audit pipeline (detect, collect, normalize),
+    exposed on its own for comparative work: the differ consumes two
+    models loaded exactly the way `audit` loads one.
+    """
+    target = Path(path)
+    if not target.exists():
+        raise AuditError(f"no such eval artifact: {target}")
+    if adapter_name == "auto":
+        adapter = autodetect(target)
+    else:
+        matches = [a for a in adapters.REGISTRY if a.name == adapter_name]
+        if not matches:
+            raise AuditError(f"unknown adapter {adapter_name!r}")
+        adapter = matches[0]
+    bundle = adapter.collect(target)
+    return adapter.normalize(bundle)
+
+
+@dataclass
+class DiffResult:
+    baseline: IntegrityModel
+    candidate: IntegrityModel
+    comparisons: list[SeriesComparison]  # per paired model series
+    notes: list[str]  # series that existed on one side only
+    findings: list[Finding]
+    score: int  # 0-100, the audit deduction table over the diff findings
+    verdict: str  # "BLOCKED" | "PASS"
+    blocked_by: list[Finding]
+
+
+def diff_models(
+    baseline: IntegrityModel,
+    candidate: IntegrityModel,
+) -> DiffResult:
+    """Compare two normalized result sets with the DIFF lane (DIFF-001).
+
+    Verdict semantics mirror the audit's: BLOCKED when any finding is
+    HIGH or above. The score reuses the audit's deduction table over the
+    diff findings; it prioritizes, it does not certify.
+    """
+    check = PairedRegressionCheck().with_options(baseline_model=baseline)
+    comparisons, notes = check.comparisons(candidate)
+    findings = sort_findings(check.run(candidate))
+    score = integrity_score(findings)
+    blocked_by = [f for f in findings if f.severity in _FAIL_ON_LEVELS["high"]]
+    return DiffResult(
+        baseline=baseline,
+        candidate=candidate,
+        comparisons=comparisons,
+        notes=notes,
+        findings=findings,
+        score=score,
+        verdict="BLOCKED" if blocked_by else "PASS",
+        blocked_by=blocked_by,
+    )
+
+
+def diff_pair(
+    baseline_path: str | Path,
+    candidate_path: str | Path,
+    adapter_name: str = "auto",
+    fail_on: str = "high",
+) -> tuple[DiffResult, bool]:
+    """Load two artifacts and diff them; return (result, policy_failed)."""
+    baseline = load_model(baseline_path, adapter_name)
+    candidate = load_model(candidate_path, adapter_name)
+    result = diff_models(baseline, candidate)
     levels = _FAIL_ON_LEVELS[fail_on]
     policy_failed = any(f.severity in levels for f in result.findings)
     return result, policy_failed

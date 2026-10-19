@@ -136,6 +136,7 @@ def test_grouped_checks_lane_order_and_coverage():
         "Dataset",
         "Trajectory",
         "Noise budget",
+        "Run comparison",
     ]
     seen = [cid for _, items in groups for cid, _ in items]
     assert sorted(seen) == sorted(BY_ID)  # every check exactly once
@@ -157,6 +158,7 @@ def test_report_card_checks_run_grouped_title_first():
         "Dataset",
         "Trajectory",
         "Noise budget",
+        "Run comparison",
     ]
     positions = [html.index(f'<div class="lanelabel">{label}</div>') for label in labels]
     assert positions == sorted(positions)

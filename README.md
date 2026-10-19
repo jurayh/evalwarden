@@ -266,6 +266,7 @@ evalwarden demo [--fixture leaky|hardened|judge_bad|judge_clean|cost_wasteful|co
              [--output evalwarden-demo-report.html] [--budget-per-task USD]
 evalwarden report-card <eval-artifact> [--output card.html]
 evalwarden report-cards <eval...> [--fixtures a,b] [--output-dir cards/]
+evalwarden diff <baseline-artifact> <candidate-artifact> [--fail-on high]
 evalwarden trace [sessions-path] [--demo] [--since 7d] [--project NAME]
               [--agent all|claude-code|codex] [--output trace-report.html]
 evalwarden checks

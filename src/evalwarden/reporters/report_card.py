@@ -28,6 +28,7 @@ CATEGORIES: dict[str, str] = {
     "GRAD": "Grader",
     "JUDGE": "Judge",
     "COST": "Cost and efficiency",
+    "DIFF": "Run comparison",
 }
 
 
@@ -46,6 +47,7 @@ LANES: list[tuple[str, str]] = [
     ("DATA", "Dataset"),
     ("TRAJ", "Trajectory"),
     ("NOISE", "Noise budget"),
+    ("DIFF", "Run comparison"),
 ]
 
 

@@ -302,7 +302,7 @@ claim blocked by: TRAJ-001
       </div>
       <div class="problem-card">
         <div class="k">Step 2 · Lint</div>
-        <p><strong>24 deterministic checks</strong> across seven lanes read the artifacts. Read-only, zero model calls, nothing executed and nothing modified.</p>
+        <p><strong>25 deterministic checks</strong> across eight lanes read the artifacts. Read-only, zero model calls, nothing executed and nothing modified.</p>
       </div>
       <div class="problem-card">
         <div class="k">Step 3 · Gate</div>
@@ -356,7 +356,7 @@ claim blocked by: TRAJ-001
 <section>
   <div class="wrap">
     <div class="eyebrow">The check catalog</div>
-    <h2>Twenty-four checks across seven lanes.</h2>
+    <h2>Twenty-five checks across eight lanes.</h2>
     <div class="lanes">
       <details class="lane">
         <summary><span class="k">ENV</span><span class="lname">The evidence boundary</span><span class="n">1 check</span></summary>
@@ -414,6 +414,10 @@ claim blocked by: TRAJ-001
           <li>One noise source dominates the eval budget <code>NOISE-001</code></li>
           <li>Claimed score change inside the noise floor <code>NOISE-002</code></li>
         </ul>
+      </details>
+      <details class="lane">
+        <summary><span class="k">DIFF</span><span class="lname">Run comparison</span><span class="n">1 check</span></summary>
+        <ul><li>Paired regression versus a baseline run <code>DIFF-001</code></li></ul>
       </details>
     </div>
   </div>

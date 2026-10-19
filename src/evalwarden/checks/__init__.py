@@ -13,6 +13,7 @@ from __future__ import annotations
 from .base import Check
 from .cost import CHECKS as COST_CHECKS
 from .data import CHECKS as DATA_CHECKS
+from .diff import CHECKS as DIFF_CHECKS
 from .env_leakage import CHECKS as ENV_CHECKS
 from .grader import CHECKS as GRADER_CHECKS
 from .judge import CHECKS as JUDGE_CHECKS
@@ -27,6 +28,7 @@ REGISTRY: list[Check] = [
     *DATA_CHECKS,  # DATA-001 .. DATA-003
     *TRAJ_CHECKS,  # TRAJ-001 .. TRAJ-002
     *NOISE_CHECKS,  # NOISE-001 .. NOISE-002
+    *DIFF_CHECKS,  # DIFF-001
 ]
 
 BY_ID: dict[str, Check] = {check.meta.id: check for check in REGISTRY}
