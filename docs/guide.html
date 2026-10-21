@@ -263,7 +263,7 @@ Report: evalwarden-report.html</pre>
     </div>
     <p class="term-cap">The audit <strong>exits 1</strong>: a high-severity finding crosses the default policy. The same command also wrote a self-contained HTML report (<strong>evalwarden-report.html</strong>) next to the log.</p>
     <h3>What just happened</h3>
-    <p>The <strong>inspect adapter</strong> parsed the log archive in memory — nothing extracted to disk, the log never modified — and normalized its samples, attempts, and tool calls into the canonical model. All 25 checks ran over that model. One fired: the agent in this log called the same tool with the same arguments <strong>five times in a row</strong>, and the eval scored the run anyway (TRAJ-001).</p>
+    <p>The <strong>inspect adapter</strong> parsed the log archive in memory — nothing extracted to disk, the log never modified — and normalized its samples, attempts, and tool calls into the canonical model. All 26 checks ran over that model. One fired: the agent in this log called the same tool with the same arguments <strong>five times in a row</strong>, and the eval scored the run anyway (TRAJ-001).</p>
     <p>The rest of the output is the auditor being explicit about its limits. The <strong>cost summary</strong> is estimated from the token counts recorded in the log (3,463 input tokens at the default prices, adjustable with <code>--price-in</code> / <code>--price-out</code>) — estimates, never metered billing. The <strong>coverage gaps</strong> name what a native log cannot support: Inspect records no downstream consumption edges, so TRAJ-002 (outputs consumed by nothing) cannot be assessed here, and span outputs are truncated at 512 characters at the adapter boundary. Silence is always explained, never implied.</p>
     <h3>The shareable version: a report card</h3>
     <p>The terminal output is for you. The <strong>report card</strong> is the one-page version for everyone else — a single self-contained HTML file with the verdict, the findings, and the full list of checks that ran:</p>
@@ -402,7 +402,7 @@ Report: evalwarden-report.html</pre>
       </div>
       <div class="problem-card">
         <div class="k">3 · Checks run</div>
-        <p>Every report lists <strong>all 25 checks</strong>, grouped by lane, whether they fired or not — titles first, IDs attached. That list is the audit's scope: a check that appears there ran against your artifact. A check that appears nowhere was not skipped quietly; it was not part of the audit at all.</p>
+        <p>Every report lists <strong>all 26 checks</strong>, grouped by lane, whether they fired or not — titles first, IDs attached. That list is the audit's scope: a check that appears there ran against your artifact. A check that appears nowhere was not skipped quietly; it was not part of the audit at all.</p>
       </div>
       <div class="problem-card">
         <div class="k">4 · Coverage gaps</div>
@@ -468,11 +468,11 @@ jobs:
   <div class="wrap prose">
     <div class="eyebrow">Go deeper</div>
     <h2>The catalog, and the registry.</h2>
-    <p>Two commands cover the whole check catalog. <code>evalwarden checks</code> lists all 25 checks grouped by lane; <code>evalwarden explain &lt;ID&gt;</code> gives one check's threat model and fix in full:</p>
+    <p>Two commands cover the whole check catalog. <code>evalwarden checks</code> lists all 26 checks grouped by lane; <code>evalwarden explain &lt;ID&gt;</code> gives one check's threat model and fix in full:</p>
     <div class="term">
       <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot amber"></span><span class="fname">terminal — the check catalog</span></div>
 <pre><span class="cmd"><span class="p">$</span> evalwarden checks</span>
-25 checks in 8 lanes. `evalwarden explain &lt;ID&gt;` explains any check.
+26 checks in 8 lanes. `evalwarden explain &lt;ID&gt;` explains any check.
 
 Environment
   Eval-detection signal or leaked state visible to the agent (ENV-001)

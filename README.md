@@ -261,7 +261,7 @@ Run scores are created only when a run or condition column states repeated-run s
 evalwarden audit <eval-artifact> [--adapter auto|inspect|promptfoo|universal] [--output report.html]
                               [--format text|json|sarif] [--json findings.json] [--fail-on high]
                               [--price-in 3.0] [--price-out 15.0]
-                              [--budget-per-task USD]
+                              [--budget-per-task USD] [--training-file train.jsonl]
 evalwarden demo [--fixture leaky|hardened|judge_bad|judge_clean|cost_wasteful|cost_clean|promptfoo_bad|promptfoo_clean]
              [--output evalwarden-demo-report.html] [--budget-per-task USD]
 evalwarden report-card <eval-artifact> [--output card.html]

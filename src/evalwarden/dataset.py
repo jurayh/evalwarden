@@ -8,9 +8,31 @@ gone? Redundancy answers: how much of the set is near-duplicate filler?
 """
 from __future__ import annotations
 
+import hashlib
 import re
 from collections import defaultdict
 from dataclasses import dataclass, field
+
+
+def normalized_tokens(text: str) -> list[str]:
+    """The DATA lane's token normalization: lowercase alphanumeric runs."""
+    return re.findall(r"[a-z0-9]+", text.lower())
+
+
+def text_digest(text: str) -> str:
+    """Stable digest of a text's normalized form (exact-overlap identity)."""
+    return hashlib.sha256(" ".join(normalized_tokens(text)).encode()).hexdigest()
+
+
+def shingle_containment(a: set[str], b: set[str]) -> float:
+    """Share of the smaller shingle set that appears in the larger.
+
+    Containment catches a short item embedded in a longer document, where
+    Jaccard stays low because the union is dominated by the long side.
+    """
+    if not a or not b:
+        return 0.0
+    return len(a & b) / min(len(a), len(b))
 
 
 @dataclass
@@ -60,7 +82,7 @@ def saturation_stats(scores: dict[str, dict[str, bool]]) -> SaturationStats | No
 
 
 def _shingles(text: str, k: int = 3) -> set[str]:
-    toks = re.findall(r"[a-z0-9]+", text.lower())
+    toks = normalized_tokens(text)
     if not toks:
         return set()
     if len(toks) < k:

@@ -302,7 +302,7 @@ claim blocked by: TRAJ-001
       </div>
       <div class="problem-card">
         <div class="k">Step 2 · Lint</div>
-        <p><strong>25 deterministic checks</strong> across eight lanes read the artifacts. Read-only, zero model calls, nothing executed and nothing modified.</p>
+        <p><strong>26 deterministic checks</strong> across eight lanes read the artifacts. Read-only, zero model calls, nothing executed and nothing modified.</p>
       </div>
       <div class="problem-card">
         <div class="k">Step 3 · Gate</div>
@@ -356,7 +356,7 @@ claim blocked by: TRAJ-001
 <section>
   <div class="wrap">
     <div class="eyebrow">The check catalog</div>
-    <h2>Twenty-five checks across eight lanes.</h2>
+    <h2>Twenty-six checks across eight lanes.</h2>
     <div class="lanes">
       <details class="lane">
         <summary><span class="k">ENV</span><span class="lname">The evidence boundary</span><span class="n">1 check</span></summary>
@@ -380,11 +380,12 @@ claim blocked by: TRAJ-001
         </ul>
       </details>
       <details class="lane">
-        <summary><span class="k">DATA</span><span class="lname">The dataset itself</span><span class="n">3 checks</span></summary>
+        <summary><span class="k">DATA</span><span class="lname">The dataset itself</span><span class="n">4 checks</span></summary>
         <ul>
           <li>Dataset looks saturated — most items solved by every model <code>DATA-001</code></li>
           <li>Dataset contains near-duplicate items <code>DATA-002</code></li>
           <li>Failure modes under-elicited — too few eliciting items, or a declared mode with none <code>DATA-003</code></li>
+          <li>Training data leaks into the eval set <code>DATA-004</code></li>
         </ul>
       </details>
       <details class="lane full">

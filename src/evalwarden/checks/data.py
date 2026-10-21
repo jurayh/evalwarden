@@ -7,6 +7,12 @@ inflate confidence in coverage.
 DATA-003 measures elicitation coverage: whether each declared failure mode
 has enough tagged items to actually surface the behavior -- the count-side
 mirror of JUDGE-009's panel blind spots.
+DATA-004 measures train/eval leakage: whether eval items appear, exactly
+or nearly, in the training data the model was fine-tuned on. It needs a
+second input no eval artifact carries -- the training file -- so it runs
+only when the auditor supplies one (`audit --training-file`); without
+one it stays silent, because an artifact alone cannot prove a negative
+about data it does not contain.
 
 Precision-first throughout: the checks stay silent when the data cannot
 support the claim. Saturation needs per-item results from at least two
@@ -21,6 +27,15 @@ from collections import defaultdict
 
 from ..coverage import mode_item_counts, thin_modes
 from ..dataset import redundancy_stats, saturation_stats
+from ..leakage import (
+    NEAR_CONTAINMENT,
+    NEAR_JACCARD,
+    LeakageMatch,
+    LeakageStats,
+    TrainingRecord,
+    item_text,
+    leakage_stats,
+)
 from ..model import Attempt, Confidence, Finding, IntegrityModel, Severity, SourceLocation
 from .base import Check, CheckMeta
 
@@ -33,6 +48,9 @@ SIMILARITY = 0.8  # shingle-Jaccard at or above this is a near-duplicate
 ELICIT_MIN = 30  # items carrying a failure mode below this cannot elicit it reliably
 MIN_TAGGED_ITEMS = 30  # tagged items needed before per-mode counts mean anything
 MAX_COVERAGE_MODES = 5  # thin/absent modes shown per finding
+CONTAMINATED_ERROR_AT = 0.10  # contaminated wins at/above this share of passes
+CONTAMINATED_HIGH_AT = 0.03  # contaminated wins at/above this share of passes
+MAX_LEAK_MATCHES = 5  # matched pairs listed per leakage finding
 
 
 def _data_loc(model: IntegrityModel, excerpt: str) -> SourceLocation:
@@ -244,8 +262,173 @@ class ElicitationCoverageCheck(Check):
         ]
 
 
+def _leak_severity(contaminated_share: float, wins: int) -> Severity:
+    """Severity scales with contaminated wins, not raw overlap.
+
+    Leaked items the model failed prove a boundary breach but did not
+    inflate the score; leaked items it passed are wins it may not have
+    earned, and their share of all passes is the inflation estimate.
+    """
+    if contaminated_share >= CONTAMINATED_ERROR_AT:
+        return Severity.ERROR
+    if contaminated_share >= CONTAMINATED_HIGH_AT:
+        return Severity.HIGH
+    if wins >= 1:
+        return Severity.MEDIUM
+    return Severity.LOW
+
+
+class LeakageCheck(Check):
+    meta = CheckMeta(
+        id="DATA-004",
+        title="Training data leaks into the eval set",
+        threat=(
+            "Eval items that appear in the fine-tune's training data -- "
+            "verbatim or as lightly edited copies -- measure memory, not "
+            "capability. The damning subset is the leaked items the model "
+            "passed: those wins may be memorized, and their share of all "
+            "passes is an upper-bound estimate of how much of the reported "
+            "score the leak could account for."
+        ),
+        remediation=(
+            "Decontaminate and re-measure: drop or rewrite the matched "
+            "training rows (and their near-duplicates), retrain or select "
+            "a checkpoint trained without them, and re-run the eval. "
+            "Report scores with the contaminated-win count attached "
+            "until a clean run exists."
+        ),
+    )
+
+    def __init__(self, training_records: list[TrainingRecord] | None = None):
+        self.training_records = training_records
+
+    def with_options(self, **kwargs) -> "LeakageCheck":
+        return LeakageCheck(
+            training_records=kwargs.get("training_records", self.training_records)
+        )
+
+    def run(self, model: IntegrityModel) -> list[Finding]:
+        if not self.training_records:
+            # No training file supplied: an eval artifact alone cannot
+            # speak about training data it does not contain. Silence.
+            return []
+        eval_texts = {
+            task.id: item_text(task.prompt, task.target)
+            for task in model.tasks
+            if task.prompt.strip()
+        }
+        if not eval_texts:
+            return []
+        passed_ids = {
+            attempt.task_id for attempt in model.attempts if _correct(attempt)
+        }
+        stats = leakage_stats(eval_texts, self.training_records, passed_ids)
+        findings: list[Finding] = []
+        for tier, matches, confidence, threshold_note in (
+            (
+                "exact",
+                stats.exact,
+                Confidence.HIGH,
+                "exact tier: normalized prompt+target text identical "
+                "to a training row",
+            ),
+            (
+                "near-duplicate",
+                stats.near,
+                Confidence.MEDIUM,
+                f"near-duplicate tier: shingle-Jaccard >= {NEAR_JACCARD} "
+                f"or containment >= {NEAR_CONTAINMENT} (3-token shingles "
+                "over normalized text, shingles shared by over half "
+                "the eval set excluded as scaffolding)",
+            ),
+        ):
+            finding = self._tier_finding(model, stats, tier, matches, confidence, threshold_note)
+            if finding is not None:
+                findings.append(finding)
+        return findings
+
+    def _tier_finding(
+        self,
+        model: IntegrityModel,
+        stats: LeakageStats,
+        tier: str,
+        matches: list[LeakageMatch],
+        confidence: Confidence,
+        threshold_note: str,
+    ) -> Finding | None:
+        wins = sum(1 for m in matches if m.passed)
+        share = wins / stats.total_passes if stats.total_passes else 0.0
+        # A lone leaked item the model failed is a hygiene note for the
+        # combined report, not a finding: it proves neither score
+        # inflation nor a pattern. Anything more fires.
+        if len(matches) < 2 and wins == 0:
+            return None
+        if not matches:
+            return None
+        shown = matches[:MAX_LEAK_MATCHES]
+        evidence = [
+            f"overlap: {len(matches)} of {stats.n_eval_items} eval items "
+            f"match the {tier} tier against {stats.n_training_rows} "
+            f"training rows (raw overlap rate "
+            f"{len(matches) / stats.n_eval_items:.0%} for this tier; "
+            f"{stats.overlap_rate:.0%} across tiers).",
+            f"contaminated wins: {wins} of the matched items were passed; "
+            f"that is {share:.0%} of all {stats.total_passes} passed "
+            "items -- the headline number, since leaked-and-failed "
+            "items did not inflate the score.",
+            threshold_note + ".",
+            *(
+                f"match: training row {m.train_id} <-> eval item "
+                f"{m.eval_id} (jaccard {m.jaccard:.2f}, containment "
+                f"{m.containment:.2f}, outcome "
+                f"{'passed' if m.passed else 'failed'})"
+                for m in shown
+            ),
+        ]
+        if len(matches) > len(shown):
+            evidence.append(
+                f"... and {len(matches) - len(shown)} more {tier} "
+                "match(es), each verifiable the same way."
+            )
+        if tier != "exact":
+            evidence.append(
+                "Lexical detection only: heavily paraphrased copies can "
+                "fall below the threshold, so a silent near-duplicate "
+                "tier is not proof of a clean boundary."
+            )
+        if wins:
+            title = (
+                f"Train/eval leakage ({tier}): {wins} contaminated "
+                f"win(s), {share:.0%} of all passes match training data"
+            )
+        else:
+            title = (
+                f"Train/eval leakage ({tier}): {len(matches)} eval "
+                "item(s) match training data, none passed"
+            )
+        return Finding(
+            id=self.meta.id,
+            title=title,
+            severity=_leak_severity(share, wins),
+            confidence=confidence,
+            description=self.meta.threat,
+            evidence=evidence,
+            locations=[
+                SourceLocation(
+                    file=model.artifact_file("tasks.json"),
+                    excerpt=(
+                        f"tasks[].prompt/target vs the supplied training "
+                        f"file ({len(matches)} {tier} match(es))"
+                    ),
+                )
+            ],
+            remediation=self.meta.remediation,
+        )
+
+
 CHECKS = [
     SaturationCheck(),  # DATA-001
     RedundancyCheck(),  # DATA-002
     ElicitationCoverageCheck(),  # DATA-003
+    LeakageCheck(),  # DATA-004
 ]

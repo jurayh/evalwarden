@@ -56,10 +56,24 @@ def audit(
     price_in_per_1m: float = 3.0,
     price_out_per_1m: float = 15.0,
     budget_per_task_usd: float | None = None,
+    training_file: str | Path | None = None,
 ) -> AuditResult:
     target = Path(path)
     if not target.exists():
         raise AuditError(f"no such eval artifact: {target}")
+
+    # The training file is a side input for DATA-004 (train/eval
+    # leakage): an eval artifact cannot contain the fine-tune's corpus,
+    # so it travels beside the model and reaches the check through
+    # with_options, the same channel the differ uses for its baseline.
+    training_records = None
+    if training_file is not None:
+        from .leakage import TrainingFileError, load_training_file
+
+        try:
+            training_records = load_training_file(training_file)
+        except TrainingFileError as exc:
+            raise AuditError(str(exc)) from exc
 
     if adapter_name == "auto":
         adapter = autodetect(target)
@@ -78,6 +92,7 @@ def audit(
         "price_in_per_1m": price_in_per_1m,
         "price_out_per_1m": price_out_per_1m,
         "budget_per_task_usd": budget_per_task_usd,
+        "training_records": training_records,
     }
     checks = [c.with_options(**options) for c in REGISTRY]
     findings: list[Finding] = []
@@ -100,9 +115,17 @@ def audit_with_policy(
     price_in_per_1m: float = 3.0,
     price_out_per_1m: float = 15.0,
     budget_per_task_usd: float | None = None,
+    training_file: str | Path | None = None,
 ) -> tuple[AuditResult, bool]:
     """Run the audit; return (result, policy_failed)."""
-    result = audit(path, adapter_name, price_in_per_1m, price_out_per_1m, budget_per_task_usd)
+    result = audit(
+        path,
+        adapter_name,
+        price_in_per_1m,
+        price_out_per_1m,
+        budget_per_task_usd,
+        training_file=training_file,
+    )
     levels = _FAIL_ON_LEVELS[fail_on]
     policy_failed = any(f.severity in levels for f in result.findings)
     return result, policy_failed
