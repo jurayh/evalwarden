@@ -26,7 +26,10 @@ Field wiring: the adapter populates the integrity model's extended fields
 only from data the artifact actually records. Nothing is invented.
 
 - Trajectory spans come from `trajectories.jsonl`, one JSON object per
-  line: {"task_id", "tool", "args", "output", "consumes", "step_id"}.
+  line: {"task_id", "tool", "args", "output", "consumes", "step_id",
+  "outcome"}. `outcome` ("ok" | "error") is the artifact's own record
+  that the harness reported the call completed or errored; absent when
+  the artifact does not record it, never inferred from output text.
   `output` is truncated at the boundary (MAX_SPAN_OUTPUT_CHARS). `consumes`
   is the recorded data-flow: step_ids whose outputs this step used. It is
   carried verbatim, never inferred -- when an artifact records no
@@ -79,7 +82,8 @@ ADAPTER_VERSION = "0.3.0"
 SCHEMA_VERSION = "evalwarden-artifact-v1"
 MAX_SPAN_OUTPUT_CHARS = 512  # tool results are truncated at the boundary
 
-_SPAN_KEYS = {"task_id", "step_id", "tool", "args", "output", "consumes"}
+_SPAN_KEYS = {"task_id", "step_id", "tool", "args", "output", "consumes", "outcome"}
+_SPAN_OUTCOMES = {"ok", "error"}
 
 
 def _failure_mode(task: dict) -> str | None:
@@ -137,6 +141,11 @@ def _normalize_spans(
         if output is not None and len(output) > MAX_SPAN_OUTPUT_CHARS:
             output = output[:MAX_SPAN_OUTPUT_CHARS]
             truncated += 1
+        outcome = record.get("outcome")
+        if outcome is not None and outcome not in _SPAN_OUTCOMES:
+            raise AuditError(
+                f"trajectories.jsonl record {i + 1}: 'outcome' must be 'ok' or 'error'"
+            )
         steps = spans_by_task.setdefault(str(task_id), [])
         steps.append(
             TrajectoryStep(
@@ -147,6 +156,7 @@ def _normalize_spans(
                 args=dict(args),
                 output=output,
                 consumes=[str(c) for c in (record.get("consumes") or [])],
+                outcome=outcome,
             )
         )
     for key in sorted(unknown_keys):

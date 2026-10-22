@@ -119,6 +119,44 @@ def test_native_span_output_truncated_at_boundary():
     assert any("truncated" in u for u in model.unsupported)
 
 
+def test_native_demo_logs_populate_span_outcomes_ok():
+    # Both shipped demo logs record result-only tool events: every span
+    # populates "ok" (82 spans across the two logs), none "error".
+    spans = [
+        s
+        for fixture in (NATIVE_LOOP_LOG, NATIVE_ORDINARY_LOG)
+        for a in _normalize(fixture).attempts
+        for s in a.spans
+    ]
+    assert len(spans) == 82
+    assert all(s.outcome == "ok" for s in spans)
+
+
+def test_native_planted_error_event_yields_error_outcome(tmp_path: Path):
+    from evalwarden.adapters._inspect_archive import read_archive_members
+
+    members = read_archive_members(NATIVE_LOOP_LOG)
+    sample_name = "samples/loop-1_epoch_1.json"
+    sample = json.loads(members[sample_name])
+    event = next(e for e in sample["events"] if e.get("event") == "tool")
+    del event["result"]
+    event["error"] = {"message": "lookup backend exploded"}
+    members[sample_name] = json.dumps(sample).encode()
+    path = tmp_path / "planted.eval"
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as archive:
+        for name, payload in members.items():
+            archive.writestr(name, payload)
+
+    model = _normalize(path)
+    loop_attempt = next(a for a in model.attempts if a.task_id == "loop-1")
+    errored = [s for s in loop_attempt.spans if s.outcome == "error"]
+    assert len(errored) == 1
+    assert errored[0].output == "lookup backend exploded"
+    assert all(
+        s.outcome == "ok" for s in loop_attempt.spans if s is not errored[0]
+    )
+
+
 def test_native_loop_audit_fires_traj_001_only():
     result = audit(NATIVE_LOOP_LOG)
     ids = [f.id for f in result.findings]

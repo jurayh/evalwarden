@@ -163,6 +163,18 @@ class TrajectoryStep:
     rationales and full outputs are redacted/truncated at the boundary:
     only the structured call shape and the data-flow edges survive, which
     is all the trajectory checks need.
+
+    Semantics rule for ``outcome``: it records only whether the tool call
+    itself completed ("ok") or the harness reported the call as errored
+    ("error"). It says nothing about whether the work the call performed
+    succeeded. A test run that reports failures in its output is a
+    completed call: outcome "ok", with the failures living in ``output``
+    text. A call can also error for reasons unrelated to correctness
+    (sandbox denial, timeout, missing file). Consumers must never read
+    "error" as "test failed" or "ok" as "task succeeded", and a
+    trajectory whose spans mostly carry None has not been shown to be
+    error-free. Adapters set the field only from a structured source
+    flag, never by inspecting output text.
     """
 
     step_id: str  # unique within the attempt's trajectory
@@ -177,6 +189,12 @@ class TrajectoryStep:
     # steps, because a split would fabricate per-step precision.
     tokens_in: int | None = None
     tokens_out: int | None = None
+    # Whether the harness reported this single tool call as completed
+    # ("ok") or errored ("error"). None when the source records no
+    # per-call outcome: adapters populate it only from a structured
+    # source flag, never from output text. See the semantics rule in
+    # the class docstring.
+    outcome: str | None = None
 
 
 @dataclass

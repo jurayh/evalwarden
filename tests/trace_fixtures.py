@@ -71,12 +71,12 @@ def _claude_user(session, uuid, parent, ts, content, sidechain=False, **extra) -
     return rec
 
 
-def _claude_tool_result(session, uuid, parent, ts, tool_use_id, text, sidechain=False) -> dict:
-    return _claude_user(
-        session, uuid, parent, ts,
-        [{"type": "tool_result", "tool_use_id": tool_use_id, "content": text}],
-        sidechain=sidechain,
-    )
+def _claude_tool_result(session, uuid, parent, ts, tool_use_id, text, sidechain=False,
+                        is_error: bool | None = None) -> dict:
+    block = {"type": "tool_result", "tool_use_id": tool_use_id, "content": text}
+    if is_error is not None:
+        block["is_error"] = is_error
+    return _claude_user(session, uuid, parent, ts, [block], sidechain=sidechain)
 
 
 def _claude_assistant(session, uuid, parent, ts, blocks, usage, stop="tool_use", sidechain=False) -> dict:
@@ -118,7 +118,7 @@ def claude_clean_records() -> list[dict]:
                            _tool_use("toolu_01", "Read", {"file_path": "README.md"})],
                           (100, 20, 10, 50)),
         _claude_tool_result(s, "u2", "a1", "2026-10-01T09:00:25.000Z", "toolu_01",
-                              "# Title\nteh typo here\n"),
+                              "# Title\nteh typo here\n", is_error=False),
         _claude_assistant(s, "a2", "u2", "2026-10-01T09:00:40.000Z",
                           [_tool_use("toolu_02", "Grep", {"pattern": "teh", "path": "."})],
                           (200, 30, 0, 150)),
@@ -130,7 +130,7 @@ def claude_clean_records() -> list[dict]:
                                                            "old_string": "teh", "new_string": "the"})],
                           (300, 40, 20, 200)),
         _claude_tool_result(s, "u4", "a3", "2026-10-01T09:01:05.000Z", "toolu_03",
-                              "The file README.md has been updated."),
+                              "The file README.md has been updated.", is_error=False),
         _claude_assistant(s, "a4", "u4", "2026-10-01T09:01:30.000Z",
                           [_tool_use("toolu_04", "Bash", {"command": "npm run build",
                                                            "description": "Build to check rendering"})],
@@ -156,7 +156,7 @@ def claude_subagent_records() -> list[dict]:
                           [_tool_use("toolu_s1", "Grep", {"pattern": "TODO", "path": "docs"})],
                           (80, 15, 0, 0), sidechain=True),
         _claude_tool_result(s, "su2", "sa1", "2026-10-01T09:00:55.000Z", "toolu_s1",
-                            "docs/guide.md:10: TODO", sidechain=True),
+                            "docs/guide.md:10: TODO", sidechain=True, is_error=False),
         _claude_assistant(s, "sa2", "su2", "2026-10-01T09:01:10.000Z",
                           [{"type": "text", "text": "One TODO found."}],
                           (50, 10, 0, 0), stop="end_turn", sidechain=True),
@@ -182,7 +182,9 @@ def claude_loop_records() -> list[dict]:
             (200, 30, 0, 0)))
         records.append(_claude_tool_result(
             s, u_uuid, a_uuid, f"2026-10-01T10:0{i + 1}:30.000Z", f"toolu_b{i + 1}",
-            "1 failing test: test_checkout"))
+            # The calls completed; the failure lives in the output text.
+            # is_error False here pins the outcome semantics rule.
+            "1 failing test: test_checkout", is_error=False))
         parent = u_uuid
     records += [
         _claude_assistant(s, "a9", parent, "2026-10-01T10:07:00.000Z",

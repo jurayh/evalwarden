@@ -9,6 +9,14 @@ Two waste shapes, both deterministic:
   retrying blindly -- either way the repeats are pure budget burn.
 - Unused outputs (TRAJ-002): tool calls whose results no downstream step
   consumed. Work whose product went nowhere is waste by definition.
+- Stalled phase patterns (TRAJ-003): edit -> test cycles whose test phases
+  all errored, repeated without an intervening explore/plan/review phase
+  and without a later successful test phase. The individual calls keep
+  changing -- no exact loop -- while the work pattern goes nowhere. This
+  shape needs per-step outcomes (TrajectoryStep.outcome): a phase pattern
+  alone cannot separate a stall from honest debugging, because debugging
+  walks the same edit -> test alternation with errored verifications on
+  the way to a pass.
 
 Exact definitions:
 - canonical_call(tool, args): "tool({json, sorted keys})". Two calls are
@@ -38,6 +46,11 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .model import TrajectoryStep
+    from .trace_phases import PhaseSegment
 
 
 # Argument keys that carry prose about a call rather than call
@@ -121,3 +134,135 @@ def unused_outputs(step_ids: list[str], consumes: list[list[str]]) -> list[str]:
                 consumed.add(t)
     final = step_ids[-1] if step_ids else None
     return [sid for sid in step_ids if sid != final and sid not in consumed]
+
+
+# ------------------------------------------------------- phase patterns
+#
+# TRAJ-003 works one level up from calls: over the phase segmentation
+# (trace_phases.segment_phases) joined with per-step outcomes. The join
+# rule is the precision crux, so it is stated exactly:
+#
+# - A phase is *judged* when at least one of its spans carries an
+#   outcome. Outcome-less phases (the adapter recorded no per-call
+#   outcome) cannot be called errored or successful -- they are simply
+#   not evidence either way.
+# - A judged phase is *successful* when at least one span completed
+#   ("ok"). A mixed phase -- one verification call errored, another
+#   completed -- shows a partial signal (one runner crashed, another
+#   ran), and reading the crash as the phase's verdict would manufacture
+#   stalls out of ordinary multi-runner work.
+# - A judged phase is *errored* when every outcome-bearing span in it
+#   errored: at least one "error" and no "ok" at all.
+#
+# "Errored" still means only that the harness reported the calls as
+# errored (TrajectoryStep.outcome's semantics rule); the helpers never
+# look at output text.
+
+
+@dataclass
+class PhaseOutcome:
+    """One phase segment joined with the outcomes of its spans."""
+
+    label: str
+    judged: bool  # at least one span carries an outcome
+    successful: bool  # judged, and at least one span completed ("ok")
+    errored: bool  # judged, and every outcome-bearing span errored
+
+
+def phase_outcomes(
+    segments: "list[PhaseSegment]", spans: "list[TrajectoryStep]"
+) -> list[PhaseOutcome]:
+    """Join phase segments to per-span outcomes, one record per segment."""
+    out: list[PhaseOutcome] = []
+    for seg in segments:
+        outcomes = [
+            s.outcome for s in spans[seg.start : seg.end] if s.outcome is not None
+        ]
+        out.append(
+            PhaseOutcome(
+                label=seg.label,
+                judged=bool(outcomes),
+                successful="ok" in outcomes,
+                errored=bool(outcomes) and all(o == "error" for o in outcomes),
+            )
+        )
+    return out
+
+
+@dataclass
+class StalledOscillation:
+    """A run of edit -> test cycles whose test phases all errored."""
+
+    cycles: int  # consecutive errored edit -> test cycles in the run
+    first_segment: int  # segment index of the run's first edit phase
+    last_segment: int  # segment index one past the run's last test phase
+    test_segments: int  # test phases in the whole trajectory
+    judged_test_segments: int  # test phases carrying at least one outcome
+
+
+def find_stalled_oscillation(
+    segments: "list[PhaseSegment]",
+    outcomes: list[PhaseOutcome],
+    min_cycles: int = 3,
+    min_test_coverage: float = 0.5,
+) -> StalledOscillation | None:
+    """Find an unresolved run of errored edit -> test cycles, if any.
+
+    A *cycle* is an edit segment immediately followed by an errored test
+    segment. Cycles chain only while the alternation is unbroken -- any
+    other phase (explore, plan, review, other) between two cycles ends
+    the run, because an intervening exploration or review is exactly how
+    honest debugging separates itself from a stall. A run counts only
+    when no test phase from the run's first test onward is successful:
+    a stall that later resolves is debugging that worked. Returns the
+    longest qualifying run.
+
+    Coverage gate: the motif judges only trajectories whose test phases
+    mostly carry outcomes -- judged test phases must be at least
+    ``min_test_coverage`` of all test phases. Below that, the unseen
+    phases could hide the resolution, and "stalled" would be a claim
+    about missing data rather than about the trajectory.
+    """
+    test_total = sum(1 for o in outcomes if o.label == "test")
+    if test_total == 0:
+        return None
+    judged = sum(1 for o in outcomes if o.label == "test" and o.judged)
+    if judged / test_total < min_test_coverage:
+        return None
+
+    best: StalledOscillation | None = None
+    n = len(segments)
+    i = 0
+    while i + 1 < n:
+        if not (
+            segments[i].label == "edit"
+            and segments[i + 1].label == "test"
+            and outcomes[i + 1].errored
+        ):
+            i += 1
+            continue
+        start = i
+        cycles = 0
+        k = i
+        while (
+            k + 1 < n
+            and segments[k].label == "edit"
+            and segments[k + 1].label == "test"
+            and outcomes[k + 1].errored
+        ):
+            cycles += 1
+            k += 2
+        resolved = any(
+            o.label == "test" and o.successful for o in outcomes[start + 1 :]
+        )
+        if cycles >= min_cycles and not resolved:
+            if best is None or cycles > best.cycles:
+                best = StalledOscillation(
+                    cycles=cycles,
+                    first_segment=start,
+                    last_segment=k,
+                    test_segments=test_total,
+                    judged_test_segments=judged,
+                )
+        i = k
+    return best

@@ -302,7 +302,7 @@ claim blocked by: TRAJ-001
       </div>
       <div class="problem-card">
         <div class="k">Step 2 · Lint</div>
-        <p><strong>26 deterministic checks</strong> across eight lanes read the artifacts. Read-only, zero model calls, nothing executed and nothing modified.</p>
+        <p><strong>27 deterministic checks</strong> across eight lanes read the artifacts. Read-only, zero model calls, nothing executed and nothing modified.</p>
       </div>
       <div class="problem-card">
         <div class="k">Step 3 · Gate</div>
@@ -356,7 +356,7 @@ claim blocked by: TRAJ-001
 <section>
   <div class="wrap">
     <div class="eyebrow">The check catalog</div>
-    <h2>Twenty-six checks across eight lanes.</h2>
+    <h2>Twenty-seven checks across eight lanes.</h2>
     <div class="lanes">
       <details class="lane">
         <summary><span class="k">ENV</span><span class="lname">The evidence boundary</span><span class="n">1 check</span></summary>
@@ -403,10 +403,11 @@ claim blocked by: TRAJ-001
         </ul>
       </details>
       <details class="lane">
-        <summary><span class="k">TRAJ</span><span class="lname">The agent's trajectory</span><span class="n">2 checks</span></summary>
+        <summary><span class="k">TRAJ</span><span class="lname">The agent's trajectory</span><span class="n">3 checks</span></summary>
         <ul>
           <li>Trajectory repeats identical tool calls <code>TRAJ-001</code></li>
           <li>Tool outputs consumed by nothing downstream <code>TRAJ-002</code></li>
+          <li>Edit-test cycles stall without a successful verification <code>TRAJ-003</code></li>
         </ul>
       </details>
       <details class="lane">

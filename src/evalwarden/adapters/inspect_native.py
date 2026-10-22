@@ -219,6 +219,15 @@ def _spans_for_sample(
             )
         seen_ids.add(step_id)
         output = _tool_result_text(event, attachments, flags)
+        # Outcome from the same event's structured shape: an error in
+        # either form means the harness reported the call errored; a
+        # present result means it completed. Neither present: None.
+        if event.get("error") is not None:
+            outcome: str | None = "error"
+        elif event.get("result") is not None:
+            outcome = "ok"
+        else:
+            outcome = None
         if output is not None and len(output) > MAX_SPAN_OUTPUT_CHARS:
             output = output[:MAX_SPAN_OUTPUT_CHARS]
             truncated += 1
@@ -229,6 +238,7 @@ def _spans_for_sample(
                 args=dict(arguments),
                 output=output,
                 consumes=[],  # native logs record no data-flow edges; never inferred
+                outcome=outcome,
             )
         )
     if truncated:

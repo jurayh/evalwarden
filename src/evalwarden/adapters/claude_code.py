@@ -250,6 +250,13 @@ class _SessionBuilder:
                         text = text[:MAX_SPAN_OUTPUT_CHARS]
                         self.truncated += 1
                     span.output = text
+                    # is_error is the source's structured per-call flag.
+                    # Absent means the source recorded no outcome (None),
+                    # never an inferred "ok".
+                    if block.get("is_error") is True:
+                        span.outcome = "error"
+                    elif block.get("is_error") is False:
+                        span.outcome = "ok"
         if not self.prompt:
             text = _block_text(content).strip()
             if text:

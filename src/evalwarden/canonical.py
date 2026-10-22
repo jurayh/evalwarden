@@ -40,6 +40,7 @@ CANONICAL_ADAPTER_NAME = "universal"
 CANONICAL_ADAPTER_VERSION = "1.0.0"
 
 _ATTEMPT_STATUSES = {"pass", "fail", "error", "incomplete"}
+_SPAN_OUTCOMES = {"ok", "error"}
 _MOUNT_MODES = {"ro", "rw"}
 _MOUNT_ACCESS = {"none", "read", "write"}
 _JSONL_TYPES = {
@@ -417,12 +418,15 @@ def _parse_span(
     data = _object(raw, path, locations)
     _unknown_fields(
         data,
-        {"step_id", "tool", "args", "output", "consumes", "tokens_in", "tokens_out"},
+        {"step_id", "tool", "args", "output", "consumes", "tokens_in", "tokens_out", "outcome"},
         path,
         unsupported,
         locations,
     )
     args_raw = _object(data.get("args", {}), f"{path}.args", locations)
+    outcome = _optional_string(data.get("outcome"), f"{path}.outcome", locations)
+    if outcome is not None and outcome not in _SPAN_OUTCOMES:
+        _fail(f"{path}.outcome", "must be one of 'ok' or 'error'", locations)
     return TrajectoryStep(
         step_id=_string(data.get("step_id"), f"{path}.step_id", locations),
         tool=_string(data.get("tool"), f"{path}.tool", locations),
@@ -431,6 +435,7 @@ def _parse_span(
         consumes=_string_list(data.get("consumes", []), f"{path}.consumes", locations),
         tokens_in=_optional_integer(data.get("tokens_in"), f"{path}.tokens_in", locations, minimum=0),
         tokens_out=_optional_integer(data.get("tokens_out"), f"{path}.tokens_out", locations, minimum=0),
+        outcome=outcome,
     )
 
 
@@ -818,6 +823,10 @@ def model_to_document(model: IntegrityModel) -> dict[str, Any]:
                             if span.tokens_in is not None or span.tokens_out is not None
                             else {}
                         ),
+                        # Per-step outcome is emitted only when an adapter
+                        # recorded it, so documents for spans without it
+                        # stay byte-identical to the pre-outcome format.
+                        **({"outcome": span.outcome} if span.outcome is not None else {}),
                     }
                     for span in attempt.spans
                 ],
