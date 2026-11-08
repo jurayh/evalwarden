@@ -20,10 +20,19 @@ check says nothing. TRAJ-003 needs segmented phases plus outcomes on the
 test phases: an outcome-less test phase is not evidence of anything, and
 below the judged-coverage floor the check says nothing rather than
 calling a stall it cannot see the end of.
+TRAJ-004 flags test-guessing: steps where the agent's action contradicts
+the written spec in the direction of a plausible test expectation --
+suppressing a required error, substituting a "safer" type, adding
+behavior the spec forbids, skipping mandated edge handling. The spec
+arrives as a side input (`audit --spec-file`, structured rules); without
+it the check stays silent, and it judges only code it can see in scope.
+See spec_rules.py for the taxonomy shared with MutationScope and the
+recorded boundary ambiguities.
 """
 from __future__ import annotations
 
 from ..model import Attempt, Confidence, Finding, IntegrityModel, Severity, SourceLocation
+from ..spec_rules import SpecRule, match_rule
 from ..trace_phases import segment_phases
 from ..trajectory import (
     canonical_call,
@@ -258,8 +267,94 @@ class StalledOscillationCheck(Check):
         return findings
 
 
+class GuessingCheck(Check):
+    meta = CheckMeta(
+        id="TRAJ-004",
+        title="Agent contradicts the spec toward a guessed test",
+        threat=(
+            "The agent's implementation contradicts the written spec in "
+            "the direction of a test it imagines: a required error "
+            "suppressed with a default return, a spec'd precision swapped "
+            "for a safer type, forbidden behavior added, mandated edge "
+            "handling skipped. The score then measures compliance with a "
+            "guessed grader, not with the spec -- a pass can be an "
+            "artifact of the guess, and a failure can be one too."
+        ),
+        remediation=(
+            "Show the agent the contradiction with the quoted spec line "
+            "and the contradicting step, and re-run against the spec as "
+            "written. If the guessed test is real, the spec -- not the "
+            "implementation -- is what needs updating: fold the "
+            "expectation into the written spec so the next run is judged "
+            "against what was actually asked."
+        ),
+    )
+
+    def __init__(self, spec_rules: list[SpecRule] | None = None):
+        self.spec_rules = spec_rules
+
+    def with_options(self, **kwargs) -> "GuessingCheck":
+        return GuessingCheck(
+            spec_rules=kwargs.get("spec_rules", self.spec_rules)
+        )
+
+    def run(self, model: IntegrityModel) -> list[Finding]:
+        if not self.spec_rules:
+            # No spec file supplied: an eval artifact alone cannot speak
+            # about a spec it does not contain. Silence.
+            return []
+        findings: list[Finding] = []
+        for attempt in model.attempts:
+            if not attempt.spans:
+                continue
+            hits = []
+            for rule in self.spec_rules:
+                if rule.task_id is not None and rule.task_id != attempt.task_id:
+                    continue
+                hit = match_rule(attempt.spans, rule)
+                if hit is not None:
+                    hits.append(hit)
+            if not hits:
+                continue
+            findings.append(
+                Finding(
+                    id=self.meta.id,
+                    title=(
+                        f"Agent second-guesses the spec: {len(hits)} rule(s) "
+                        f"contradicted toward a guessed test in task "
+                        f"{attempt.task_id}"
+                    ),
+                    severity=Severity.HIGH,
+                    # The contradiction is exact given the rules, but the
+                    # direction -- which test the agent imagined -- is the
+                    # auditor's hypothesis in the rule, and spec matching
+                    # is pattern-based over span text: corroborate before
+                    # blocking.
+                    confidence=Confidence.MEDIUM,
+                    description=self.meta.threat,
+                    evidence=[
+                        f"rule {hit.rule.id} ({hit.rule.kind}): spec says "
+                        f"{hit.rule.spec_line!r}; guessed test: "
+                        f"{hit.rule.guessed_test!r}; {hit.note}; "
+                        f"contradicting step: {hit.quote!r}"
+                        for hit in hits
+                    ],
+                    locations=[
+                        _traj_loc(
+                            model,
+                            f"attempt {attempt.task_id}: {len(hits)} spec "
+                            f"rule(s) contradicted over {len(attempt.spans)} spans",
+                        )
+                    ],
+                    remediation=self.meta.remediation,
+                )
+            )
+        return findings
+
+
 CHECKS: list[Check] = [
     LoopCheck(),  # TRAJ-001
     UnusedOutputCheck(),  # TRAJ-002
     StalledOscillationCheck(),  # TRAJ-003
+    GuessingCheck(),  # TRAJ-004
 ]

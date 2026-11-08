@@ -59,6 +59,11 @@ def audit(
         "--training-file",
         help="Training data file (.jsonl or .csv with prompt/target columns) for the DATA-004 leakage check. Without it, DATA-004 stays silent.",
     ),
+    spec_file: Path | None = typer.Option(
+        None,
+        "--spec-file",
+        help="Written-spec rules file (.json) for the TRAJ-004 test-guessing check. Without it, TRAJ-004 stays silent.",
+    ),
 ) -> None:
     """Audit an eval artifact and write an integrity report."""
     if fail_on not in ("error", "high", "medium", "low"):
@@ -76,6 +81,7 @@ def audit(
             price_out_per_1m=price_out,
             budget_per_task_usd=budget_per_task,
             training_file=training_file,
+            spec_file=spec_file,
         )
     except AuditError as exc:
         typer.echo(f"error: audit could not complete: {exc}", err=True)

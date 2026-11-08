@@ -57,6 +57,7 @@ def audit(
     price_out_per_1m: float = 15.0,
     budget_per_task_usd: float | None = None,
     training_file: str | Path | None = None,
+    spec_file: str | Path | None = None,
 ) -> AuditResult:
     target = Path(path)
     if not target.exists():
@@ -73,6 +74,19 @@ def audit(
         try:
             training_records = load_training_file(training_file)
         except TrainingFileError as exc:
+            raise AuditError(str(exc)) from exc
+
+    # The spec file is a side input for TRAJ-004 (test-guessing): an
+    # eval artifact cannot contain the written spec the agent was
+    # supposed to follow, so the structured rules travel beside the
+    # model on the same with_options channel.
+    spec_rules = None
+    if spec_file is not None:
+        from .spec_rules import SpecFileError, load_spec_file
+
+        try:
+            spec_rules = load_spec_file(spec_file)
+        except SpecFileError as exc:
             raise AuditError(str(exc)) from exc
 
     if adapter_name == "auto":
@@ -93,6 +107,7 @@ def audit(
         "price_out_per_1m": price_out_per_1m,
         "budget_per_task_usd": budget_per_task_usd,
         "training_records": training_records,
+        "spec_rules": spec_rules,
     }
     checks = [c.with_options(**options) for c in REGISTRY]
     findings: list[Finding] = []
@@ -116,6 +131,7 @@ def audit_with_policy(
     price_out_per_1m: float = 15.0,
     budget_per_task_usd: float | None = None,
     training_file: str | Path | None = None,
+    spec_file: str | Path | None = None,
 ) -> tuple[AuditResult, bool]:
     """Run the audit; return (result, policy_failed)."""
     result = audit(
@@ -125,6 +141,7 @@ def audit_with_policy(
         price_out_per_1m,
         budget_per_task_usd,
         training_file=training_file,
+        spec_file=spec_file,
     )
     levels = _FAIL_ON_LEVELS[fail_on]
     policy_failed = any(f.severity in levels for f in result.findings)
