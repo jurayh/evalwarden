@@ -4,6 +4,40 @@ All notable changes to evalwarden are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are
 [SemVer](https://semver.org/).
 
+## [0.14.0] - 2026-11-08
+
+### Added
+
+- DIFF-001: paired regression differ. `evalwarden diff BASELINE CANDIDATE`
+  compares two runs item by item, reporting flips underneath the aggregate
+  delta, slice-concentrated regressions, and a McNemar exact test. The gate
+  needs both a significant p-value and a net regression of at least 2% of
+  paired items.
+- `evalwarden.diff` 1.0: a versioned JSON contract for diff output.
+  `evalwarden diff BASELINE CANDIDATE --format json` prints the full
+  comparison (alignment, flips with item ids, slices, findings) as a
+  machine-readable document; numbers match the text report bit for bit.
+- DATA-004: training-data leakage detection. `evalwarden audit <artifact>
+  --training-file train.jsonl|.csv` flags eval items copied or closely
+  paraphrased from the training file, with contaminated wins (leaked items
+  the model passed) called out by severity.
+- TRAJ-003: stalled edit-test oscillation. Repeated edit-then-test cycles
+  whose test phases all error, with no intervening strategy phase and no
+  successful test, are flagged over the new per-step outcome field.
+- TRAJ-004: test-guessing detection. `evalwarden audit <artifact>
+  --spec-file spec.json` flags steps where the agent's action contradicts
+  the written spec toward a guessed test expectation, with the spec line,
+  the guessed test, and the contradicting step quoted per flag.
+- `TrajectoryStep.outcome`: a per-step outcome field (`ok` / `error` /
+  absent) populated from the harness-reported call result by the native
+  Inspect and Claude Code adapters and the Inspect JSON artifact schema.
+  It records whether the call errored, never whether the work succeeded.
+- `evalwarden --version`: print the version and exit.
+
+### Changed
+
+- The check registry now holds 28 checks in eight lanes.
+
 ## [0.13.1] - 2026-10-09
 
 ### Added

@@ -14,7 +14,7 @@ from .adapters import AuditError
 from .checks import BY_ID, get_check
 from .engine import AuditResult, audit_with_policy, diff_pair
 from .model import Severity
-from .reporters import render_html, render_json, render_sarif, render_terminal
+from .reporters import render_diff_json, render_html, render_json, render_sarif, render_terminal
 from .reporters.report_card import (
     CardEntry,
     grouped_checks,
@@ -27,6 +27,25 @@ app = typer.Typer(
     help="A linter for agent evaluations. Not another eval framework.",
     no_args_is_help=True,
 )
+
+
+def _version_callback(value: bool) -> None:
+    if value:
+        typer.echo(evalwarden.__version__)
+        raise typer.Exit()
+
+
+@app.callback()
+def _main(
+    version: bool = typer.Option(
+        False,
+        "--version",
+        callback=_version_callback,
+        is_eager=True,
+        help="Show the evalwarden version and exit.",
+    ),
+) -> None:
+    return None
 
 
 @app.command()
@@ -114,6 +133,11 @@ def diff(
     fail_on: str = typer.Option(
         "high", help="Minimum finding severity that fails the diff: error|high|medium|low."
     ),
+    output_format: str = typer.Option(
+        "text",
+        "--format",
+        help="Output format written to stdout: text, json. Presentation only; exit codes are unchanged.",
+    ),
 ) -> None:
     """Compare two eval artifacts item by item: what flipped, where, is it real?
 
@@ -127,6 +151,9 @@ def diff(
     if fail_on not in ("error", "high", "medium", "low"):
         typer.echo("error: --fail-on must be one of error|high|medium|low", err=True)
         raise typer.Exit(2)
+    if output_format not in ("text", "json"):
+        typer.echo("error: --format must be one of text|json", err=True)
+        raise typer.Exit(2)
     try:
         result, policy_failed = diff_pair(
             baseline, candidate, adapter_name=adapter, fail_on=fail_on
@@ -134,6 +161,11 @@ def diff(
     except AuditError as exc:
         typer.echo(f"error: diff could not complete: {exc}", err=True)
         raise typer.Exit(2)
+
+    if output_format == "json":
+        # The machine format owns stdout: the document is the whole output.
+        typer.echo(render_diff_json(result))
+        raise typer.Exit(1 if policy_failed else 0)
 
     typer.echo(
         f"evalwarden diff: {result.baseline.eval_id} -> {result.candidate.eval_id}"

@@ -119,7 +119,12 @@ class SliceStats:
 
 @dataclass
 class Flip:
-    """One pass-to-fail item, with the score movement behind the flip."""
+    """One flipped item, with the score movement behind the flip.
+
+    Used for both directions: a regression's ``drop`` is positive, a
+    gain's ``rise`` is positive. The two are the same signed movement
+    read from opposite sides, so one record shape carries either.
+    """
 
     task_id: str
     baseline_score: float
@@ -127,7 +132,13 @@ class Flip:
 
     @property
     def drop(self) -> float:
+        """Baseline minus candidate: positive for a regression."""
         return self.baseline_score - self.candidate_score
+
+    @property
+    def rise(self) -> float:
+        """Candidate minus baseline: positive for a gain."""
+        return self.candidate_score - self.baseline_score
 
 
 @dataclass
@@ -142,6 +153,7 @@ class DiffStats:
     candidate_mean: float  # mean item score over paired items, candidate side
     p_value: float  # McNemar exact p over the discordant pairs
     worst: list[Flip] = field(default_factory=list)  # regressions, worst first
+    gain_items: list[Flip] = field(default_factory=list)  # gains, largest rise first
     slices: list[SliceStats] = field(default_factory=list)
 
     @property
@@ -173,6 +185,7 @@ def diff_stats(
     gains = 0
     unchanged = 0
     worst: list[Flip] = []
+    gain_items: list[Flip] = []
     base_total = 0.0
     cand_total = 0.0
     # (key, value) -> [n, regressions, gains]
@@ -189,6 +202,7 @@ def diff_stats(
         elif cand_pass and not base_pass:
             kind = 2  # gain
             gains += 1
+            gain_items.append(Flip(task_id, base_score, cand_score))
         else:
             kind = 0
             unchanged += 1
@@ -202,6 +216,7 @@ def diff_stats(
                     cell[2] += 1
     n = len(pairs)
     worst.sort(key=lambda flip: (-flip.drop, flip.task_id))
+    gain_items.sort(key=lambda flip: (-flip.rise, flip.task_id))
     slices = [
         SliceStats(
             key=key,
@@ -222,5 +237,6 @@ def diff_stats(
         candidate_mean=cand_total / n if n else 0.0,
         p_value=mcnemar_exact_p(regressions, gains),
         worst=worst,
+        gain_items=gain_items,
         slices=slices,
     )

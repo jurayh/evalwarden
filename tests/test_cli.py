@@ -12,6 +12,14 @@ from .conftest import DEMO_HARDENED, DEMO_LEAKY
 runner = CliRunner()
 
 
+def test_version_flag_prints_version_and_exits_0():
+    import evalwarden
+
+    result = runner.invoke(app, ["--version"])
+    assert result.exit_code == 0, result.output
+    assert result.output.strip() == evalwarden.__version__
+
+
 def test_audit_leaky_exits_1_and_writes_report(tmp_path: Path):
     report = tmp_path / "report.html"
     result = runner.invoke(app, ["audit", str(DEMO_LEAKY), "--output", str(report)])
