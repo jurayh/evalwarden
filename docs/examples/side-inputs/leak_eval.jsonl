@@ -1,0 +1,21 @@
+{"type": "eval", "schema": "evalwarden.model", "schema_version": "1.0", "eval_id": "tiny-leak-eval"}
+{"type": "task", "id": "t01", "prompt": "What is the capital of France?", "target": "Paris"}
+{"type": "task", "id": "t02", "prompt": "What is the capital of Japan?", "target": "Tokyo"}
+{"type": "task", "id": "t03", "prompt": "What is the chemical symbol for the element gold in the periodic table?", "target": "Au"}
+{"type": "task", "id": "t04", "prompt": "How many days are in a leap year?", "target": "366"}
+{"type": "task", "id": "t05", "prompt": "What is the largest planet in the solar system?", "target": "Jupiter"}
+{"type": "task", "id": "t06", "prompt": "Who wrote the play Hamlet?", "target": "Shakespeare"}
+{"type": "task", "id": "t07", "prompt": "What is the square root of 144?", "target": "12"}
+{"type": "task", "id": "t08", "prompt": "What gas do plants absorb from the air?", "target": "carbon dioxide"}
+{"type": "task", "id": "t09", "prompt": "In what year did humans first land on the Moon?", "target": "1969"}
+{"type": "task", "id": "t10", "prompt": "What is the boiling point of water at sea level in Celsius?", "target": "100"}
+{"type": "attempt", "task_id": "t01", "status": "pass", "score": 1.0, "model_id": "model-a"}
+{"type": "attempt", "task_id": "t02", "status": "pass", "score": 1.0, "model_id": "model-a"}
+{"type": "attempt", "task_id": "t03", "status": "pass", "score": 1.0, "model_id": "model-a"}
+{"type": "attempt", "task_id": "t04", "status": "pass", "score": 1.0, "model_id": "model-a"}
+{"type": "attempt", "task_id": "t05", "status": "pass", "score": 1.0, "model_id": "model-a"}
+{"type": "attempt", "task_id": "t06", "status": "pass", "score": 1.0, "model_id": "model-a"}
+{"type": "attempt", "task_id": "t07", "status": "fail", "score": 0.0, "model_id": "model-a"}
+{"type": "attempt", "task_id": "t08", "status": "fail", "score": 0.0, "model_id": "model-a"}
+{"type": "attempt", "task_id": "t09", "status": "fail", "score": 0.0, "model_id": "model-a"}
+{"type": "attempt", "task_id": "t10", "status": "fail", "score": 0.0, "model_id": "model-a"}

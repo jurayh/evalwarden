@@ -1,0 +1,4 @@
+{"type": "eval", "schema": "evalwarden.model", "schema_version": "1.0", "eval_id": "tiny-guessing-eval"}
+{"type": "task", "id": "t1", "prompt": "Write parse(text) so that on invalid input it raises ValueError."}
+{"type": "attempt", "task_id": "t1", "status": "fail", "score": 0.0, "model_id": "model-a"}
+{"type": "span", "task_id": "t1", "step_id": "s0", "tool": "edit_file", "args": {"path": "app.py", "new_string": "def parse(text):\n    try:\n        return int(text)\n    except ValueError:\n        return None"}}

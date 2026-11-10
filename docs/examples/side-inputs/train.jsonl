@@ -1,0 +1,4 @@
+{"id": "ft-t01", "prompt": "What is the capital of France?", "target": "Paris"}
+{"id": "ft-t02", "prompt": "What is the capital of Japan?", "target": "Tokyo"}
+{"id": "ft-t07", "prompt": "What is the square root of 144?", "target": "12"}
+{"id": "ft-t03-swap", "prompt": "What is the chemical symbol for the element gold in the table periodic?", "target": "Au"}

@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "id": "S1",
+      "kind": "must_raise",
+      "task_id": "t1",
+      "scope": "parse",
+      "spec_line": "On invalid input, raise ValueError.",
+      "guessed_test": "the test checks parse returns None on bad input",
+      "error": "ValueError"
+    }
+  ]
+}

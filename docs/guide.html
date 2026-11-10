@@ -222,7 +222,7 @@
         <span class="go">About 10 minutes →</span>
       </a>
     </div>
-    <p class="term-cap">Every command and output on this page is real, captured from <strong>evalwarden 0.13.1</strong>. The checks are deterministic: copy the example files exactly as shown and your run matches, line for line.</p>
+    <p class="term-cap">Every command and output on this page is real, captured from <strong>evalwarden 0.14.0</strong>. The checks are deterministic: copy the example files exactly as shown and your run matches, line for line.</p>
   </div>
 </header>
 
@@ -455,12 +455,140 @@ jobs:
     <div class="quick">
 <pre><span class="c"># .pre-commit-config.yaml</span>
 - repo: https://github.com/jurayh/evalwarden
-  rev: v0.13.1
+  rev: v0.14.0
   hooks:
     - id: evalwarden-audit
       args: [evals/my-eval]   <span class="c"># your eval artifact directory or native Inspect .eval log</span></pre>
     </div>
     <p>The hook runs <code>evalwarden audit</code> on the path in <code>args</code> and fails the commit when findings cross the policy (default <code>--fail-on high</code>; add <code>--fail-on</code> to <code>args</code> to tune it).</p>
+  </div>
+</section>
+
+<section id="side-inputs">
+  <div class="wrap prose">
+    <div class="eyebrow">Side inputs</div>
+    <h2>Two checks need a second file.</h2>
+    <p>Every check so far has read only the artifact you pointed at. Two checks cannot: the artifact alone cannot speak about the training data it never contained, or the written spec it was never given. Those two stay silent until you hand them the missing side — <code>--training-file</code> for DATA-004, <code>--spec-file</code> for TRAJ-004. Both files are loaded strictly: a malformed file fails the audit with exit code 2 and names the exact place, the way an unreadable artifact does.</p>
+    <h3>The training file (DATA-004)</h3>
+    <p>The training file is <code>.jsonl</code> or <code>.csv</code>. In JSONL, one object per line: <code>prompt</code> is required, <code>target</code> and <code>id</code> are optional — an id defaults to <code>train-&lt;line&gt;</code>. In CSV, a <code>prompt</code> column is required; <code>id</code> and <code>target</code> columns are optional. Duplicate ids are rejected, and so is any other format. The comparison is lexical and deterministic: no embeddings, no model calls.</p>
+    <p>The worked example is a ten-item quiz. Six items passed, four failed. The training file holds four rows: three verbatim copies of eval items, and one lightly edited copy — two adjacent words swapped.</p>
+    <div class="term">
+      <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot amber"></span><span class="fname">train.jsonl</span></div>
+<pre>{"id": "ft-t01", "prompt": "What is the capital of France?", "target": "Paris"}
+{"id": "ft-t02", "prompt": "What is the capital of Japan?", "target": "Tokyo"}
+{"id": "ft-t07", "prompt": "What is the square root of 144?", "target": "12"}
+{"id": "ft-t03-swap", "prompt": "What is the chemical symbol for the element gold in the table periodic?", "target": "Au"}</pre>
+    </div>
+    <div class="term">
+      <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot amber"></span><span class="fname">leak_eval.jsonl</span></div>
+<pre>{"type": "eval", "schema": "evalwarden.model", "schema_version": "1.0", "eval_id": "tiny-leak-eval"}
+{"type": "task", "id": "t01", "prompt": "What is the capital of France?", "target": "Paris"}
+{"type": "task", "id": "t02", "prompt": "What is the capital of Japan?", "target": "Tokyo"}
+{"type": "task", "id": "t03", "prompt": "What is the chemical symbol for the element gold in the periodic table?", "target": "Au"}
+{"type": "task", "id": "t04", "prompt": "How many days are in a leap year?", "target": "366"}
+{"type": "task", "id": "t05", "prompt": "What is the largest planet in the solar system?", "target": "Jupiter"}
+{"type": "task", "id": "t06", "prompt": "Who wrote the play Hamlet?", "target": "Shakespeare"}
+{"type": "task", "id": "t07", "prompt": "What is the square root of 144?", "target": "12"}
+{"type": "task", "id": "t08", "prompt": "What gas do plants absorb from the air?", "target": "carbon dioxide"}
+{"type": "task", "id": "t09", "prompt": "In what year did humans first land on the Moon?", "target": "1969"}
+{"type": "task", "id": "t10", "prompt": "What is the boiling point of water at sea level in Celsius?", "target": "100"}
+{"type": "attempt", "task_id": "t01", "status": "pass", "score": 1.0, "model_id": "model-a"}
+{"type": "attempt", "task_id": "t02", "status": "pass", "score": 1.0, "model_id": "model-a"}
+{"type": "attempt", "task_id": "t03", "status": "pass", "score": 1.0, "model_id": "model-a"}
+{"type": "attempt", "task_id": "t04", "status": "pass", "score": 1.0, "model_id": "model-a"}
+{"type": "attempt", "task_id": "t05", "status": "pass", "score": 1.0, "model_id": "model-a"}
+{"type": "attempt", "task_id": "t06", "status": "pass", "score": 1.0, "model_id": "model-a"}
+{"type": "attempt", "task_id": "t07", "status": "fail", "score": 0.0, "model_id": "model-a"}
+{"type": "attempt", "task_id": "t08", "status": "fail", "score": 0.0, "model_id": "model-a"}
+{"type": "attempt", "task_id": "t09", "status": "fail", "score": 0.0, "model_id": "model-a"}
+{"type": "attempt", "task_id": "t10", "status": "fail", "score": 0.0, "model_id": "model-a"}</pre>
+    </div>
+    <div class="term">
+      <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot amber"></span><span class="fname">terminal — auditing with a side input</span></div>
+<pre><span class="cmd"><span class="p">$</span> evalwarden audit leak_eval.jsonl --training-file train.jsonl</span>
+evalwarden audit: tiny-leak-eval
+adapter: universal 1.0.0
+Integrity: 45 / 100 <span class="blocked">BLOCKED</span> (2 errors, 0 high, 1 medium, 0 low)
+claim blocked by: DATA-004
+
+<span class="hl">E DATA-004 [error|confidence:high] Train/eval leakage (exact): 2 contaminated win(s), 33% of all passes match training data</span>
+    evidence: overlap: 3 of 10 eval items match the exact tier against 4 training rows (raw overlap rate 30% for this tier; 40% across tiers).
+    evidence: contaminated wins: 2 of the matched items were passed; that is 33% of all 6 passed items -- the headline number, since leaked-and-failed items did not inflate the score.
+    evidence: exact tier: normalized prompt+target text identical to a training row.
+    evidence: match: training row ft-t01 &lt;-&gt; eval item t01 (jaccard 1.00, containment 1.00, outcome passed)
+    evidence: match: training row ft-t02 &lt;-&gt; eval item t02 (jaccard 1.00, containment 1.00, outcome passed)
+    evidence: match: training row ft-t07 &lt;-&gt; eval item t07 (jaccard 1.00, containment 1.00, outcome failed)
+    at: leak_eval.jsonl -- tasks[].prompt/target vs the supplied training file (3 exact match(es))
+    fix: Decontaminate and re-measure: drop or rewrite the matched training rows (and their near-duplicates), retrain or select a checkpoint trained without them, and re-run the eval. Report scores with the contaminated-win count attached until a clean run exists.
+
+<span class="hl">E DATA-004 [error|confidence:medium] Train/eval leakage (near-duplicate): 1 contaminated win(s), 17% of all passes match training data</span>
+    evidence: overlap: 1 of 10 eval items match the near-duplicate tier against 4 training rows (raw overlap rate 10% for this tier; 40% across tiers).
+    evidence: contaminated wins: 1 of the matched items were passed; that is 17% of all 6 passed items -- the headline number, since leaked-and-failed items did not inflate the score.
+    evidence: near-duplicate tier: shingle-Jaccard &gt;= 0.45 or containment &gt;= 0.6 (3-token shingles over normalized text, shingles shared by over half the eval set excluded as scaffolding).
+    evidence: match: training row ft-t03-swap &lt;-&gt; eval item t03 (jaccard 0.57, containment 0.73, outcome passed)
+    evidence: Lexical detection only: heavily paraphrased copies can fall below the threshold, so a silent near-duplicate tier is not proof of a clean boundary.
+    at: leak_eval.jsonl -- tasks[].prompt/target vs the supplied training file (1 near-duplicate match(es))
+    fix: Decontaminate and re-measure: drop or rewrite the matched training rows (and their near-duplicates), retrain or select a checkpoint trained without them, and re-run the eval. Report scores with the contaminated-win count attached until a clean run exists.
+
+<span class="c">… one more finding in the full output: COST-001 (medium, token usage not recorded, as in Path 2)</span>
+
+Integrity score is diagnostic, not a certification.
+
+Report: evalwarden-report.html</pre>
+    </div>
+    <p class="term-cap">The audit <strong>exits 1</strong>: two error findings, both DATA-004. The score is 45: 100 − 25 − 25 for the two errors, and −5 for the elided COST-001 medium.</p>
+    <h3>What the two tiers say</h3>
+    <p>The <strong>exact tier</strong> found 3 of 10 eval items matching verbatim (30% raw overlap). Two of those were passed — <strong>contaminated wins</strong>, 33% of all 6 passes — and that share is the severity: at or above 10% the finding is an error. The <strong>near-duplicate tier</strong> caught the swapped row at Jaccard 0.57 and containment 0.73, above the 0.45 / 0.60 thresholds — one more contaminated win, 17% of passes, also an error. The leaked-and-failed item (t07) proves the boundary was breached but did not inflate the score: it counts in the overlap, not in the contaminated wins.</p>
+    <p>The near tier is lexical only: a heavily paraphrased copy can fall below the threshold, so a silent near tier is not proof of a clean boundary. The finding says that itself, in its last evidence line.</p>
+    <h3>The written spec (TRAJ-004)</h3>
+    <p>The spec file is JSON: <code>{"version": 1, "rules": [...]}</code>. Every rule needs an <code>id</code>, a <code>kind</code>, a <code>scope</code> token, the <code>spec_line</code> quoted from the written spec, and the <code>guessed_test</code> — the test you hypothesize the agent imagined. The kind decides the rest: <code>must_raise</code> needs the <code>error</code> the spec requires; <code>must_use_type</code> needs the <code>expected</code> type and the <code>guessed</code> substitute; <code>must_not</code> needs the <code>forbidden</code> pattern; <code>must_handle</code> needs the <code>expected</code> edge handling and the <code>main_path</code> marker. A <code>task_id</code> pins a rule to one task; without it, the rule applies to every task. Duplicate rule ids and unknown kinds are rejected.</p>
+    <p>The worked example is one task, one edit. The spec says invalid input must raise <code>ValueError</code>; the agent wrote a <code>try</code>/<code>except</code> that returns <code>None</code> instead — the MaxxBench shape, an error suppressed to please an imagined test. The scope token <code>parse</code> is what ties the rule to the span: a rule only judges spans carrying its scope.</p>
+    <div class="term">
+      <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot amber"></span><span class="fname">spec.json</span></div>
+<pre>{
+  "version": 1,
+  "rules": [
+    {
+      "id": "S1",
+      "kind": "must_raise",
+      "task_id": "t1",
+      "scope": "parse",
+      "spec_line": "On invalid input, raise ValueError.",
+      "guessed_test": "the test checks parse returns None on bad input",
+      "error": "ValueError"
+    }
+  ]
+}</pre>
+    </div>
+    <div class="term">
+      <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot amber"></span><span class="fname">guessed.jsonl</span></div>
+<pre>{"type": "eval", "schema": "evalwarden.model", "schema_version": "1.0", "eval_id": "tiny-guessing-eval"}
+{"type": "task", "id": "t1", "prompt": "Write parse(text) so that on invalid input it raises ValueError."}
+{"type": "attempt", "task_id": "t1", "status": "fail", "score": 0.0, "model_id": "model-a"}
+{"type": "span", "task_id": "t1", "step_id": "s0", "tool": "edit_file", "args": {"path": "app.py", "new_string": "def parse(text):\n    try:\n        return int(text)\n    except ValueError:\n        return None"}}</pre>
+    </div>
+    <div class="term">
+      <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot amber"></span><span class="fname">terminal — auditing with a side input</span></div>
+<pre><span class="cmd"><span class="p">$</span> evalwarden audit guessed.jsonl --spec-file spec.json</span>
+evalwarden audit: tiny-guessing-eval
+adapter: universal 1.0.0
+Integrity: 85 / 100 <span class="blocked">BLOCKED</span> (0 errors, 1 high, 1 medium, 0 low)
+claim blocked by: TRAJ-004
+
+<span class="hl">H TRAJ-004 [high|confidence:medium] Agent second-guesses the spec: 1 rule(s) contradicted toward a guessed test in task t1</span>
+    evidence: rule S1 (must_raise): spec says 'On invalid input, raise ValueError.'; guessed test: 'the test checks parse returns None on bad input'; step s0 (edit_file) swallows the error (return None) instead of raising ValueError; contradicting step: 'edit_file {"new_string": "def parse(text):\\n    try:\\n        return int(text)\\n    except ValueError:\\n        return None", "path": "app.py"}'
+    at: trajectories.jsonl -- attempt t1: 1 spec rule(s) contradicted over 1 spans
+    fix: Show the agent the contradiction with the quoted spec line and the contradicting step, and re-run against the spec as written. If the guessed test is real, the spec -- not the implementation -- is what needs updating: fold the expectation into the written spec so the next run is judged against what was actually asked.
+
+<span class="c">… one more finding in the full output: COST-001 (medium, token usage not recorded, as in Path 2)</span>
+
+Integrity score is diagnostic, not a certification.
+
+Report: evalwarden-report.html</pre>
+    </div>
+    <p class="term-cap">The audit <strong>exits 1</strong>: one high finding. Without <code>--spec-file</code> the same artifact scores 95/100 PASS — TRAJ-004 stays silent, and the only finding left is the elided COST-001.</p>
+    <p>The finding quotes all three pieces of evidence: the spec line, the guessed test, and the contradicting step. The direction is the auditor's hypothesis, written into the rule — the check verifies the contradiction deterministically; it cannot verify what the agent intended. If the guessed test is real, the spec, not the implementation, is what needs updating: fold the expectation into the written spec so the next run is judged against what was actually asked.</p>
+    <p>Two guardrails keep the flag precise. A rule whose expected marker appears anywhere in scope is satisfied — a mixed implementation is ambiguous, and the check stays silent on it. And spans that touch the test files themselves, or that the harness reported as errored, are excluded: editing the test is the reward hack's territory, and a call that did not take effect wrote no implementation.</p>
   </div>
 </section>
 
@@ -491,7 +619,7 @@ threat: A model judge with no labeled calibration set is an unvalidated measurem
 fix: Collect a labeled calibration set and report judge-vs-human agreement before trusting scores; anchor the rubric scale with explicit examples per level; pin temperature to 0 or take multiple repeats per item.</pre>
     </div>
     <h3>Publish the audit: the Evidence Registry</h3>
-    <p>An audit you run locally proves something to you. An <strong>evidence pack</strong> proves it to everyone: pinned public inputs, a verify script, and a report card a stranger can regenerate byte for byte. Sixteen benchmarks are already in the <a href="https://jurayh.github.io/evidence-registry/">Evidence Registry</a> — including MATH, blocked at 80/100 because its default judge is the model under test, and SWE-bench Verified, clean at 100/100. If your benchmark should be there, <a href="https://github.com/jurayh/evalwarden/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> describes the pack format and the bar a pack has to clear.</p>
+    <p>An audit you run locally proves something to you. An <strong>evidence pack</strong> proves it to everyone: pinned public inputs, a verify script, and a report card a stranger can regenerate byte for byte. Eighteen benchmarks are already in the <a href="https://jurayh.github.io/evidence-registry/">Evidence Registry</a> — including MATH, blocked at 80/100 because its default judge is the model under test, and SWE-bench Verified, clean at 100/100. If your benchmark should be there, <a href="https://github.com/jurayh/evalwarden/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> describes the pack format and the bar a pack has to clear.</p>
     <div class="ctas">
       <a class="btn primary" href="https://jurayh.github.io/evidence-registry/">Browse the registry</a>
       <a class="btn" href="demo-card.html">See a full report card</a>
