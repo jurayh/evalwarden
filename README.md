@@ -104,6 +104,7 @@ Deterministic, high-precision checks. A linter that cries contamination on a cle
 | DATA-001 | Dataset looks saturated (most items answered correctly by every model) | Medium |
 | DATA-002 | Dataset contains near-duplicate items | Low |
 | DATA-003 | Failure modes under-elicited (too few eliciting items, or a declared mode with none) | Medium |
+| DATA-004 | Training data leaks into the eval set | Error |
 
 **TRAJ — the agent's trajectory**
 
@@ -111,6 +112,8 @@ Deterministic, high-precision checks. A linter that cries contamination on a cle
 |----|-------|----------|
 | TRAJ-001 | Trajectory repeats identical tool calls (exact loops) | High |
 | TRAJ-002 | Tool outputs consumed by nothing downstream | High |
+| TRAJ-003 | Edit-test cycles stall without a successful verification | High |
+| TRAJ-004 | Agent contradicts the spec toward a guessed test | High |
 
 **NOISE — the noise budget**
 
@@ -118,6 +121,12 @@ Deterministic, high-precision checks. A linter that cries contamination on a cle
 |----|-------|----------|
 | NOISE-001 | One noise source dominates the eval budget (sampling, judge, or environment) | Medium |
 | NOISE-002 | Claimed score change inside the noise floor, or unjudgeable at this protocol | Medium |
+
+**DIFF — run comparison**
+
+| ID | Check | Severity |
+|----|-------|----------|
+| DIFF-001 | Paired regression versus a baseline run | High |
 
 `evalwarden explain COST-004` prints any check's threat model, evidence, and fix.
 
@@ -261,16 +270,17 @@ Run scores are created only when a run or condition column states repeated-run s
 evalwarden audit <eval-artifact> [--adapter auto|inspect|promptfoo|universal] [--output report.html]
                               [--format text|json|sarif] [--json findings.json] [--fail-on high]
                               [--price-in 3.0] [--price-out 15.0]
-                              [--budget-per-task USD] [--training-file train.jsonl]
+                              [--budget-per-task USD] [--training-file train.jsonl] [--spec-file spec.json]
 evalwarden demo [--fixture leaky|hardened|judge_bad|judge_clean|cost_wasteful|cost_clean|promptfoo_bad|promptfoo_clean]
              [--output evalwarden-demo-report.html] [--budget-per-task USD]
 evalwarden report-card <eval-artifact> [--output card.html]
 evalwarden report-cards <eval...> [--fixtures a,b] [--output-dir cards/]
-evalwarden diff <baseline-artifact> <candidate-artifact> [--fail-on high]
+evalwarden diff <baseline-artifact> <candidate-artifact> [--format text|json] [--fail-on high]
 evalwarden trace [sessions-path] [--demo] [--since 7d] [--project NAME]
               [--agent all|claude-code|codex] [--output trace-report.html]
 evalwarden checks
 evalwarden explain <CHECK-ID>
+evalwarden --version
 ```
 
 Exit codes: `0` policy passes, `1` findings cross `--fail-on`, `2` the audit could not complete. The same policy runs locally and as a CI gate.
