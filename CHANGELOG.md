@@ -4,6 +4,29 @@ All notable changes to evalwarden are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are
 [SemVer](https://semver.org/).
 
+## [0.14.1] - 2026-11-17
+
+### Fixed
+
+- TRAJ-004: the matcher now ignores comments, docstrings, and test-runner
+  output quoting the code. A guessed pattern that appears only in a
+  comment, a docstring, or quoted output no longer fires; the same pattern
+  in real code still fires. Measured on the frozen n=21 sample: accuracy
+  1.000 and kappa 1.000 before and after, all 8 positives still firing
+  their intended rule. Only Python-shaped comments are stripped;
+  unparseable text is left unchanged by design.
+
+### Added
+
+- The onboarding guide gains a "Two checks need a second file" section
+  covering `--training-file` (DATA-004) and `--spec-file` (TRAJ-004), with
+  worked examples and real captured output.
+
+### Changed
+
+- The README check catalog now lists all 28 checks, and a test pins it to
+  the registry so it cannot drift again.
+
 ## [0.14.0] - 2026-11-08
 
 ### Added
