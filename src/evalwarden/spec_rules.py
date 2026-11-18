@@ -53,10 +53,20 @@ Boundary ambiguities (recorded, not resolved silently):
   either way. Only a hardcode of a specific non-default literal is
   separable, and only because it matches no guessed pattern.
 - Matching is literal substring matching over serialized span text
-  (tool name, args, output). A guessed pattern inside a comment, a
-  docstring, or test-runner output quoting the code matches the same
-  way as the code itself. Findings quote the span so the auditor can
-  see the context and dismiss such a flag.
+  (tool name, args, output) -- but the text is first passed through
+  ``strip_non_code_text`` (Nov 2026 spike): Python comments and
+  standalone string statements (docstrings) are removed from span
+  args and output before matching, so a guessed pattern that only
+  appears in a comment, a docstring, or test-runner output quoting
+  the code no longer fires. Measured on the spike fixtures: 5/5
+  comment-only, 5/5 docstring-only, and 6/6 output-quote-only
+  variants silent, with all 8 original positives still firing.
+  What remains: only Python-shaped comments are stripped (``//``
+  comments in other languages survive), a standalone f-string
+  statement is not recognized as a docstring, and text that does
+  not tokenize as Python is left unchanged by design. Findings
+  quote the stripped span text, so the auditor sees the code the
+  rule actually judged.
 - The *direction* -- which test the agent imagined -- is the
   auditor's hypothesis, carried in each rule's ``guessed_test`` and
   quoted in the finding. The check verifies the contradiction
@@ -94,8 +104,10 @@ effect wrote no implementation.
 """
 from __future__ import annotations
 
+import io
 import json
 import re
+import tokenize
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -248,12 +260,104 @@ def load_spec_file(path: str | Path) -> list[SpecRule]:
     return load_spec_rules(text, target.name)
 
 
+def _prev_significant(tokens: list[tokenize.TokenInfo], index: int):
+    """Previous token that starts a statement, skipping NL and comments."""
+    for tok in reversed(tokens[:index]):
+        if tok.type in (tokenize.NL, tokenize.COMMENT):
+            continue
+        return tok
+    return None
+
+
+def _next_significant(tokens: list[tokenize.TokenInfo], index: int):
+    """Next token that ends a statement, skipping NL and comments."""
+    for tok in tokens[index + 1:]:
+        if tok.type in (tokenize.NL, tokenize.COMMENT):
+            continue
+        return tok
+    return None
+
+
+def _is_standalone_string(tokens: list[tokenize.TokenInfo], index: int) -> bool:
+    """True when a STRING token is a statement on its own: a docstring
+    (or a stray string statement). A string used as a value -- assigned,
+    compared, passed as an argument -- is never standalone, so markers
+    inside string literals are kept."""
+    prev = _prev_significant(tokens, index)
+    nxt = _next_significant(tokens, index)
+    prev_ok = prev is None or prev.type in (
+        tokenize.NEWLINE, tokenize.INDENT, tokenize.DEDENT,
+    )
+    next_ok = nxt is None or nxt.type in (tokenize.NEWLINE, tokenize.ENDMARKER)
+    return prev_ok and next_ok
+
+
+def strip_non_code_text(text: str) -> str:
+    """Drop Python comments and standalone string statements from text.
+
+    The TRAJ-004 matcher reads code, not prose about code: a guessed
+    pattern that only appears in a comment, a docstring, or a string
+    statement must not fire a rule. The stdlib tokenizer does the
+    work, so ``#`` inside a string literal is never mistaken for a
+    comment, and multi-line strings survive whole.
+
+    Two guarantees make this safe to apply to every span string:
+
+    - Nothing to drop means byte-identical output: text with no
+      comments and no standalone strings is returned unchanged, so
+      real code is never re-serialized through the tokenizer.
+    - Unparseable text is returned unchanged: a traceback, prose, or
+      a shell command that does not tokenize as Python is left alone
+      rather than guessed at, so the matcher fails open toward the
+      old behavior on text it cannot judge.
+
+    Known limits: only Python-shaped comments are stripped (``//``
+    comments in other languages survive), and a standalone f-string
+    statement is not recognized as a docstring (the tokenizer emits
+    FSTRING tokens, not STRING).
+    """
+    try:
+        tokens = list(tokenize.generate_tokens(io.StringIO(text).readline))
+    except (tokenize.TokenError, SyntaxError):
+        return text
+    keep: list[tokenize.TokenInfo] = []
+    dropped = False
+    for index, tok in enumerate(tokens):
+        if tok.type == tokenize.COMMENT:
+            dropped = True
+            continue
+        if tok.type == tokenize.STRING and _is_standalone_string(tokens, index):
+            dropped = True
+            continue
+        keep.append(tok)
+    if not dropped:
+        return text
+    return tokenize.untokenize(keep)
+
+
+def _strip_value(value: object) -> object:
+    """Strip comments/docstrings from every string inside a value."""
+    if isinstance(value, str):
+        return strip_non_code_text(value)
+    if isinstance(value, dict):
+        return {key: _strip_value(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_strip_value(item) for item in value]
+    return value
+
+
 def span_text(tool: str, args: dict, output: str | None) -> str:
-    """The searchable text of one span: tool, serialized args, output."""
-    serialized = json.dumps(args, sort_keys=True, default=str)
+    """The searchable text of one span: tool, serialized args, output.
+
+    String values are comment/docstring-stripped first (see
+    ``strip_non_code_text``): the matcher judges code, and a pattern
+    that only exists in a comment, a docstring, or quoted output
+    prose is not the agent's implementation.
+    """
+    serialized = json.dumps(_strip_value(args), sort_keys=True, default=str)
     parts = [tool, serialized]
     if output:
-        parts.append(output)
+        parts.append(strip_non_code_text(output))
     return "\n".join(parts)
 
 
